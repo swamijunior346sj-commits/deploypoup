@@ -216,7 +216,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <button onClick={() => navigate('/add-account')} className="fixed right-6 bottom-24 w-14 h-14 bg-primary rounded-full shadow-lg shadow-primary/20 flex items-center justify-center z-[60] active:scale-95 transition-transform">
+      <button onClick={() => navigate('/add-account')} className="fixed right-6 bottom-24 w-14 h-14 bg-primary rounded-full shadow-lg shadow-primary/20 flex items-center justify-center z-[60] active:scale-95 transition-transform animate-levitate">
         <span className="material-symbols-outlined text-black font-bold text-3xl">add</span>
       </button>
     </div >
