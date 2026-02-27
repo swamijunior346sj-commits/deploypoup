@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Card from '../components/Card';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [timePeriod, setTimePeriod] = useState<'Dia' | 'Semana' | 'Mês' | 'Ano'>('Mês');
 
   return (
     <div className="space-y-6">
@@ -25,10 +27,18 @@ export default function Dashboard() {
 
       <div className="px-6 space-y-6 pb-20">
         <div className="flex p-1 bg-zinc-950 border border-zinc-900 rounded-2xl">
-          <button className="flex-1 py-2 text-[10px] font-bold uppercase tracking-widest text-zinc-500 rounded-xl transition-all">Dia</button>
-          <button className="flex-1 py-2 text-[10px] font-bold uppercase tracking-widest text-zinc-500 rounded-xl transition-all">Semana</button>
-          <button className="flex-1 py-2 text-[10px] font-bold uppercase tracking-widest text-white bg-zinc-900 rounded-xl transition-all">Mês</button>
-          <button className="flex-1 py-2 text-[10px] font-bold uppercase tracking-widest text-zinc-500 rounded-xl transition-all">Ano</button>
+          {(['Dia', 'Semana', 'Mês', 'Ano'] as const).map((period) => (
+            <button
+              key={period}
+              onClick={() => setTimePeriod(period)}
+              className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all ${timePeriod === period
+                ? 'text-white bg-zinc-900'
+                : 'text-zinc-500 hover:text-zinc-300'
+                }`}
+            >
+              {period}
+            </button>
+          ))}
         </div>
 
         <div className="w-full bg-zinc-950 border border-zinc-900 rounded-[28px] p-8 flex flex-col items-center justify-center shadow-2xl relative overflow-hidden">

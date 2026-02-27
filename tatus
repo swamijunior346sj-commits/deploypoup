@@ -1,0 +1,11 @@
+[33mcommit ef884bb4d0676833f398fb423f8f167dccc1da56[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: swmcapital <swmcapital@gmail.com>
+Date:   Fri Feb 27 16:19:25 2026 -0300
+
+    adicao de novas telas
+
+[33mcommit 096ca60a5791a2c803aecd07fe73020734c0d9b7[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: swmcapital <swmcapital@gmail.com>
+Date:   Thu Feb 26 22:17:26 2026 -0300
+
+    feat: introduce a new `Layout` component with a bottom navigation bar, swipe navigation, and page transition animations.
