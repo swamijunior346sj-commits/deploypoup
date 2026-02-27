@@ -36,6 +36,7 @@ import ManageSubCategories from './pages/ManageSubCategories';
 import EditSubCategory from './pages/EditSubCategory';
 import NewCategory from './pages/NewCategory';
 import NewSubCategory from './pages/NewSubCategory';
+import PersonalData from './pages/PersonalData';
 
 export default function App() {
   return (
@@ -74,6 +75,7 @@ export default function App() {
             <Route path="/edit-subcategory" element={<EditSubCategory />} />
             <Route path="/new-category" element={<NewCategory />} />
             <Route path="/new-subcategory" element={<NewSubCategory />} />
+            <Route path="/personal-data" element={<PersonalData />} />
           </Route>
         </Routes>
       </Router>

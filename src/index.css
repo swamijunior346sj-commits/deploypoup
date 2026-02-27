@@ -255,4 +255,13 @@
   .ios-underlined-input {
     @apply bg-transparent border-none border-b border-zinc-800 rounded-none px-0 focus:ring-0 focus:border-primary;
   }
+
+  .floating-label-input:placeholder-shown ~ label {
+    @apply translate-y-6 text-zinc-500 scale-100;
+  }
+
+  .floating-label-input:focus ~ label,
+  .floating-label-input:not(:placeholder-shown) ~ label {
+    @apply -translate-y-1 text-primary scale-75;
+  }
 }
