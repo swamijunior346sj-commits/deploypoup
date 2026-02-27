@@ -10,11 +10,6 @@ export default function Accounts() {
       <Header
         showBack
         title="Contas e Cartões"
-        rightElement={
-          <button onClick={() => navigate('/add-account')} className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center active:scale-95 transition-transform">
-            <span className="material-symbols-outlined text-zinc-400">add</span>
-          </button>
-        }
       />
 
       <div className="px-6 space-y-10">
@@ -152,6 +147,13 @@ export default function Accounts() {
         </section>
 
       </div>
+
+      <button
+        onClick={() => navigate('/add-account')}
+        className="fixed right-6 bottom-24 w-14 h-14 bg-primary text-black rounded-full shadow-[0_0_20px_rgba(16,185,129,0.5)] flex items-center justify-center z-[60] animate-levitate transition-transform active:scale-95"
+      >
+        <span className="material-symbols-outlined text-2xl">add</span>
+      </button>
     </div>
   );
 }

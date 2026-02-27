@@ -28,7 +28,7 @@ export default function Layout() {
         </button>
         <button onClick={() => navigate('/transactions')} className="flex flex-col items-center justify-center group w-16">
           <span className={`material-symbols-outlined transition-colors ${location.pathname.includes('/transaction') ? 'text-primary filled' : 'text-zinc-500 group-hover:text-primary'} mb-0.5`}>account_balance_wallet</span>
-          <span className={`text-[9px] font-bold uppercase tracking-wider transition-colors ${location.pathname.includes('/transaction') ? 'text-primary' : 'text-zinc-500 group-hover:text-primary'}`}>Extrato</span>
+          <span className={`text-[9px] font-bold uppercase tracking-wider transition-colors ${location.pathname.includes('/transaction') ? 'text-primary' : 'text-zinc-500 group-hover:text-primary'}`}>Transações</span>
         </button>
         <button onClick={() => navigate('/missions')} className="flex flex-col items-center justify-center group w-16">
           <span className={`material-symbols-outlined transition-colors ${location.pathname.includes('/missions') || location.pathname.includes('/ranking') ? 'text-primary filled' : 'text-zinc-500 group-hover:text-primary'} mb-0.5`}>emoji_events</span>
@@ -38,9 +38,13 @@ export default function Layout() {
           <span className={`material-symbols-outlined transition-colors ${location.pathname.includes('/goals') ? 'text-primary filled' : 'text-zinc-500 group-hover:text-primary'} mb-0.5`}>flag</span>
           <span className={`text-[9px] font-bold uppercase tracking-wider transition-colors ${location.pathname.includes('/goals') ? 'text-primary' : 'text-zinc-500 group-hover:text-primary'}`}>Metas</span>
         </button>
-        <button onClick={() => navigate('/analysis')} className="flex flex-col items-center justify-center group w-16">
+        <button onClick={() => navigate('/reports')} className="flex flex-col items-center justify-center group w-16">
           <span className={`material-symbols-outlined transition-colors ${location.pathname.includes('/analysis') || location.pathname.includes('/reports') || location.pathname.includes('/planning') || location.pathname.includes('/investments') ? 'text-primary filled' : 'text-zinc-500 group-hover:text-primary'} mb-0.5`}>analytics</span>
-          <span className={`text-[9px] font-bold uppercase tracking-wider transition-colors ${location.pathname.includes('/analysis') || location.pathname.includes('/reports') || location.pathname.includes('/planning') || location.pathname.includes('/investments') ? 'text-primary' : 'text-zinc-500 group-hover:text-primary'}`}>Análise</span>
+          <span className={`text-[9px] font-bold uppercase tracking-wider transition-colors ${location.pathname.includes('/analysis') || location.pathname.includes('/reports') || location.pathname.includes('/planning') || location.pathname.includes('/investments') ? 'text-primary' : 'text-zinc-500 group-hover:text-primary'}`}>Relatórios</span>
+        </button>
+        <button onClick={() => navigate('/compound-interest')} className="flex flex-col items-center justify-center group w-16">
+          <span className={`material-symbols-outlined transition-colors ${location.pathname.includes('/compound-interest') ? 'text-primary filled' : 'text-zinc-500 group-hover:text-primary'} mb-0.5`}>calculate</span>
+          <span className={`text-[9px] font-bold uppercase tracking-wider transition-colors ${location.pathname.includes('/compound-interest') ? 'text-primary' : 'text-zinc-500 group-hover:text-primary'}`}>Simulador</span>
         </button>
         <button onClick={() => navigate('/profile')} className="flex flex-col items-center justify-center group w-16">
           <span className={`material-symbols-outlined transition-colors ${location.pathname.includes('/profile') || location.pathname.includes('/security') ? 'text-primary filled' : 'text-zinc-500 group-hover:text-primary'} mb-0.5`}>person</span>

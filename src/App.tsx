@@ -37,6 +37,7 @@ import EditSubCategory from './pages/EditSubCategory';
 import NewCategory from './pages/NewCategory';
 import NewSubCategory from './pages/NewSubCategory';
 import PersonalData from './pages/PersonalData';
+import FinancialPerformance from './pages/FinancialPerformance';
 
 export default function App() {
   return (
@@ -76,6 +77,7 @@ export default function App() {
             <Route path="/new-category" element={<NewCategory />} />
             <Route path="/new-subcategory" element={<NewSubCategory />} />
             <Route path="/personal-data" element={<PersonalData />} />
+            <Route path="/financial-performance" element={<FinancialPerformance />} />
           </Route>
         </Routes>
       </Router>
