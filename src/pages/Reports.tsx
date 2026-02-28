@@ -40,32 +40,19 @@ export default function Reports() {
   return (
     <div className="bg-black text-[#D6D6D6] font-sans flex flex-col min-h-screen overflow-x-hidden">
       {/* Header */}
-      <header className="pt-12 pb-2 px-6 sticky top-0 bg-black/90 backdrop-blur-xl z-50 border-b border-zinc-900">
-        <div className="flex items-center justify-between mb-6">
-          <button onClick={() => navigate(-1)} className="active:scale-95 transition-transform">
-            <span className="material-symbols-outlined text-[#FCFCFC]">arrow_back_ios_new</span>
+      {/* Tabs */}
+      <div className="px-6 pt-2 pb-2 flex justify-between items-center text-xs font-semibold tracking-wider border-b border-zinc-900">
+        {tabs.map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`pb-3 px-2 text-[10px] font-bold tracking-widest transition-colors ${activeTab === tab ? 'text-primary border-b-2 border-primary' : 'text-zinc-500'
+              }`}
+          >
+            {tab}
           </button>
-          <h1 className="text-[10px] font-display font-bold tracking-[0.4em] text-[#FCFCFC] uppercase">
-            {activeTab === 'ORÇAMENTOS' ? 'ANÁLISE DE GASTOS' : 'ANÁLISE DE ATIVOS'}
-          </h1>
-          <button onClick={() => navigate('/notifications')} className="active:scale-95 transition-transform">
-            <span className="material-symbols-outlined text-[#FCFCFC]">notifications</span>
-          </button>
-        </div>
-        {/* Tabs */}
-        <div className="flex justify-between items-center text-xs font-semibold tracking-wider">
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`pb-3 px-2 text-[10px] font-bold tracking-widest transition-colors ${activeTab === tab ? 'text-primary border-b-2 border-primary' : 'text-zinc-500'
-                }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-      </header>
+        ))}
+      </div>
 
       <main
         className="flex-1 overflow-y-auto pb-32"

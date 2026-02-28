@@ -1,65 +1,122 @@
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Footer from './Footer';
 
+const navTabs = [
+  { path: '/dashboard', label: 'INÍCIO' },
+  { path: '/transactions', label: 'TRANSAÇÕES' },
+  { path: '/investment-portfolio', label: 'CARTEIRA' },
+  { path: '/reports', label: 'RELATÓRIOS' },
+  { path: '/missions', label: 'MISSÕES' },
+  { path: '/compound-interest', label: 'SIMULADOR' },
+];
+
+const pageTitles: Record<string, string> = {
+  '/dashboard': 'POUP',
+  '/transactions': 'POUP',
+  '/transaction-details': 'POUP',
+  '/new-transaction': 'POUP',
+  '/missions': 'POUP',
+  '/ranking': 'POUP',
+  '/investment-portfolio': 'POUP',
+  '/new-investment': 'POUP',
+  '/asset-details': 'POUP',
+  '/reports': 'POUP',
+  '/compound-interest': 'POUP',
+  '/savings-simulator': 'POUP',
+  '/spending-analysis': 'POUP',
+  '/budgets': 'POUP',
+  '/new-budget': 'POUP',
+  '/budget-details': 'POUP',
+  '/accounts': 'POUP',
+  '/profile': 'POUP',
+  '/personal-data': 'POUP',
+  '/categories': 'POUP',
+  '/notifications': 'POUP',
+  '/financial-performance': 'POUP',
+};
+
 export default function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isLogin = location.pathname === '/';
+  const isLogin = location.pathname === '/' || location.pathname === '/signup';
 
   if (isLogin) {
     return <Outlet />;
   }
 
+  const pageTitle = pageTitles[location.pathname] || 'POUP';
+
+  // Check if any tab matches current path
+  const isTabActive = (tabPath: string) => {
+    if (tabPath === '/dashboard') return location.pathname === '/dashboard';
+    if (tabPath === '/transactions') return location.pathname.includes('/transaction');
+    if (tabPath === '/investment-portfolio') return location.pathname.includes('/investment') || location.pathname.includes('/asset');
+    if (tabPath === '/reports') return location.pathname.includes('/report') || location.pathname.includes('/spending-analysis') || location.pathname.includes('/savings-simulator');
+    if (tabPath === '/missions') return location.pathname.includes('/mission') || location.pathname.includes('/ranking');
+    if (tabPath === '/compound-interest') return location.pathname.includes('/compound');
+    return location.pathname === tabPath;
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-background-dark text-white font-sans">
-      {/* Fixed Top Bar with Profile & Notifications */}
-      <div className="fixed top-0 left-0 right-0 z-[55] bg-background-dark/90 backdrop-blur-xl border-b border-zinc-800">
-        <div className="flex items-center justify-end px-6 pt-12 pb-3 gap-3">
-          <button onClick={() => navigate('/notifications')} className="w-11 h-11 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center overflow-hidden relative active:scale-95 transition-all hover:bg-zinc-700">
-            <div className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-primary border-2 border-zinc-800 z-10"></div>
-            <span className="material-symbols-outlined text-white text-xl">notifications</span>
+      {/* Top Header */}
+      <header className="fixed top-0 left-0 right-0 z-[55] bg-background-dark/90 backdrop-blur-xl border-b border-zinc-800">
+        {/* Top Row: Menu + Title + Notifications */}
+        <div className="flex items-center justify-between px-6 pt-12 pb-3">
+          <button
+            onClick={() => navigate('/profile')}
+            className="w-11 h-11 rounded-full flex items-center justify-center active:scale-95 transition-all hover:bg-zinc-800/50"
+          >
+            <span className="material-symbols-outlined text-white text-2xl">menu</span>
           </button>
-          <button onClick={() => navigate('/profile')} className="w-11 h-11 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center overflow-hidden active:scale-95 transition-all hover:bg-zinc-700">
-            <span className="material-symbols-outlined text-white text-xl">person</span>
+
+          <h1 className="text-[10px] font-display font-bold tracking-[0.4em] text-white uppercase">
+            {pageTitle}
+          </h1>
+
+          <button
+            onClick={() => navigate('/notifications')}
+            className="w-11 h-11 rounded-full flex items-center justify-center relative active:scale-95 transition-all hover:bg-zinc-800/50"
+          >
+            <div className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-primary border-2 border-background-dark z-10"></div>
+            <span className="material-symbols-outlined text-white text-2xl">notifications</span>
           </button>
         </div>
-      </div>
 
-      <main className="flex-grow pt-[88px]">
+        {/* Navigation Tabs */}
+        <div className="flex overflow-x-auto hide-scrollbar px-4 gap-1">
+          {navTabs.map((tab) => {
+            const active = isTabActive(tab.path);
+            return (
+              <button
+                key={tab.path}
+                onClick={() => navigate(tab.path)}
+                className={`whitespace-nowrap pb-3 px-3 text-[10px] font-bold tracking-widest transition-colors ${active
+                    ? 'text-primary border-b-2 border-primary'
+                    : 'text-zinc-500'
+                  }`}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+      </header>
+
+      <style>{`
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
+
+      <main className="flex-grow pt-[120px]">
         <Outlet />
         <div className="px-6">
           <Footer />
         </div>
       </main>
 
-      <div className="h-32"></div> {/* Spacer for bottom nav */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-background-dark/80 backdrop-blur-xl border-t border-zinc-900 px-8 py-4 pb-8 flex justify-between items-center z-50">
-        <button onClick={() => navigate('/dashboard')} className="flex flex-col items-center justify-center group w-16">
-          <span className={`material-symbols-outlined transition-colors ${location.pathname === '/dashboard' ? 'text-primary filled' : 'text-zinc-500 group-hover:text-primary'} mb-0.5`}>home</span>
-          <span className={`text-[9px] font-bold uppercase tracking-wider transition-colors ${location.pathname === '/dashboard' ? 'text-primary' : 'text-zinc-500 group-hover:text-primary'}`}>Início</span>
-        </button>
-        <button onClick={() => navigate('/transactions')} className="flex flex-col items-center justify-center group w-16">
-          <span className={`material-symbols-outlined transition-colors ${location.pathname.includes('/transaction') ? 'text-primary filled' : 'text-zinc-500 group-hover:text-primary'} mb-0.5`}>account_balance_wallet</span>
-          <span className={`text-[9px] font-bold uppercase tracking-wider transition-colors ${location.pathname.includes('/transaction') ? 'text-primary' : 'text-zinc-500 group-hover:text-primary'}`}>Transações</span>
-        </button>
-        <button onClick={() => navigate('/missions')} className="flex flex-col items-center justify-center group w-16">
-          <span className={`material-symbols-outlined transition-colors ${location.pathname.includes('/missions') || location.pathname.includes('/ranking') ? 'text-primary filled' : 'text-zinc-500 group-hover:text-primary'} mb-0.5`}>emoji_events</span>
-          <span className={`text-[9px] font-bold uppercase tracking-wider transition-colors ${location.pathname.includes('/missions') || location.pathname.includes('/ranking') ? 'text-primary' : 'text-zinc-500 group-hover:text-primary'}`}>Missões</span>
-        </button>
-        <button onClick={() => navigate('/investment-portfolio')} className="flex flex-col items-center justify-center group w-16">
-          <span className={`material-symbols-outlined transition-colors ${location.pathname.includes('/investment-portfolio') ? 'text-primary filled' : 'text-zinc-500 group-hover:text-primary'} mb-0.5`}>account_balance_wallet</span>
-          <span className={`text-[9px] font-bold uppercase tracking-wider transition-colors ${location.pathname.includes('/investment-portfolio') ? 'text-primary' : 'text-zinc-500 group-hover:text-primary'}`}>Carteira</span>
-        </button>
-        <button onClick={() => navigate('/reports')} className="flex flex-col items-center justify-center group w-16">
-          <span className={`material-symbols-outlined transition-colors ${location.pathname.includes('/analysis') || location.pathname.includes('/reports') || location.pathname.includes('/planning') || location.pathname.includes('/investments') ? 'text-primary filled' : 'text-zinc-500 group-hover:text-primary'} mb-0.5`}>analytics</span>
-          <span className={`text-[9px] font-bold uppercase tracking-wider transition-colors ${location.pathname.includes('/analysis') || location.pathname.includes('/reports') || location.pathname.includes('/planning') || location.pathname.includes('/investments') ? 'text-primary' : 'text-zinc-500 group-hover:text-primary'}`}>Relatórios</span>
-        </button>
-        <button onClick={() => navigate('/compound-interest')} className="flex flex-col items-center justify-center group w-16">
-          <span className={`material-symbols-outlined transition-colors ${location.pathname.includes('/compound-interest') ? 'text-primary filled' : 'text-zinc-500 group-hover:text-primary'} mb-0.5`}>calculate</span>
-          <span className={`text-[9px] font-bold uppercase tracking-wider transition-colors ${location.pathname.includes('/compound-interest') ? 'text-primary' : 'text-zinc-500 group-hover:text-primary'}`}>Simulador</span>
-        </button>
-      </nav>
+      <div className="h-8"></div>
     </div>
   );
 }

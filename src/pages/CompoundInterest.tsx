@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 
 export default function CompoundInterest() {
+  const navigate = useNavigate();
   const [initialAmount, setInitialAmount] = useState<number>(5000);
   const [monthlyAmount, setMonthlyAmount] = useState<number>(1200);
   const [timeYears, setTimeYears] = useState<number>(15);
@@ -160,6 +162,23 @@ export default function CompoundInterest() {
 
         <button className="w-full py-5 rounded-2xl bg-primary text-black text-xs font-bold uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(16,185,129,0.3)] active:scale-[0.98] transition-all">
           Simular Outro Cenário
+        </button>
+
+        {/* Savings Simulator Link */}
+        <button
+          onClick={() => navigate('/savings-simulator')}
+          className="w-full bg-zinc-950 border border-zinc-900 rounded-2xl p-5 flex items-center justify-between active:scale-[0.98] transition-transform mt-4"
+        >
+          <div className="flex items-center gap-4">
+            <div className="bg-primary/10 p-3 rounded-xl">
+              <span className="material-symbols-outlined text-primary">savings</span>
+            </div>
+            <div className="text-left">
+              <p className="text-sm font-bold text-white">Simulador de Economia</p>
+              <p className="text-[10px] text-zinc-500 font-medium">Descubra quanto você pode poupar</p>
+            </div>
+          </div>
+          <span className="material-symbols-outlined text-zinc-600">chevron_right</span>
         </button>
 
         <footer className="pt-4 pb-8">
