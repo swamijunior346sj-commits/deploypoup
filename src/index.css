@@ -10,6 +10,16 @@
   --color-bronze: #CD7F32;
   --color-neon-green: #39FF14;
 
+  --color-brand-bg: #000000;
+  --color-brand-card: #0D0E10;
+  --color-brand-interactive: #0FB67F;
+  --color-brand-indicatorBg: #042017;
+  --color-brand-action: #096D4B;
+  --color-brand-primaryText: #FCFCFC;
+  --color-brand-secondaryLabel: #D6D6D6;
+  --color-brand-subtitle: #A7A7A7;
+  --color-brand-selection: #222426;
+
   --font-display: "Montserrat", sans-serif;
   --font-sans: "Inter", sans-serif;
 
@@ -57,6 +67,38 @@
     50% {
       transform: translateY(-8px);
     }
+  }
+
+  .glow-interactive {
+    filter: drop-shadow(0 0 8px rgba(15, 182, 127, 0.4));
+  }
+
+  .ai-gradient-border {
+    position: relative;
+    background: #222426;
+    border-radius: 1rem;
+  }
+
+  .ai-gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: 1rem;
+    padding: 1px;
+    background: linear-gradient(to right, #6D28D9, #0FB67F);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .purple-glow {
+    box-shadow: 0 0 20px rgba(109, 40, 217, 0.15);
+  }
+
+  .story-gradient {
+    background: linear-gradient(45deg, #096D4B, #0FB67F);
   }
 
   .glow-border {
