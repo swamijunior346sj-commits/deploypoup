@@ -1,3 +1,4 @@
+import React, { useRef } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Footer from './Footer';
 
@@ -5,35 +6,12 @@ const navTabs = [
   { path: '/dashboard', label: 'INÍCIO' },
   { path: '/transactions', label: 'TRANSAÇÕES' },
   { path: '/investment-portfolio', label: 'CARTEIRA' },
+  { path: '/accounts', label: 'CONTAS' },
+  { path: '/goals', label: 'METAS' },
   { path: '/reports', label: 'RELATÓRIOS' },
   { path: '/missions', label: 'MISSÕES' },
   { path: '/compound-interest', label: 'SIMULADOR' },
 ];
-
-const pageTitles: Record<string, string> = {
-  '/dashboard': 'POUP',
-  '/transactions': 'POUP',
-  '/transaction-details': 'POUP',
-  '/new-transaction': 'POUP',
-  '/missions': 'POUP',
-  '/ranking': 'POUP',
-  '/investment-portfolio': 'POUP',
-  '/new-investment': 'POUP',
-  '/asset-details': 'POUP',
-  '/reports': 'POUP',
-  '/compound-interest': 'POUP',
-  '/savings-simulator': 'POUP',
-  '/spending-analysis': 'POUP',
-  '/budgets': 'POUP',
-  '/new-budget': 'POUP',
-  '/budget-details': 'POUP',
-  '/accounts': 'POUP',
-  '/profile': 'POUP',
-  '/personal-data': 'POUP',
-  '/categories': 'POUP',
-  '/notifications': 'POUP',
-  '/financial-performance': 'POUP',
-};
 
 export default function Layout() {
   const location = useLocation();
@@ -45,14 +23,39 @@ export default function Layout() {
     return <Outlet />;
   }
 
-  const pageTitle = pageTitles[location.pathname] || 'POUP';
+  // Swipe handling
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+  const handleTouchEnd = () => {
+    const diff = touchStartX.current - touchEndX.current;
+    if (Math.abs(diff) < 60) return; // too small
+
+    const currentIdx = navTabs.findIndex((t) => isTabActive(t.path));
+    if (currentIdx === -1) return;
+
+    if (diff > 60 && currentIdx < navTabs.length - 1) {
+      navigate(navTabs[currentIdx + 1].path);
+    }
+    if (diff < -60 && currentIdx > 0) {
+      navigate(navTabs[currentIdx - 1].path);
+    }
+  };
 
   // Check if any tab matches current path
   const isTabActive = (tabPath: string) => {
     if (tabPath === '/dashboard') return location.pathname === '/dashboard';
     if (tabPath === '/transactions') return location.pathname.includes('/transaction');
     if (tabPath === '/investment-portfolio') return location.pathname.includes('/investment') || location.pathname.includes('/asset');
-    if (tabPath === '/reports') return location.pathname.includes('/report') || location.pathname.includes('/spending-analysis') || location.pathname.includes('/savings-simulator');
+    if (tabPath === '/accounts') return location.pathname === '/accounts' || location.pathname.includes('/add-account') || location.pathname.includes('/add-card');
+    if (tabPath === '/goals') return location.pathname.includes('/goal');
+    if (tabPath === '/reports') return location.pathname.includes('/report') || location.pathname.includes('/spending-analysis') || location.pathname.includes('/savings-simulator') || location.pathname.includes('/financial-performance');
     if (tabPath === '/missions') return location.pathname.includes('/mission') || location.pathname.includes('/ranking');
     if (tabPath === '/compound-interest') return location.pathname.includes('/compound');
     return location.pathname === tabPath;
@@ -72,7 +75,7 @@ export default function Layout() {
           </button>
 
           <h1 className="text-[10px] font-display font-bold tracking-[0.4em] text-white uppercase">
-            {pageTitle}
+            POUP
           </h1>
 
           <button
@@ -109,7 +112,12 @@ export default function Layout() {
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
 
-      <main className="flex-grow pt-[120px]">
+      <main
+        className="flex-grow pt-[120px]"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         <Outlet />
         <div className="px-6">
           <Footer />
