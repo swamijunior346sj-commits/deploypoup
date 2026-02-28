@@ -39,19 +39,22 @@ export default function Reports() {
 
   return (
     <div className="bg-black text-[#D6D6D6] font-sans flex flex-col min-h-screen overflow-x-hidden">
-      {/* Header */}
-      {/* Tabs */}
-      <div className="px-6 pt-2 pb-2 flex justify-between items-center text-xs font-semibold tracking-wider border-b border-zinc-900">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`pb-3 px-2 text-[10px] font-bold tracking-widest transition-colors ${activeTab === tab ? 'text-primary border-b-2 border-primary' : 'text-zinc-500'
-              }`}
-          >
-            {tab}
-          </button>
-        ))}
+      {/* Sub-Tabs - pill style to differentiate from main nav */}
+      <div className="px-6 pt-4 pb-2">
+        <div className="flex bg-zinc-900/60 border border-zinc-800/50 p-1 rounded-2xl">
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`flex-1 py-2.5 text-[10px] font-bold tracking-widest rounded-xl transition-all ${activeTab === tab
+                  ? 'bg-primary text-black shadow-[0_0_15px_rgba(15,182,127,0.3)]'
+                  : 'text-zinc-500'
+                }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
       </div>
 
       <main
