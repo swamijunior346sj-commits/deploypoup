@@ -46,10 +46,6 @@ export default function Layout() {
           <span className={`material-symbols-outlined transition-colors ${location.pathname.includes('/compound-interest') ? 'text-primary filled' : 'text-zinc-500 group-hover:text-primary'} mb-0.5`}>calculate</span>
           <span className={`text-[9px] font-bold uppercase tracking-wider transition-colors ${location.pathname.includes('/compound-interest') ? 'text-primary' : 'text-zinc-500 group-hover:text-primary'}`}>Simulador</span>
         </button>
-        <button onClick={() => navigate('/profile')} className="flex flex-col items-center justify-center group w-16">
-          <span className={`material-symbols-outlined transition-colors ${location.pathname.includes('/profile') || location.pathname.includes('/security') ? 'text-primary filled' : 'text-zinc-500 group-hover:text-primary'} mb-0.5`}>person</span>
-          <span className={`text-[9px] font-bold uppercase tracking-wider transition-colors ${location.pathname.includes('/profile') || location.pathname.includes('/security') ? 'text-primary' : 'text-zinc-500 group-hover:text-primary'}`}>Perfil</span>
-        </button>
       </nav>
     </div>
   );
