@@ -37,7 +37,11 @@ export default function Budgets() {
                         const targetLabel = budget.type === 'Receita' ? 'Previsto' : 'Meta';
 
                         return (
-                            <div key={budget.name} className="bg-[#0D0E10] rounded-2xl p-5 flex items-start space-x-4 border border-zinc-900/50">
+                            <div
+                                key={budget.name}
+                                onClick={() => navigate('/budget-details', { state: { budget } })}
+                                className="bg-[#0D0E10] rounded-2xl p-5 flex items-start space-x-4 border border-zinc-900/50 cursor-pointer active:scale-[0.98] transition-transform"
+                            >
                                 <div className="bg-primary/10 p-3 rounded-xl">
                                     <span className="material-symbols-outlined text-primary text-2xl">{budget.icon}</span>
                                 </div>

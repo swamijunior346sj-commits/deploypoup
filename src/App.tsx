@@ -44,6 +44,9 @@ import NewInvestment from './pages/NewInvestment';
 import AssetDetails from './pages/AssetDetails';
 import Budgets from './pages/Budgets';
 import NewBudget from './pages/NewBudget';
+import BudgetDetails from './pages/BudgetDetails';
+import SavingsSimulator from './pages/SavingsSimulator';
+import SpendingAnalysis from './pages/SpendingAnalysis';
 import FinancialPerformance from './pages/FinancialPerformance';
 
 export default function App() {
@@ -92,6 +95,9 @@ export default function App() {
             <Route path="/asset-details" element={<AssetDetails />} />
             <Route path="/budgets" element={<Budgets />} />
             <Route path="/new-budget" element={<NewBudget />} />
+            <Route path="/budget-details" element={<BudgetDetails />} />
+            <Route path="/savings-simulator" element={<SavingsSimulator />} />
+            <Route path="/spending-analysis" element={<SpendingAnalysis />} />
           </Route>
         </Routes>
       </Router>

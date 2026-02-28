@@ -12,8 +12,13 @@ export default function TransactionHistory() {
                     </button>
                     <h1 className="text-sm font-display font-bold tracking-[0.2em] uppercase">Histórico</h1>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-zinc-400">share</span>
+                <div className="flex items-center space-x-2">
+                    <button onClick={() => navigate('/spending-analysis')} className="w-10 h-10 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center active:scale-95 transition-transform">
+                        <span className="material-symbols-outlined text-primary">auto_awesome</span>
+                    </button>
+                    <div className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+                        <span className="material-symbols-outlined text-zinc-400">share</span>
+                    </div>
                 </div>
             </header>
 
