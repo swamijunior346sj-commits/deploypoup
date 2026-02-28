@@ -38,6 +38,7 @@ import NewCategory from './pages/NewCategory';
 import NewSubCategory from './pages/NewSubCategory';
 import PersonalData from './pages/PersonalData';
 import Onboarding from './pages/Onboarding';
+import Consent from './pages/Consent';
 import FinancialPerformance from './pages/FinancialPerformance';
 
 export default function App() {
@@ -46,9 +47,10 @@ export default function App() {
       <Router>
         <Routes>
           <Route path="/onboarding" element={<Onboarding />} />
+          <Route path="/consent" element={<Consent />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/" element={<Onboarding />} />
+          <Route path="/" element={<Login />} />
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/accounts" element={<Accounts />} />
