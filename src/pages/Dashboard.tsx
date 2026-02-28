@@ -12,17 +12,6 @@ export default function Dashboard() {
       <Header
         title="Olá, Investidor"
         subtitle="Inteligência Financeira"
-        rightElement={
-          <div className="flex items-center space-x-2">
-            <button onClick={() => navigate('/notifications')} className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center overflow-hidden relative active:scale-95 transition-transform">
-              <div className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-primary border-2 border-zinc-900"></div>
-              <span className="material-symbols-outlined text-zinc-400 text-xl">notifications</span>
-            </button>
-            <button onClick={() => navigate('/profile')} className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center overflow-hidden active:scale-95 transition-transform">
-              <span className="material-symbols-outlined text-zinc-400">person</span>
-            </button>
-          </div>
-        }
       />
 
       <div className="px-6 space-y-6 pb-20">
@@ -208,7 +197,7 @@ export default function Dashboard() {
 
       </div>
 
-      <button onClick={() => navigate('/new-transaction')} className="fixed right-6 bottom-24 w-14 h-14 bg-primary rounded-full shadow-lg shadow-primary/20 flex items-center justify-center z-[60] active:scale-95 transition-transform hover:shadow-primary/40">
+      <button onClick={() => navigate('/new-transaction')} className="fixed right-6 bottom-24 w-14 h-14 bg-primary rounded-full shadow-[0_8px_30px_rgba(15,182,127,0.5)] flex items-center justify-center z-[60] active:scale-95 transition-transform hover:shadow-[0_12px_40px_rgba(15,182,127,0.6)] animate-float-icon">
         <span className="material-symbols-outlined text-black font-bold text-3xl">add</span>
       </button>
     </div>

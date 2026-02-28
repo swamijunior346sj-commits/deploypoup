@@ -45,10 +45,24 @@ export default function Profile() {
             </div>
             <span className="material-symbols-outlined text-zinc-600 text-sm">chevron_right</span>
           </div>
-          <div className="flex items-center justify-between py-4 border-b border-zinc-900 group cursor-pointer">
+          <div onClick={() => navigate('/goals')} className="flex items-center justify-between py-4 border-b border-zinc-900 group cursor-pointer">
             <div className="flex items-center space-x-4">
               <span className="material-symbols-outlined text-primary">track_changes</span>
               <span className="text-sm font-medium text-zinc-300">Minhas Metas</span>
+            </div>
+            <span className="material-symbols-outlined text-zinc-600 text-sm">chevron_right</span>
+          </div>
+          <div onClick={() => navigate('/categories')} className="flex items-center justify-between py-4 border-b border-zinc-900 group cursor-pointer">
+            <div className="flex items-center space-x-4">
+              <span className="material-symbols-outlined text-primary">category</span>
+              <span className="text-sm font-medium text-zinc-300">Categorias</span>
+            </div>
+            <span className="material-symbols-outlined text-zinc-600 text-sm">chevron_right</span>
+          </div>
+          <div onClick={() => navigate('/budgets')} className="flex items-center justify-between py-4 border-b border-zinc-900 group cursor-pointer">
+            <div className="flex items-center space-x-4">
+              <span className="material-symbols-outlined text-primary">account_balance_wallet</span>
+              <span className="text-sm font-medium text-zinc-300">Orçamentos</span>
             </div>
             <span className="material-symbols-outlined text-zinc-600 text-sm">chevron_right</span>
           </div>

@@ -13,7 +13,20 @@ export default function Layout() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background-dark text-white font-sans">
-      <main className="flex-grow">
+      {/* Fixed Top Bar with Profile & Notifications */}
+      <div className="fixed top-0 left-0 right-0 z-[55] bg-background-dark/90 backdrop-blur-xl border-b border-zinc-800">
+        <div className="flex items-center justify-end px-6 pt-12 pb-3 gap-3">
+          <button onClick={() => navigate('/notifications')} className="w-11 h-11 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center overflow-hidden relative active:scale-95 transition-all hover:bg-zinc-700">
+            <div className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-primary border-2 border-zinc-800 z-10"></div>
+            <span className="material-symbols-outlined text-white text-xl">notifications</span>
+          </button>
+          <button onClick={() => navigate('/profile')} className="w-11 h-11 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center overflow-hidden active:scale-95 transition-all hover:bg-zinc-700">
+            <span className="material-symbols-outlined text-white text-xl">person</span>
+          </button>
+        </div>
+      </div>
+
+      <main className="flex-grow pt-[88px]">
         <Outlet />
         <div className="px-6">
           <Footer />
@@ -34,9 +47,9 @@ export default function Layout() {
           <span className={`material-symbols-outlined transition-colors ${location.pathname.includes('/missions') || location.pathname.includes('/ranking') ? 'text-primary filled' : 'text-zinc-500 group-hover:text-primary'} mb-0.5`}>emoji_events</span>
           <span className={`text-[9px] font-bold uppercase tracking-wider transition-colors ${location.pathname.includes('/missions') || location.pathname.includes('/ranking') ? 'text-primary' : 'text-zinc-500 group-hover:text-primary'}`}>Missões</span>
         </button>
-        <button onClick={() => navigate('/goals')} className="flex flex-col items-center justify-center group w-16">
-          <span className={`material-symbols-outlined transition-colors ${location.pathname.includes('/goals') ? 'text-primary filled' : 'text-zinc-500 group-hover:text-primary'} mb-0.5`}>flag</span>
-          <span className={`text-[9px] font-bold uppercase tracking-wider transition-colors ${location.pathname.includes('/goals') ? 'text-primary' : 'text-zinc-500 group-hover:text-primary'}`}>Metas</span>
+        <button onClick={() => navigate('/investment-portfolio')} className="flex flex-col items-center justify-center group w-16">
+          <span className={`material-symbols-outlined transition-colors ${location.pathname.includes('/investment-portfolio') ? 'text-primary filled' : 'text-zinc-500 group-hover:text-primary'} mb-0.5`}>account_balance_wallet</span>
+          <span className={`text-[9px] font-bold uppercase tracking-wider transition-colors ${location.pathname.includes('/investment-portfolio') ? 'text-primary' : 'text-zinc-500 group-hover:text-primary'}`}>Carteira</span>
         </button>
         <button onClick={() => navigate('/reports')} className="flex flex-col items-center justify-center group w-16">
           <span className={`material-symbols-outlined transition-colors ${location.pathname.includes('/analysis') || location.pathname.includes('/reports') || location.pathname.includes('/planning') || location.pathname.includes('/investments') ? 'text-primary filled' : 'text-zinc-500 group-hover:text-primary'} mb-0.5`}>analytics</span>

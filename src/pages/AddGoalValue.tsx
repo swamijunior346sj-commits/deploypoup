@@ -87,6 +87,13 @@ export default function AddGoalValue() {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm animate-in fade-in duration-300">
                     <div className="relative w-full h-full max-w-[430px] flex flex-col items-center justify-center px-6">
                         <div className="w-full bg-[#121212] border border-primary/40 rounded-[2.5rem] p-8 shadow-[0_0_30px_rgba(15,182,127,0.15)] relative animate-in zoom-in slide-in-from-bottom-10 duration-500">
+                            {/* Close Button */}
+                            <button
+                                onClick={() => navigate('/goals')}
+                                className="absolute top-5 right-5 w-8 h-8 flex items-center justify-center bg-white/5 rounded-full active:scale-90 transition-transform z-10"
+                            >
+                                <span className="material-symbols-outlined text-[#a7a7a7] text-lg">close</span>
+                            </button>
                             <div className="absolute -top-12 left-1/2 -translate-x-1/2">
                                 <div className="relative flex items-center justify-center animate-float-icon">
                                     <div className="absolute inset-0 bg-primary blur-[25px] opacity-40 rounded-full"></div>

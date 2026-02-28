@@ -10,6 +10,7 @@ export default function EditGoal() {
     const [target, setTarget] = useState(goal.target.toLocaleString('pt-BR', { minimumFractionDigits: 2 }));
     const [date, setDate] = useState(goal.date);
     const [selectedIcon, setSelectedIcon] = useState('flight_takeoff');
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     const icons = [
         'directions_car',
@@ -20,7 +21,7 @@ export default function EditGoal() {
     ];
 
     return (
-        <div className="bg-black text-[#fcfcfc] font-sans min-h-screen flex flex-col">
+        <div className={`bg-black text-[#fcfcfc] font-sans min-h-screen flex flex-col ${showDeleteConfirm ? 'overflow-hidden' : ''}`}>
             <header className="px-6 pt-14 pb-4 flex items-center sticky top-0 bg-black/95 backdrop-blur-xl z-10">
                 <button
                     onClick={() => navigate(-1)}
@@ -63,8 +64,8 @@ export default function EditGoal() {
                                     key={icon}
                                     onClick={() => setSelectedIcon(icon)}
                                     className={`w-10 h-10 rounded-xl flex items-center justify-center active:scale-90 transition-all ${selectedIcon === icon
-                                            ? 'bg-primary/20 border border-primary/40 text-primary'
-                                            : 'bg-white/5 text-[#a7a7a7]'
+                                        ? 'bg-primary/20 border border-primary/40 text-primary'
+                                        : 'bg-white/5 text-[#a7a7a7]'
                                         }`}
                                 >
                                     <span className="material-symbols-outlined">{icon}</span>
@@ -122,11 +123,39 @@ export default function EditGoal() {
                     Salvar Alterações
                 </button>
                 <button
+                    onClick={() => setShowDeleteConfirm(true)}
                     className="w-full py-5 border border-white/10 rounded-2xl text-red-500 font-display font-bold text-xs tracking-[0.2em] uppercase active:bg-red-500/5 transition-colors"
                 >
                     Excluir Meta
                 </button>
             </footer>
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteConfirm && (
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] flex flex-col items-center justify-center p-8">
+                    <div className="w-full max-w-[320px] bg-[#0A0A0A] border-2 border-primary/50 rounded-[40px] p-10 flex flex-col items-center" style={{ boxShadow: '0 0 15px rgba(16, 185, 129, 0.4), inset 0 0 5px rgba(16, 185, 129, 0.2)' }}>
+                        <h2 className="text-sm font-display font-bold text-white tracking-[0.25em] mb-12 text-center uppercase">CONFIRMAR EXCLUSÃO?</h2>
+                        <div className="flex justify-center gap-8 mb-4">
+                            <button
+                                onClick={() => { setShowDeleteConfirm(false); navigate('/goals'); }}
+                                className="w-16 h-16 rounded-full border border-primary flex items-center justify-center transition-transform active:scale-95 hover:bg-primary/10"
+                            >
+                                <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'wght' 500" }}>check</span>
+                            </button>
+                            <button
+                                onClick={() => setShowDeleteConfirm(false)}
+                                className="w-16 h-16 rounded-full border border-red-500 flex items-center justify-center transition-transform active:scale-95 hover:bg-red-500/10"
+                            >
+                                <span className="material-symbols-outlined text-red-500 text-3xl" style={{ fontVariationSettings: "'wght' 500" }}>close</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div className="mt-12 flex items-center justify-center space-x-2 text-zinc-600">
+                        <span className="material-symbols-outlined text-xs">auto_awesome</span>
+                        <p className="text-[9px] font-semibold tracking-[0.2em] uppercase">POWERED BY POUP INTELLIGENCE</p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -11,6 +11,7 @@ export default function Signup() {
     const [termsAccepted, setTermsAccepted] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [showSuccess, setShowSuccess] = useState(false);
 
     const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -32,7 +33,7 @@ export default function Signup() {
         if (error) {
             setError(error.message);
         } else {
-            navigate('/onboarding');
+            setShowSuccess(true);
         }
         setLoading(false);
     };
@@ -48,8 +49,8 @@ export default function Signup() {
     };
 
     return (
-        <div className="bg-background-dark font-display antialiased text-[#FCFCFC] min-h-screen">
-            <div className="relative flex h-auto min-h-screen w-full max-w-[430px] mx-auto flex-col bg-background-dark p-6">
+        <div className={`bg-background-dark font-display antialiased text-[#FCFCFC] min-h-screen ${showSuccess ? 'overflow-hidden' : ''}`}>
+            <div className={`relative flex h-auto min-h-screen w-full max-w-[430px] mx-auto flex-col bg-background-dark p-6 ${showSuccess ? 'blur-sm pointer-events-none' : ''}`}>
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                     <button onClick={() => navigate(-1)} className="text-[#FCFCFC] hover:opacity-80 transition-opacity active:scale-95">
@@ -165,11 +166,58 @@ export default function Signup() {
                         <span onClick={() => navigate('/login')} className="text-primary font-bold hover:underline transition-all cursor-pointer">Entrar</span>
                     </p>
                 </div>
-
-                {/* Decorative Elements */}
-                <div className="fixed top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
-                <div className="fixed bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
             </div>
+
+            {/* Success Popup Modal */}
+            {showSuccess && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
+                    <div className="w-full max-w-[360px] bg-[#0D0E10] border border-[#222426] rounded-3xl p-8 flex flex-col items-center text-center relative overflow-hidden" style={{ boxShadow: '0 0 40px -10px rgba(15, 182, 127, 0.3)' }}>
+                        {/* Decorative glow */}
+                        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/10 rounded-full blur-[60px]"></div>
+
+                        {/* Icon */}
+                        <div className="relative mb-8 pt-4">
+                            <div className="relative z-10" style={{ filter: 'drop-shadow(0 0 15px rgba(15, 182, 127, 0.5))' }}>
+                                <span className="material-symbols-outlined text-[100px] text-primary leading-none select-none" style={{ fontVariationSettings: "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48" }}>
+                                    verified_user
+                                </span>
+                            </div>
+                            <span className="material-symbols-outlined absolute -top-2 -right-2 text-primary text-2xl animate-pulse">auto_awesome</span>
+                            <span className="material-symbols-outlined absolute top-1/2 -left-6 text-primary/60 text-xl">colors_spark</span>
+                        </div>
+
+                        {/* Title */}
+                        <h3 className="text-[#FCFCFC] font-black text-2xl leading-tight mb-4 tracking-tight">CONTA CRIADA COM SUCESSO!</h3>
+                        <p className="text-[#D6D6D6] text-sm leading-relaxed mb-8 px-2">
+                            Bem-vindo à sua jornada financeira. Você acaba de ganhar seu primeiro emblema!
+                        </p>
+
+                        {/* Achievement Card */}
+                        <div className="w-full bg-background-dark/50 border border-[#222426] rounded-2xl p-4 mb-10 flex flex-col items-center gap-2">
+                            <div className="flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary text-lg">workspace_premium</span>
+                                <span className="text-[#FCFCFC] text-sm font-bold">Emblema: Aprendiz Financeiro</span>
+                            </div>
+                            <div className="flex items-center gap-1.5 bg-primary/10 px-3 py-1 rounded-full">
+                                <span className="material-symbols-outlined text-primary text-sm font-bold">add_circle</span>
+                                <span className="text-primary text-xs font-black tracking-widest uppercase">100 XP</span>
+                            </div>
+                        </div>
+
+                        {/* CTA Button */}
+                        <button
+                            onClick={() => navigate('/onboarding')}
+                            className="w-full bg-primary hover:brightness-110 active:scale-[0.98] transition-all text-black font-extrabold py-5 rounded-2xl shadow-lg shadow-primary/20 uppercase tracking-widest text-sm"
+                        >
+                            COMEÇAR MINHA JORNADA
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Decorative Elements */}
+            <div className="fixed top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+            <div className="fixed bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
         </div>
     );
 }
