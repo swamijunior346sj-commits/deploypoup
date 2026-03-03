@@ -15,6 +15,10 @@ export default function NewInvestment() {
     const [quantity, setQuantity] = useState('');
     const [price, setPrice] = useState('');
 
+    // Manual Input Toggles
+    const [manualAsset, setManualAsset] = useState(false);
+    const [manualBroker, setManualBroker] = useState(false);
+
     const totalCost = useMemo(() => {
         const q = parseFloat(quantity) || 0;
         const p = parseFloat(price) || 0;
@@ -22,6 +26,7 @@ export default function NewInvestment() {
     }, [quantity, price]);
 
     const handleSave = async () => {
+        const finalAsset = manualAsset ? assetId : assetId; // assetId holds the value in both cases
         if (!user || !assetId || !quantity || !price) {
             alert('Por favor, preencha todos os campos obrigatórios.');
             return;
@@ -139,10 +144,10 @@ export default function NewInvestment() {
                         <div className="relative flex items-center">
                             <div className="slider-glow-track" style={{ width: `${(sliderValue / 100000) * 100}%` }}></div>
                             <input
-                                class="glow-slider cursor-pointer z-10"
+                                className="glow-slider cursor-pointer z-10"
                                 max="100000"
                                 min="0"
-                                step="500"
+                                step="5"
                                 type="range"
                                 value={sliderValue}
                                 onChange={(e) => setSliderValue(Number(e.target.value))}
@@ -162,42 +167,76 @@ export default function NewInvestment() {
                 <div className="space-y-6 max-w-md mx-auto">
                     {/* Asset Selection */}
                     <div className="space-y-2">
-                        <label className="text-[#D6D6D6] text-[10px] font-bold uppercase tracking-[0.2em] ml-1 opacity-60">Ativo</label>
+                        <div className="flex justify-between items-center px-1">
+                            <label className="text-[#D6D6D6] text-[10px] font-bold uppercase tracking-[0.2em] opacity-60">Ativo</label>
+                            <button onClick={() => { setManualAsset(!manualAsset); setAssetId(''); }} className="text-[9px] text-primary font-bold uppercase tracking-widest flex items-center gap-1">
+                                <span className="material-symbols-outlined text-[12px]">{manualAsset ? 'list' : 'add'}</span>
+                                {manualAsset ? 'Lista' : 'Adicionar'}
+                            </button>
+                        </div>
                         <div className="relative group">
-                            <select
-                                value={assetId}
-                                onChange={(e) => setAssetId(e.target.value)}
-                                className="w-full h-14 border border-primary/20 bg-black rounded-2xl px-4 text-white appearance-none focus:outline-none focus:border-primary transition-all cursor-pointer"
-                            >
-                                <option disabled value="">Selecionar Ativo</option>
-                                <option value="petr4">PETR4 - Petrobras</option>
-                                <option value="vale3">VALE3 - Vale</option>
-                                <option value="itub4">ITUB4 - Itaú Unibanco</option>
-                                <option value="bbas3">BBAS3 - Banco do Brasil</option>
-                                <option value="btc">BTC - Bitcoin</option>
-                                <option value="eth">ETH - Ethereum</option>
-                            </select>
-                            <span className="material-symbols-outlined absolute right-4 top-4 text-zinc-500 pointer-events-none">expand_more</span>
+                            {manualAsset ? (
+                                <input
+                                    value={assetId}
+                                    onChange={(e) => setAssetId(e.target.value)}
+                                    placeholder="Digite o código (ex: PETR4)"
+                                    className="w-full h-14 border border-primary/20 bg-black rounded-2xl px-4 text-white focus:outline-none focus:border-primary transition-all uppercase placeholder:text-zinc-800"
+                                />
+                            ) : (
+                                <>
+                                    <select
+                                        value={assetId}
+                                        onChange={(e) => setAssetId(e.target.value)}
+                                        className="w-full h-14 border border-primary/20 bg-black rounded-2xl px-4 text-white appearance-none focus:outline-none focus:border-primary transition-all cursor-pointer"
+                                    >
+                                        <option disabled value="">Selecionar Ativo</option>
+                                        <option value="petr4">PETR4 - Petrobras</option>
+                                        <option value="vale3">VALE3 - Vale</option>
+                                        <option value="itub4">ITUB4 - Itaú Unibanco</option>
+                                        <option value="bbas3">BBAS3 - Banco do Brasil</option>
+                                        <option value="btc">BTC - Bitcoin</option>
+                                        <option value="eth">ETH - Ethereum</option>
+                                    </select>
+                                    <span className="material-symbols-outlined absolute right-4 top-4 text-zinc-500 pointer-events-none">expand_more</span>
+                                </>
+                            )}
                         </div>
                     </div>
 
                     {/* Broker Selection */}
                     <div className="space-y-2">
-                        <label className="text-[#D6D6D6] text-[10px] font-bold uppercase tracking-[0.2em] ml-1 opacity-60">Corretora</label>
+                        <div className="flex justify-between items-center px-1">
+                            <label className="text-[#D6D6D6] text-[10px] font-bold uppercase tracking-[0.2em] opacity-60">Corretora</label>
+                            <button onClick={() => { setManualBroker(!manualBroker); setBroker(''); }} className="text-[9px] text-primary font-bold uppercase tracking-widest flex items-center gap-1">
+                                <span className="material-symbols-outlined text-[12px]">{manualBroker ? 'list' : 'add'}</span>
+                                {manualBroker ? 'Lista' : 'Adicionar'}
+                            </button>
+                        </div>
                         <div className="relative group">
-                            <select
-                                value={broker}
-                                onChange={(e) => setBroker(e.target.value)}
-                                className="w-full h-14 border border-primary/20 bg-black rounded-2xl px-4 text-white appearance-none focus:outline-none focus:border-primary transition-all cursor-pointer"
-                            >
-                                <option disabled value="">Selecionar Corretora</option>
-                                <option value="xp">XP Investimentos</option>
-                                <option value="btg">BTG Pactual</option>
-                                <option value="nu">Nubank / NuInvest</option>
-                                <option value="inter">Inter Invest</option>
-                                <option value="binance">Binance</option>
-                            </select>
-                            <span className="material-symbols-outlined absolute right-4 top-4 text-zinc-500 pointer-events-none">expand_more</span>
+                            {manualBroker ? (
+                                <input
+                                    value={broker}
+                                    onChange={(e) => setBroker(e.target.value)}
+                                    placeholder="Digite o nome da corretora"
+                                    className="w-full h-14 border border-primary/20 bg-black rounded-2xl px-4 text-white focus:outline-none focus:border-primary transition-all placeholder:text-zinc-800"
+                                />
+                            ) : (
+                                <>
+                                    <select
+                                        value={broker}
+                                        onChange={(e) => setBroker(e.target.value)}
+                                        className="w-full h-14 border border-primary/20 bg-black rounded-2xl px-4 text-white appearance-none focus:outline-none focus:border-primary transition-all cursor-pointer"
+                                    >
+                                        <option disabled value="">Selecionar Corretora</option>
+                                        <option value="xp">XP Investimentos</option>
+                                        <option value="btg">BTG Pactual</option>
+                                        <option value="nu">Nubank / NuInvest</option>
+                                        <option value="inter">Inter Invest</option>
+                                        <option value="binance">Binance</option>
+                                    </select>
+                                    <span className="material-symbols-outlined absolute right-4 top-4 text-zinc-500 pointer-events-none">expand_more</span>
+                                </>
+                            )}
                         </div>
                     </div>
 

@@ -91,8 +91,8 @@ export default function Ebooks() {
                             <div className="p-6 flex-1 flex flex-col justify-between">
                                 <div>
                                     <h3 className="text-base font-black text-white leading-tight uppercase tracking-tight mb-1 group-hover:text-primary transition-colors">{ebook.title}</h3>
-                                    <p className="text-zinc-500 text-[9px] font-bold uppercase tracking-widest mb-4">{ebook.author}</p>
-
+                                    <p className="text-zinc-500 text-[9px] font-bold uppercase tracking-widest mb-1">{ebook.author}</p>
+                                    <p className="text-zinc-400 text-[10px] leading-relaxed line-clamp-2 mb-4 opacity-70 italic font-light">"{ebook.description}"</p>
                                     <div className="flex items-center gap-3 mb-6">
                                         <div className="flex items-center gap-1.5 grayscale opacity-60">
                                             <span className="material-symbols-outlined text-[10px] text-zinc-400">menu_book</span>
@@ -105,11 +105,9 @@ export default function Ebooks() {
                                     </div>
                                 </div>
 
-                                <div className="flex justify-between items-center bg-black/50 p-4 rounded-3xl border border-white/5">
-                                    <p className="text-lg font-black text-primary">{ebook.price}</p>
-                                    <button className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-black shadow-lg shadow-primary/20">
-                                        <span className="material-symbols-outlined font-black">download</span>
-                                    </button>
+                                <div className="flex justify-between items-center bg-black/40 p-3 px-5 rounded-2xl border border-white/5">
+                                    <p className="text-base font-black text-primary">{ebook.price}</p>
+                                    <span className="material-symbols-outlined text-primary text-lg">shopping_cart</span>
                                 </div>
                             </div>
                         </div>

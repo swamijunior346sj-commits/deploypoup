@@ -18,12 +18,37 @@ export default function MentorshipDetails() {
     }
 
     const handleBooking = () => {
-        setShowSuccess(true);
-        setTimeout(() => setShowSuccess(false), 3000);
+        const saved = localStorage.getItem('poup_cart');
+        let cart = saved ? JSON.parse(saved) : [];
+        if (!cart.find((item: any) => item.id === mentorship.id)) {
+            const priceVal = mentorship.price === 'Grátis' ? 0 : parseFloat(mentorship.price.replace('R$', '').replace('.', '').replace(',', '.').trim());
+            cart.push({
+                ...mentorship,
+                price: priceVal,
+                image: mentorship.coverUrl,
+                quantity: 1
+            });
+            localStorage.setItem('poup_cart', JSON.stringify(cart));
+            window.dispatchEvent(new Event('storage'));
+            navigate('/cart');
+        } else {
+            navigate('/cart');
+        }
     };
 
     return (
-        <div className="bg-background-dark font-display min-h-screen flex flex-col pb-32 overflow-x-hidden selection:bg-primary/30 relative">
+        <div className="bg-background-dark font-display min-h-screen flex flex-col pb-48 overflow-x-hidden selection:bg-primary/30 relative">
+            <style>{`
+                @keyframes levitate {
+                    0% { transform: translateY(0px) translateX(-50%); }
+                    50% { transform: translateY(-10px) translateX(-50%); }
+                    100% { transform: translateY(0px) translateX(-50%); }
+                }
+                .levitate-btn {
+                    animation: levitate 3s ease-in-out infinite;
+                }
+            `}</style>
+
             {/* Header Navigation Floating */}
             <div className="fixed top-6 left-6 right-6 flex justify-between items-center z-50 pointer-events-none">
                 <button
@@ -73,7 +98,7 @@ export default function MentorshipDetails() {
             <main className="px-6 relative z-20 mt-6">
                 <div className="mb-8">
                     <h3 className="text-white text-base font-bold mb-3 uppercase tracking-wider text-[11px] opacity-60">Objetivo da Sessão</h3>
-                    <p className="text-light-gray text-sm leading-relaxed font-light opacity-90">{mentorship.description}</p>
+                    <p className="text-light-gray text-sm leading-relaxed font-light opacity-90">{(mentorship as any).description || 'Aprimore suas estratégias financeiras com acompanhamento individualizado de um especialista.'}</p>
                 </div>
 
                 {/* Info Cards */}
@@ -111,38 +136,22 @@ export default function MentorshipDetails() {
                 </div>
             </main>
 
-            {/* Fixed Action Button */}
-            <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/95 to-transparent z-[90]">
-                <div className="max-w-md mx-auto flex items-center justify-between gap-4">
-                    <div className="flex flex-col">
-                        <span className="text-[10px] text-light-gray uppercase tracking-widest font-semibold mb-0.5">Investimento</span>
-                        <span className="text-2xl font-bold text-white tracking-tight">{mentorship.price}</span>
+            {/* Floating levitating checkout button */}
+            <div className="fixed bottom-32 left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-md z-[150] levitate-btn">
+                <button
+                    onClick={handleBooking}
+                    className="w-full flex items-center justify-between p-2 pl-6 bg-zinc-900/80 backdrop-blur-xl border border-white/10 rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.8)] active:scale-95 transition-all group"
+                >
+                    <div className="flex flex-col items-start px-2">
+                        <span className="text-[10px] text-zinc-500 uppercase font-black tracking-tighter">Investimento</span>
+                        <span className="text-xl font-black text-white tracking-tight">{mentorship.price}</span>
                     </div>
-                    <button
-                        onClick={handleBooking}
-                        className="flex-1 py-4 font-black rounded-2xl text-[11px] uppercase tracking-[0.2em] bg-primary text-black shadow-[0_15px_30px_rgba(15,182,127,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all"
-                    >
-                        Agendar Horário
-                    </button>
-                </div>
+                    <div className="h-14 px-8 bg-primary rounded-[20px] flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(15,182,127,0.3)]">
+                        <span className="text-black text-[11px] font-black uppercase tracking-[0.15em]">Adicionar ao carrinho</span>
+                        <span className="material-symbols-outlined text-black text-sm font-bold">shopping_cart</span>
+                    </div>
+                </button>
             </div>
-
-            {/* Success Modal Simulation */}
-            {showSuccess && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[110] flex flex-col items-center justify-center p-8 animate-in fade-in duration-300">
-                    <div className="w-full max-w-[320px] glow-border border-primary rounded-[32px] bg-black/80 p-10 flex flex-col items-center text-center">
-                        <span className="material-symbols-outlined text-primary text-[80px] font-light neon-text-glow mb-6 leading-none">
-                            event_available
-                        </span>
-                        <h2 className="text-white font-black text-[16px] tracking-[0.2em] uppercase mb-4">
-                            Pagamento Aprovado!
-                        </h2>
-                        <p className="text-light-gray text-xs leading-relaxed mb-6">
-                            Sua assessoria está confirmada. Verifique o seu e-mail para acessar o calendário do especialista.
-                        </p>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }

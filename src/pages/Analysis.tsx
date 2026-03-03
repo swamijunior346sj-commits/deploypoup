@@ -28,7 +28,18 @@ export default function Analysis() {
 
   return (
     <div className="bg-black text-[#FCFCFC] font-sans flex flex-col min-h-screen selection:bg-primary/30 overflow-x-hidden antialiased">
-      <main className="flex-1 px-6 pt-16 pb-12">
+      <style>{`
+        @keyframes levitate {
+          0% { transform: translateY(0px) translateX(-50%); }
+          50% { transform: translateY(-10px) translateX(-50%); }
+          100% { transform: translateY(0px) translateX(-50%); }
+        }
+        .levitate-btn {
+          animation: levitate 3s ease-in-out infinite;
+        }
+      `}</style>
+
+      <main className="flex-1 px-6 pt-16 pb-48">
         <section className="mb-12 relative group">
           {/* Efeito de luz atrás do card principal */}
           <div className="absolute inset-0 bg-primary/10 blur-[100px] rounded-full scale-75 opacity-50 group-hover:opacity-100 transition-opacity"></div>
@@ -58,7 +69,7 @@ export default function Analysis() {
               <circle className="concentric-ring animate-draw ring-3" cx="50" cy="50" opacity="0.4" r="31" stroke="#0FB67F" strokeWidth="2.5" style={{ "--final-offset": 120 } as any}></circle>
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
-              <span className="text-[9px] text-text-label uppercase font-bold tracking-[0.2em]">Ativos</span>
+              <span className="text-[9px] text-zinc-500 uppercase font-bold tracking-[0.2em]">Ativos</span>
               <span className="text-2xl font-display font-light text-white">{assets.length}</span>
             </div>
           </div>
@@ -85,7 +96,7 @@ export default function Analysis() {
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-[10px] font-display font-bold tracking-[0.3em] text-off-white uppercase">MEUS ATIVOS</h2>
             <div className="h-[1px] flex-1 mx-6 bg-zinc-900"></div>
-            <button className="text-[9px] text-text-label font-bold uppercase tracking-[0.2em]">VER TUDO</button>
+            <button className="text-[9px] text-zinc-500 font-bold uppercase tracking-[0.2em]">VER TUDO</button>
           </div>
           <div className="space-y-4">
             {assets.length > 0 ? (
@@ -126,6 +137,16 @@ export default function Analysis() {
           </div>
         </section>
       </main>
+
+      {/* Levitating Floating Button */}
+      <div className="fixed bottom-32 left-1/2 -translate-x-1/2 z-[150] levitate-btn">
+        <button
+          onClick={() => navigate('/new-investment')}
+          className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-[0_20px_40px_rgba(15,182,127,0.4)] active:scale-90 transition-all group"
+        >
+          <span className="material-symbols-outlined text-black font-black text-3xl group-hover:scale-110 transition-transform">add</span>
+        </button>
+      </div>
     </div>
   );
 }

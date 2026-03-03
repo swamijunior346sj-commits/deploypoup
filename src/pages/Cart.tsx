@@ -30,7 +30,10 @@ const initialItems = [
 
 export default function Cart() {
     const navigate = useNavigate();
-    const [cartItems, setCartItems] = useState(initialItems);
+    const [cartItems, setCartItems] = useState<{ id: string, title: string, price: number, quantity: number, image: string, type: string }[]>(() => {
+        const saved = localStorage.getItem('poup_cart');
+        return saved ? JSON.parse(saved) : [];
+    });
     const [coupon, setCoupon] = useState('');
 
     const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -38,17 +41,22 @@ export default function Cart() {
     const total = subtotal - discount;
 
     const updateQuantity = (id: string, delta: number) => {
-        setCartItems(prev => prev.map(item => {
-            if (item.id === id) {
-                const newQty = Math.max(1, item.quantity + delta);
-                return { ...item, quantity: newQty };
-            }
-            return item;
-        }));
+        setCartItems(prev => {
+            const next = prev.map(item => {
+                if (item.id === id) {
+                    const newQty = Math.max(1, item.quantity + delta);
+                    return { ...item, quantity: newQty };
+                }
+                return item;
+            });
+            localStorage.setItem('poup_cart', JSON.stringify(next));
+            return next;
+        });
     };
 
     const clearCart = () => {
         setCartItems([]);
+        localStorage.removeItem('poup_cart');
     };
 
     return (

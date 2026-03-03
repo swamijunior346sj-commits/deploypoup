@@ -5,7 +5,7 @@ import Footer from './Footer';
 const navTabs = [
   { path: '/dashboard', label: 'Início', icon: 'grid_view' },
   { path: '/transactions', label: 'Transações', icon: 'receipt_long' },
-  { path: '/analysis', label: 'Análise', icon: 'bar_chart' },
+  { path: '/analysis', label: 'Investimentos', icon: 'bar_chart' },
   { path: '/goals', label: 'Metas', icon: 'ads_click' },
   { path: '/shop', label: 'Loja', icon: 'storefront' },
 ];
@@ -38,9 +38,9 @@ export default function Layout() {
         <header className="fixed top-0 left-0 right-0 z-[55] bg-background-dark/80 backdrop-blur-xl px-6 pt-12 pb-4 flex items-center justify-between">
           <button
             onClick={() => navigate('/profile')}
-            className="w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-all bg-white/5 hover:bg-white/10"
+            className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition-all overflow-hidden active:scale-90"
           >
-            <span className="material-symbols-outlined text-white text-xl">person</span>
+            <span className="material-symbols-outlined text-2xl">person</span>
           </button>
 
           <h1 className="text-[10px] font-display font-bold tracking-[0.4em] text-white uppercase ml-4">

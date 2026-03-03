@@ -27,10 +27,20 @@ export default function Investments() {
 
   return (
     <div className="space-y-6">
+      <style>{`
+        @keyframes levitate {
+          0% { transform: translateY(0px) translateX(-50%); }
+          50% { transform: translateY(-10px) translateX(-50%); }
+          100% { transform: translateY(0px) translateX(-50%); }
+        }
+        .levitate-btn {
+          animation: levitate 3s ease-in-out infinite;
+        }
+      `}</style>
       <Header showBack title="Investimentos" />
 
       <div className="px-6 space-y-8">
-        <main className="space-y-8 pb-32">
+        <main className="space-y-8 pb-48">
           <div className="flex items-center justify-between bg-zinc-950 border border-zinc-900 rounded-2xl p-4">
             <span className="material-symbols-outlined text-zinc-500 cursor-pointer">chevron_left</span>
             <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-300">Patrimônio Atual</span>
@@ -99,16 +109,16 @@ export default function Investments() {
               </div>
             </Card>
           </div>
-
-          <div className="flex justify-center pt-4">
-            <button
-              onClick={() => navigate('/new-investment')}
-              className="w-14 h-14 rounded-full bg-primary flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-transform active:scale-90"
-            >
-              <span className="material-symbols-outlined text-black font-bold text-3xl">add</span>
-            </button>
-          </div>
         </main>
+      </div>
+
+      <div className="fixed bottom-32 left-1/2 -translate-x-1/2 z-[150] levitate-btn">
+        <button
+          onClick={() => navigate('/new-investment')}
+          className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-[0_20px_40px_rgba(15,182,127,0.4)] active:scale-90 transition-all group"
+        >
+          <span className="material-symbols-outlined text-black font-black text-3xl group-hover:scale-110 transition-transform">add</span>
+        </button>
       </div>
     </div>
   );

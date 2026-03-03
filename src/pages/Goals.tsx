@@ -1,16 +1,47 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useData } from '../contexts/DataContext';
 import Header from '../components/Header';
 
 export default function Goals() {
+    const navigate = useNavigate();
     const { xp, level, levelName, currentMaxXP, levelNames } = useData();
     const [showLevelModal, setShowLevelModal] = useState(false);
+
+    const [showBadgesModal, setShowBadgesModal] = useState(false);
 
     const achievements = [
         { id: 1, title: 'Iniciante', icon: 'rocket_launch', status: 'completed', desc: 'Sua jornada começou.' },
         { id: 2, title: 'Poupador Flash', icon: 'bolt', status: 'completed', desc: 'Economizou R$ 100 em 1 dia.' },
         { id: 3, title: 'Mestre da Renda', icon: 'payments', status: 'locked', desc: 'Receba R$ 500 em proventos.' },
         { id: 4, title: 'Baleia', icon: 'water_drop', status: 'locked', desc: 'Atinja R$ 10k em ativos.' },
+    ];
+
+    const allAppBadges = [
+        { title: 'Iniciante', icon: 'rocket_launch' },
+        { title: 'Poupador Flash', icon: 'bolt' },
+        { title: 'Mestre da Renda', icon: 'payments' },
+        { title: 'Baleia', icon: 'water_drop' },
+        { title: 'Falcão', icon: 'visibility' },
+        { title: 'Leão', icon: 'psychology' },
+        { title: 'Tubarão', icon: 'monitoring' },
+        { title: 'Diamante', icon: 'diamond' },
+        { title: 'Explorador', icon: 'explore' },
+        { title: 'Sentinela', icon: 'shield' },
+        { title: 'Arquiteto', icon: 'architecture' },
+        { title: 'Visionário', icon: 'auto_awesome' },
+        { title: 'Alfa', icon: 'star' },
+        { title: 'Líder', icon: 'groups' },
+        { title: 'Gênio', icon: 'lightbulb' },
+        { title: 'Estrategista', icon: 'tactic' },
+        { title: 'Poupador Real', icon: 'currency_exchange' },
+        { title: 'Investidor Global', icon: 'public' },
+        { title: 'Mestre FII', icon: 'apartment' },
+        { title: 'Ações Elite', icon: 'trending_up' },
+        { title: 'Cripto Rei', icon: 'currency_bitcoin' },
+        { title: 'Fênix', icon: 'moving' },
+        { title: 'Titã', icon: 'workspace_premium' },
+        { title: 'Lenda', icon: 'military_tech' }
     ];
 
     return (
@@ -21,7 +52,7 @@ export default function Goals() {
                     100% { transform: rotate(360deg); }
                 }
                 .animate-badge-ring {
-                    animation: badge-ring-rotate 6s opacity linear infinite;
+                    animation: badge-ring-rotate 6s linear infinite;
                 }
                 @keyframes badge-icon-float {
                     0%, 100% { transform: translateY(0); }
@@ -69,11 +100,31 @@ export default function Goals() {
                     <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-primary/5 blur-3xl rounded-full"></div>
                 </section>
 
+                {/* Mission Center Widget */}
+                <section className="mt-10">
+                    <div
+                        onClick={() => navigate('/missions')}
+                        className="bg-primary/5 border border-primary/20 rounded-[2rem] p-6 flex items-center justify-between group active:scale-95 transition-all cursor-pointer overflow-hidden relative"
+                    >
+                        <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 blur-2xl rounded-full"></div>
+                        <div className="flex items-center gap-5">
+                            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:scale-110 transition-transform">
+                                <span className="material-symbols-outlined text-primary text-2xl animate-pulse">auto_awesome</span>
+                            </div>
+                            <div>
+                                <h3 className="text-white text-sm font-black uppercase tracking-tight">Central de Missões</h3>
+                                <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-0.5">Desafios Diários Ativos</p>
+                            </div>
+                        </div>
+                        <span className="material-symbols-outlined text-zinc-700 group-hover:text-primary transition-colors">arrow_forward</span>
+                    </div>
+                </section>
+
                 {/* Achievements Grid */}
                 <section className="mt-12">
                     <div className="flex justify-between items-end mb-8 border-b border-white/5 pb-2">
                         <h3 className="text-xs font-black uppercase tracking-[0.2em] text-zinc-500">Badges de Honra</h3>
-                        <span className="text-[10px] text-primary font-black uppercase tracking-tighter cursor-pointer hover:underline">Ver Todos</span>
+                        <span onClick={() => setShowBadgesModal(true)} className="text-[10px] text-primary font-black uppercase tracking-tighter cursor-pointer hover:underline">Ver Todos</span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-6">
@@ -150,6 +201,40 @@ export default function Goals() {
                             >
                                 Prosseguir Jornada
                             </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* All Badges Modal */}
+            {showBadgesModal && (
+                <div onClick={() => setShowBadgesModal(false)} className="fixed inset-0 z-[120] bg-black/95 backdrop-blur-2xl flex flex-col items-center justify-center p-6 animate-in fade-in duration-300">
+                    <div onClick={e => e.stopPropagation()} className="w-full max-w-md bg-zinc-900/50 border border-white/10 rounded-[3rem] p-8 max-h-[85dvh] overflow-y-auto hide-scrollbar relative">
+                        <button
+                            onClick={() => setShowBadgesModal(false)}
+                            className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/5 flex items-center justify-center"
+                        >
+                            <span className="material-symbols-outlined text-zinc-500">close</span>
+                        </button>
+
+                        <div className="text-center mb-10">
+                            <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em] mb-2 block">Galeria de Conquistas</span>
+                            <h2 className="text-2xl font-black text-white uppercase tracking-tighter">Panteão de Badges</h2>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-6 pb-6">
+                            {allAppBadges.map((badge, idx) => {
+                                const isUnlocked = idx < 2;
+                                return (
+                                    <div key={idx} className="flex flex-col items-center gap-3">
+                                        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center relative ${isUnlocked ? 'bg-primary/10 border border-primary/30' : 'bg-white/5 border border-white/5 opacity-30'}`}>
+                                            <span className={`material-symbols-outlined text-3xl ${isUnlocked ? 'text-primary' : 'text-zinc-600'}`}>{badge.icon}</span>
+                                            {isUnlocked && <span className="material-symbols-outlined absolute -top-1 -right-1 text-primary text-sm filled">check_circle</span>}
+                                        </div>
+                                        <span className="text-[8px] font-black text-center uppercase text-zinc-500">{badge.title}</span>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>

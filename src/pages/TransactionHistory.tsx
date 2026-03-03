@@ -66,8 +66,8 @@ export default function TransactionHistory() {
                 </div>
             )}
 
-            {/* Header */}
-            <header className="px-6 pt-12 pb-4 flex items-center justify-between sticky top-0 bg-background-dark/95 backdrop-blur-xl z-50">
+            {/* Header / Subheader */}
+            <div className="px-6 pt-2 pb-4 flex items-center justify-between relative z-10 mt-[80px]">
                 <div className="flex items-center space-x-4">
                     <h1 className="text-[10px] font-display font-bold tracking-[0.3em] uppercase text-zinc-400">Evolução de Gastos</h1>
                 </div>
@@ -77,13 +77,13 @@ export default function TransactionHistory() {
                         className="flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-xl group hover:bg-primary/20 transition-all active:scale-95 shadow-[0_0_15px_rgba(15,182,127,0.1)]"
                     >
                         <span className="material-symbols-outlined text-primary text-sm group-hover:rotate-12 transition-transform">auto_awesome</span>
-                        <span className="text-[9px] font-bold text-primary tracking-widest uppercase">Analisar IA</span>
+                        <span className="text-[9px] font-bold text-primary tracking-widest uppercase">Analise de gastos IA</span>
                     </button>
                     <button className="w-9 h-9 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center">
                         <span className="material-symbols-outlined text-zinc-400 text-[20px]">more_vert</span>
                     </button>
                 </div>
-            </header>
+            </div>
 
             <main className="flex-grow px-6 space-y-8 pb-12 pt-2">
                 {/* Evolution Chart Section */}

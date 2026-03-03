@@ -32,14 +32,9 @@ export default function SpendingAnalysis() {
         <div className="bg-black text-[#A1A1AA] font-sans flex flex-col min-h-screen overflow-x-hidden selection:bg-primary/30">
             <header className="pt-14 pb-2 px-6 sticky top-0 bg-black/80 backdrop-blur-xl z-50">
                 <div className="flex items-center justify-between mb-8">
-                    <button onClick={() => navigate(-1)} className="material-symbols-outlined text-text-value font-light cursor-pointer active:scale-90 transition-transform">menu</button>
+                    <div className="w-6"></div> {/* Spacer for symmetry */}
                     <h1 className="text-[10px] font-display font-semibold tracking-[0.5em] text-text-value uppercase opacity-80">ANÁLISE DE GASTOS</h1>
                     <div className="w-6"></div> {/* Spacer for symmetry */}
-                </div>
-                <div className="flex justify-between items-center text-[10px] font-bold tracking-[0.2em]">
-                    <button className="pb-3 px-2 text-zinc-600">GERAL</button>
-                    <button className="pb-3 px-2 text-zinc-600">INVESTIMENTOS</button>
-                    <button className="pb-3 px-2 text-primary border-b-[1px] border-primary glow-text">ORÇAMENTOS</button>
                 </div>
             </header>
 

@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export const allProducts = [
@@ -39,6 +40,32 @@ export const allProducts = [
 
 export default function Shop() {
     const navigate = useNavigate();
+    const [cartCount, setCartCount] = useState(() => {
+        const saved = localStorage.getItem('poup_cart');
+        if (saved) {
+            try {
+                return JSON.parse(saved).length;
+            } catch (e) { return 0; }
+        }
+        return 0;
+    });
+
+    const addToCart = (product: any, e: React.MouseEvent) => {
+        e.stopPropagation();
+        const saved = localStorage.getItem('poup_cart');
+        let cart = saved ? JSON.parse(saved) : [];
+
+        if (!cart.find((item: any) => item.id === product.id)) {
+            const priceVal = product.price === 'Grátis' ? 0 : parseFloat(product.price.replace('R$', '').replace('.', '').replace(',', '.').trim());
+            cart.push({
+                ...product,
+                price: priceVal,
+                quantity: 1
+            });
+            localStorage.setItem('poup_cart', JSON.stringify(cart));
+            setCartCount(cart.length);
+        }
+    };
 
     const categories = [
         { id: 'ebooks', name: 'E-Books', icon: 'menu_book' },
@@ -50,7 +77,6 @@ export default function Shop() {
 
     return (
         <div className="bg-background-dark font-display min-h-screen flex flex-col pt-6 pb-32 overflow-x-hidden selection:bg-primary/30">
-            {/* Header Centered */}
             <header className="px-6 mb-8 relative flex items-center justify-center min-h-[60px]">
                 <div className="text-center">
                     <h1 className="text-3xl font-extralight text-off-white tracking-tight">
@@ -60,19 +86,18 @@ export default function Shop() {
                 </div>
             </header>
 
-            {/* Floating Cart Button */}
             <button
                 onClick={() => navigate('/cart')}
                 className="fixed top-6 right-6 w-14 h-14 rounded-full flex items-center justify-center bg-zinc-900/40 backdrop-blur-2xl border border-primary/30 z-[100] shadow-[0_15px_30px_rgba(15,182,127,0.2)] active:scale-95 transition-all text-primary animate-levitation"
             >
                 <span className="material-symbols-outlined text-2xl filled">shopping_cart</span>
-                {/* Badge if needed */}
-                <div className="absolute top-3 right-3 w-4 h-4 bg-primary text-black text-[9px] font-black rounded-full flex items-center justify-center ring-4 ring-black/40">
-                    0
-                </div>
+                {cartCount > 0 && (
+                    <div className="absolute top-3 right-3 w-4 h-4 bg-primary text-black text-[9px] font-black rounded-full flex items-center justify-center ring-4 ring-black/40">
+                        {cartCount}
+                    </div>
+                )}
             </button>
 
-            {/* Categories */}
             <div className="px-6 mb-8 overflow-x-auto no-scrollbar flex gap-3 pb-2 -mx-6 px-6">
                 {categories.map((category) => (
                     <button
@@ -92,7 +117,6 @@ export default function Shop() {
                 ))}
             </div>
 
-            {/* Featured Banner - Styled without image, with soft green green light BEHIND border */}
             <div className="px-6 mb-10">
                 <style>{`
                     .glow-container::before {
@@ -133,14 +157,9 @@ export default function Shop() {
                 </div>
             </div>
 
-            {/* Products List - Mapping all 20+ items */}
             <div className="px-6 mb-6">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-white text-lg font-bold">Explorar</h3>
-                    <div className="flex gap-2">
-                        <span className="text-zinc-600 text-[10px] font-bold uppercase">Filtrar</span>
-                        <span className="material-symbols-outlined text-zinc-600 text-sm">tune</span>
-                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4">
@@ -164,8 +183,11 @@ export default function Shop() {
                                 <span className="text-zinc-500 text-[11px] mt-1">{product.author}</span>
                                 <div className="mt-auto flex items-center justify-between">
                                     <span className="text-white font-bold">{product.price}</span>
-                                    <button className="w-8 h-8 rounded-full bg-white/5 border border-white/5 flex items-center justify-center hover:bg-primary hover:text-black transition-colors group-hover:border-primary/30">
-                                        <span className="material-symbols-outlined text-[16px]">add</span>
+                                    <button
+                                        onClick={(e) => addToCart(product, e)}
+                                        className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-black transition-all active:scale-90 group-hover:border-primary/40 shadow-lg"
+                                    >
+                                        <span className="material-symbols-outlined !text-[20px]">shopping_cart</span>
                                     </button>
                                 </div>
                             </div>
@@ -173,7 +195,6 @@ export default function Shop() {
                     ))}
                 </div>
             </div>
-
         </div>
     );
 }

@@ -30,9 +30,33 @@ export default function EbookDetails() {
         );
     }
 
+    const isOwned = () => {
+        const saved = localStorage.getItem('poup_cart');
+        if (!saved) return false;
+        const cart = JSON.parse(saved);
+        return !!cart.find((item: any) => item.id === product.id);
+    };
+
     const handlePurchase = () => {
-        setShowSuccess(true);
-        setTimeout(() => setShowSuccess(false), 3000);
+        if (product.id === '10' && isOwned()) {
+            navigate('/compound-interest');
+            return;
+        }
+        const saved = localStorage.getItem('poup_cart');
+        let cart = saved ? JSON.parse(saved) : [];
+        if (!cart.find((item: any) => item.id === product.id)) {
+            const priceVal = product.price === 'Grátis' ? 0 : parseFloat(product.price.replace('R$', '').replace('.', '').replace(',', '.').trim());
+            cart.push({
+                ...product,
+                price: priceVal,
+                quantity: 1
+            });
+            localStorage.setItem('poup_cart', JSON.stringify(cart));
+            window.dispatchEvent(new Event('storage'));
+            navigate('/cart');
+        } else {
+            navigate('/cart');
+        }
     };
 
     return (
@@ -130,7 +154,7 @@ export default function EbookDetails() {
             </main>
 
             {/* Floating levitating checkout button */}
-            <div className="fixed bottom-12 left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-md z-[100] levitate-btn">
+            <div className="fixed bottom-32 left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-md z-[150] levitate-btn">
                 <button
                     onClick={handlePurchase}
                     className="w-full flex items-center justify-between p-2 pl-6 bg-zinc-900/80 backdrop-blur-xl border border-white/10 rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.8)] active:scale-95 transition-all group"
@@ -140,28 +164,11 @@ export default function EbookDetails() {
                         <span className="text-xl font-black text-white tracking-tight">{product.price}</span>
                     </div>
                     <div className="h-14 px-8 bg-primary rounded-[20px] flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(15,182,127,0.3)]">
-                        <span className="text-black text-[11px] font-black uppercase tracking-[0.15em]">Adquirir Agora</span>
-                        <span className="material-symbols-outlined text-black text-sm font-bold">arrow_forward</span>
+                        <span className="text-black text-[11px] font-black uppercase tracking-[0.15em]">{isOwned() ? 'Acessar Ferramenta' : 'Adicionar ao carrinho'}</span>
+                        <span className="material-symbols-outlined text-black text-sm font-bold">{isOwned() ? 'open_in_new' : 'shopping_cart'}</span>
                     </div>
                 </button>
             </div>
-
-            {/* Success Modal Simulation */}
-            {showSuccess && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[110] flex flex-col items-center justify-center p-8 animate-in fade-in duration-300">
-                    <div className="w-full max-w-[320px] glow-border border-primary rounded-[40px] bg-black/80 p-12 flex flex-col items-center text-center">
-                        <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mb-8">
-                            <span className="material-symbols-outlined text-primary text-4xl filled">check</span>
-                        </div>
-                        <h2 className="text-white font-black text-[16px] tracking-[0.2em] uppercase mb-4">
-                            Sucesso total!
-                        </h2>
-                        <p className="text-zinc-500 text-xs leading-relaxed">
-                            O item já está disponível na sua conta. Vamos juntos rumo à liberdade financeira!
-                        </p>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
