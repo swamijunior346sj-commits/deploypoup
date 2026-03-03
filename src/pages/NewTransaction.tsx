@@ -42,16 +42,25 @@ export default function NewTransaction() {
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!user || !amount || !description) return;
+        if (!user || !amount || !description) {
+            alert('Por favor, preencha valor e descrição.');
+            return;
+        }
+
+        const parsedAmount = parseFloat(amount.replace(/\./g, '').replace(',', '.'));
+        if (isNaN(parsedAmount)) {
+            alert('Valor inválido');
+            return;
+        }
 
         setLoading(true);
         try {
             const transactionData = {
                 user_id: user.id,
-                amount: parseFloat(amount.replace(',', '.')),
+                amount: parsedAmount,
                 description,
-                category,
-                subcategory: subCategory,
+                category: type === 'transfer' ? 'Transferência' : category,
+                subcategory: type === 'transfer' ? '' : subCategory,
                 notes,
                 type,
                 date,
@@ -63,15 +72,17 @@ export default function NewTransaction() {
 
             if (error) throw error;
 
-            addXP(2); // Higher XP for recording transaction
+            addXP(2);
             setShowSuccess(true);
+
+            // Re-fetch data to reflect changes immediately
             setTimeout(() => {
                 setShowSuccess(false);
-                navigate(-1);
+                navigate('/transactions'); // Navigate to history to see the new entry
             }, 2000);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error saving transaction:', error);
-            alert('Erro ao salvar transação');
+            alert(`Erro ao salvar transação: ${error.message || 'Erro desconhecido'}`);
         } finally {
             setLoading(false);
         }

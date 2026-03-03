@@ -157,6 +157,16 @@ export default function Goals() {
                 </section>
             </main>
 
+            {/* Levitating Floating Button for New Goal */}
+            <div className="fixed bottom-32 right-6 z-[150] levitate-btn">
+                <button
+                    onClick={() => navigate('/new-goal')}
+                    className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-[0_20px_40px_rgba(15,182,127,0.4)] active:scale-90 transition-all group"
+                >
+                    <span className="material-symbols-outlined text-black font-black text-3xl group-hover:scale-110 transition-transform">add</span>
+                </button>
+            </div>
+
             {/* Level Comparison Modal */}
             {showLevelModal && (
                 <div className="fixed inset-0 z-[200] flex items-end justify-center px-4 pb-12 animate-in fade-in duration-300">

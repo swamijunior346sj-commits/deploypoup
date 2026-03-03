@@ -3,16 +3,14 @@ import { useNavigate } from 'react-router-dom';
 
 export default function NewGoal() {
     const navigate = useNavigate();
-
     const [name, setName] = useState('');
     const [target, setTarget] = useState('');
     const [date, setDate] = useState('');
-    const [selectedIcon, setSelectedIcon] = useState('flight_takeoff');
+    const [selectedIcon, setSelectedIcon] = useState('savings');
 
     const icons = [
-        'directions_car', 'flight_takeoff', 'home', 'laptop_mac', 'school',
-        'health_and_safety', 'pets', 'sports_esports', 'stroller', 'cake',
-        'diamond', 'fitness_center', 'apartment', 'restaurant', 'shopping_bag'
+        'savings', 'home', 'directions_car', 'flight', 'laptop_mac',
+        'celebration', 'shopping_bag', 'school', 'favorite', 'diamond'
     ];
 
     return (
@@ -29,14 +27,14 @@ export default function NewGoal() {
 
             <main className="flex-grow px-6 pt-6 pb-40 space-y-6">
                 {/* Name and Icon Section */}
-                <div className="bg-[#121212] rounded-[32px] p-6 border border-white/5">
+                <div className="bg-transparent rounded-[32px] p-6 border border-white/10">
                     <label className="block text-[10px] font-display font-bold tracking-[0.2em] text-[#a7a7a7] uppercase mb-4">Nome da Meta</label>
                     <div className="flex items-center gap-4">
                         <div className="relative group">
-                            <div className="w-14 h-14 bg-[#1a1a1a] rounded-2xl flex items-center justify-center border border-white/10">
+                            <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10">
                                 <span className="material-symbols-outlined text-primary text-3xl">{selectedIcon}</span>
                             </div>
-                            <div className="absolute -bottom-1 -right-1 bg-primary w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#121212]">
+                            <div className="absolute -bottom-1 -right-1 bg-primary w-5 h-5 rounded-full flex items-center justify-center border-2 border-black">
                                 <span className="material-symbols-outlined text-black text-[12px] font-bold">edit</span>
                             </div>
                         </div>
@@ -72,7 +70,7 @@ export default function NewGoal() {
                 </div>
 
                 {/* Financial Details Section */}
-                <div className="bg-[#121212] rounded-[32px] p-6 border border-white/5 space-y-8">
+                <div className="bg-transparent rounded-[32px] p-6 border border-white/10 space-y-8">
                     <div className="space-y-2">
                         <label className="block text-[10px] font-display font-bold tracking-[0.2em] text-[#a7a7a7] uppercase">Valor Total</label>
                         <div className="flex items-baseline gap-2">
@@ -90,7 +88,7 @@ export default function NewGoal() {
                     <div className="grid grid-cols-1 gap-6">
                         <div className="space-y-2">
                             <label className="block text-[10px] font-display font-bold tracking-[0.2em] text-[#a7a7a7] uppercase">Data Limite</label>
-                            <div className="flex items-center gap-3 bg-[#1a1a1a] rounded-2xl p-4 border border-white/10 focus-within:border-primary/50 focus-within:shadow-[0_0_10px_rgba(15,182,127,0.2)] transition-all">
+                            <div className="flex items-center gap-3 bg-white/5 rounded-2xl p-4 border border-white/10 focus-within:border-primary/50 focus-within:shadow-[0_0_10px_rgba(15,182,127,0.2)] transition-all">
                                 <span className="material-symbols-outlined text-[#a7a7a7]">calendar_today</span>
                                 <input
                                     className="bg-transparent border-none focus:ring-0 text-sm font-semibold text-[#fcfcfc] w-full p-0 placeholder:text-zinc-600"
@@ -105,7 +103,7 @@ export default function NewGoal() {
                         {/* IA Insight */}
                         <div className="space-y-2">
                             <label className="block text-[10px] font-display font-bold tracking-[0.2em] text-[#a7a7a7] uppercase">Aporte Mensal Sugerido</label>
-                            <div className="flex items-center gap-3 bg-white/5 rounded-2xl p-4 opacity-70">
+                            <div className="flex items-center gap-3 bg-white/5 rounded-2xl p-4 border border-zinc-800 opacity-70">
                                 <span className="material-symbols-outlined text-[#a7a7a7]">payments</span>
                                 <span className="text-sm font-semibold text-[#fcfcfc] italic text-zinc-500">
                                     {target && date ? 'Calculando...' : 'Preencha os dados acima'}
@@ -116,10 +114,10 @@ export default function NewGoal() {
                 </div>
             </main>
 
-            <footer className="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-2xl border-t border-white/5 px-6 pt-6 pb-10 z-20">
+            <footer className="fixed bottom-0 left-0 right-0 bg-transparent px-6 pt-6 pb-12 z-20">
                 <button
                     onClick={() => navigate(-1)}
-                    className="w-full py-5 bg-primary rounded-2xl text-black font-display font-bold text-xs tracking-[0.2em] uppercase shadow-[0_4px_25px_rgba(15,182,127,0.4)] active:scale-[0.98] transition-transform"
+                    className="w-full py-5 bg-transparent border border-primary rounded-2xl text-primary font-display font-bold text-xs tracking-[0.2em] uppercase active:scale-[0.98] transition-transform"
                 >
                     Criar Meta
                 </button>

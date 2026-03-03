@@ -26,20 +26,21 @@ export default function NewInvestment() {
     }, [quantity, price]);
 
     const handleSave = async () => {
-        const finalAsset = manualAsset ? assetId : assetId; // assetId holds the value in both cases
         if (!user || !assetId || !quantity || !price) {
             alert('Por favor, preencha todos os campos obrigatórios.');
             return;
-        };
+        }
 
         setLoading(true);
         try {
             const { error } = await supabase.from('assets').insert([
                 {
                     user_id: user.id,
+                    ticker: assetId.toUpperCase(),
                     name: assetId.toUpperCase(),
-                    type: 'Renda Variável', // Default based on selects
+                    type: manualAsset ? 'Manual' : 'Renda Variável',
                     current_value: totalCost,
+                    amount: parseFloat(quantity),
                     purchase_date: new Date().toISOString().split('T')[0],
                     change_24h: 0,
                     broker: broker
@@ -48,16 +49,16 @@ export default function NewInvestment() {
 
             if (error) throw error;
             navigate('/analysis');
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error saving investment:', error);
-            alert('Erro ao salvar investimento');
+            alert(`Erro ao salvar investimento: ${error.message || 'Erro desconhecido'}`);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="bg-black text-[#FCFCFC] font-sans flex flex-col min-h-screen selection:bg-primary/30 antialiased">
+        <div className="bg-black text-[#FCFCFC] font-sans flex flex-col min-h-screen selection:bg-primary/30 antialiased overflow-y-auto">
             <style>{`
                 .custom-ring {
                     position: relative;
@@ -125,7 +126,7 @@ export default function NewInvestment() {
                 <div className="size-10"></div>
             </header>
 
-            <main className="flex-1 px-6 pb-40 overflow-y-auto">
+            <main className="flex-1 px-6 pb-20">
                 <section className="flex flex-col items-center justify-center pt-8 pb-12">
                     <div className="custom-ring">
                         <div className="text-center">
@@ -279,21 +280,19 @@ export default function NewInvestment() {
                             <span className="material-symbols-outlined text-primary text-lg">info</span>
                         </div>
                     </div>
+
+                    {/* Repositioned Save Button */}
+                    <div className="pt-8 mb-10">
+                        <button
+                            onClick={handleSave}
+                            disabled={loading}
+                            className="w-full py-5 border border-primary text-white font-bold rounded-2xl hover:bg-primary/10 active:scale-[0.98] transition-all bg-transparent uppercase tracking-widest text-sm disabled:opacity-50 shadow-[0_0_20px_rgba(15,182,127,0.1)]"
+                        >
+                            {loading ? 'Processando...' : 'Confirmar Investimento'}
+                        </button>
+                    </div>
                 </div>
             </main>
-
-            {/* Footer Action */}
-            <footer className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/90 to-transparent z-50">
-                <div className="max-w-md mx-auto">
-                    <button
-                        onClick={handleSave}
-                        disabled={loading}
-                        className="w-full py-5 border border-primary text-white font-bold rounded-2xl hover:bg-primary/10 active:scale-[0.98] transition-all bg-transparent uppercase tracking-widest text-sm disabled:opacity-50"
-                    >
-                        {loading ? 'Processando...' : 'Confirmar Investimento'}
-                    </button>
-                </div>
-            </footer>
         </div>
     );
 }

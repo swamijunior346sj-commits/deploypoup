@@ -2,9 +2,11 @@ import React from 'react';
 import Header from '../components/Header';
 import Card from '../components/Card';
 import { useAuth } from '../contexts/AuthContext';
+import { useData } from '../contexts/DataContext';
 
 export default function Security() {
   const { user } = useAuth();
+  const { clearAllData } = useData();
 
   return (
     <div className="space-y-6">
@@ -62,16 +64,31 @@ export default function Security() {
             </Card>
           </div>
 
-          <div className="space-y-4">
-            <h3 className="text-[10px] font-bold tracking-widest text-text-label uppercase px-2">Dispositivos Conectados</h3>
-            <Card className="p-5 flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <span className="material-symbols-outlined text-text-label">smartphone</span>
-                <div>
-                  <p className="text-sm font-semibold">Sessão Atual</p>
-                  <p className="text-[10px] text-primary uppercase font-bold">Ativo agora</p>
+          <div className="pt-10 space-y-4">
+            <h3 className="text-[10px] font-bold tracking-widest text-[#FF4B4B] uppercase px-2">Zona de Perigo</h3>
+            <Card className="p-5 border-red-500/20 bg-red-500/5 group">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center transition-transform group-hover:scale-110">
+                    <span className="material-symbols-outlined text-[#FF4B4B] text-xl">delete_sweep</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-white">Limpar todos os dados</p>
+                    <p className="text-[10px] text-zinc-500 font-medium leading-relaxed">Apaga transações, ativos, metas e orçamentos permanentemente.</p>
+                  </div>
                 </div>
               </div>
+              <button
+                onClick={async () => {
+                  if (window.confirm('Tem certeza que deseja apagar todos os seus dados? Esta ação é irreversível.')) {
+                    await clearAllData();
+                    alert('Dados limpos com sucesso!');
+                  }
+                }}
+                className="w-full mt-6 py-4 rounded-xl border border-[#FF4B4B]/30 text-[#FF4B4B] font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-[#FF4B4B]/10 active:scale-95 transition-all"
+              >
+                Confirmar Reset Total
+              </button>
             </Card>
           </div>
         </main>

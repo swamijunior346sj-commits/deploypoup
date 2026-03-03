@@ -1,10 +1,22 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useData } from '../contexts/DataContext';
 
 export default function NewBudget() {
     const navigate = useNavigate();
+    const { transactions, assets } = useData();
     const [amount, setAmount] = useState(2500);
     const [showSuccess, setShowSuccess] = useState(false);
+
+    const totalAssets = useMemo(() => assets.reduce((acc, a) => acc + Number(a.current_value || 0), 0), [assets]);
+    const totalExpenses = useMemo(() =>
+        transactions.filter(t => t.type === 'expense').reduce((acc, t) => acc + Number(t.amount), 0)
+        , [transactions]);
+
+    const impactPercentage = useMemo(() => {
+        if (totalAssets === 0) return 0;
+        return ((totalExpenses + amount) / totalAssets) * 100;
+    }, [totalExpenses, amount, totalAssets]);
 
     const handleAmountChange = (val: number) => {
         setAmount(Math.max(0, Math.min(10000, val)));
@@ -13,7 +25,6 @@ export default function NewBudget() {
     const handleSave = () => {
         setShowSuccess(true);
         setTimeout(() => {
-            setShowSuccess(false);
             navigate('/budgets');
         }, 2000);
     };
@@ -108,11 +119,12 @@ export default function NewBudget() {
                     <div className="flex justify-between items-end mb-6">
                         <div>
                             <h3 className="text-[10px] font-semibold tracking-[0.2em] text-[#D6D6D6] uppercase">Projeção de Impacto</h3>
-                            <p className="text-2xl font-light text-white mt-1">-12.4% <span className="text-xs font-normal text-primary/70 tracking-normal ml-1">do limite livre</span></p>
+                            <p className="text-2xl font-light text-white mt-1">
+                                {impactPercentage.toFixed(1)}% <span className="text-xs font-normal text-primary/70 tracking-normal ml-1">do limite livre</span>
+                            </p>
                         </div>
                         <div className="text-right">
-                            <p className="text-[10px] font-mono text-[#D6D6D6]">ID: HUD-992-B</p>
-                            <p className="text-[10px] font-mono text-primary uppercase">Calculado em Tempo Real</p>
+                            <p className="text-[10px] font-mono text-primary uppercase">Calculado com Dados Reais</p>
                         </div>
                     </div>
 
@@ -129,45 +141,18 @@ export default function NewBudget() {
                             <circle cx="400" cy="20" fill="#0FB67F" r="3"></circle>
                             <line stroke="#71717A" strokeDasharray="4,4" strokeWidth="0.5" x1="0" x2="400" y1="100" y2="100"></line>
                         </svg>
-                        <div className="flex justify-between mt-2 text-[9px] font-mono text-[#D6D6D6] uppercase tracking-widest px-1">
-                            <span>S01</span>
-                            <span>S02</span>
-                            <span>S03</span>
-                            <span>S04</span>
-                        </div>
                     </div>
                 </section>
 
                 {/* Summary Grid */}
                 <section className="grid grid-cols-2 gap-4">
                     <div className="border border-white/10 p-4 rounded-lg bg-white/5">
-                        <p className="text-[10px] font-semibold tracking-[0.1em] text-[#D6D6D6] uppercase">Limite Atual</p>
-                        <p className="text-lg font-light text-white mt-1">R$ 12.000</p>
+                        <p className="text-[10px] font-semibold tracking-[0.1em] text-[#D6D6D6] uppercase">Patrimônio Atual</p>
+                        <p className="text-lg font-light text-white mt-1">R$ {totalAssets.toLocaleString('pt-BR')}</p>
                     </div>
                     <div className="border border-white/10 p-4 rounded-lg bg-white/5">
                         <p className="text-[10px] font-semibold tracking-[0.1em] text-[#D6D6D6] uppercase">Comprometido</p>
-                        <p className="text-lg font-light text-white mt-1">R$ 4.250</p>
-                    </div>
-                </section>
-
-                {/* Category Parameters */}
-                <section className="space-y-4">
-                    <h3 className="text-[10px] font-semibold tracking-[0.2em] text-[#D6D6D6] uppercase">Parâmetros de Categoria</h3>
-                    <div className="space-y-3">
-                        <div className="flex items-center justify-between p-3 border border-white/10 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer group">
-                            <div className="flex items-center gap-3">
-                                <span className="material-symbols-outlined text-primary text-sm transition-transform group-hover:scale-110">shopping_cart</span>
-                                <span className="text-xs font-medium text-white">Consumo Geral</span>
-                            </div>
-                            <span className="text-xs font-mono text-[#D6D6D6]">35%</span>
-                        </div>
-                        <div className="flex items-center justify-between p-3 border border-white/10 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer group">
-                            <div className="flex items-center gap-3">
-                                <span className="material-symbols-outlined text-primary text-sm transition-transform group-hover:scale-110">restaurant</span>
-                                <span className="text-xs font-medium text-white">Alimentação</span>
-                            </div>
-                            <span className="text-xs font-mono text-[#D6D6D6]">20%</span>
-                        </div>
+                        <p className="text-lg font-light text-white mt-1">R$ {totalExpenses.toLocaleString('pt-BR')}</p>
                     </div>
                 </section>
             </main>
