@@ -62,6 +62,7 @@ export default function Shop() {
 
             {/* Floating Cart Button */}
             <button
+                onClick={() => navigate('/cart')}
                 className="fixed top-6 right-6 w-14 h-14 rounded-full flex items-center justify-center bg-zinc-900/40 backdrop-blur-2xl border border-primary/30 z-[100] shadow-[0_15px_30px_rgba(15,182,127,0.2)] active:scale-95 transition-all text-primary animate-levitation"
             >
                 <span className="material-symbols-outlined text-2xl filled">shopping_cart</span>
@@ -80,6 +81,8 @@ export default function Shop() {
                             if (category.id === 'ebooks') navigate('/ebooks');
                             if (category.id === 'courses') navigate('/courses');
                             if (category.id === 'mentorship') navigate('/mentorships');
+                            if (category.id === 'tools') navigate('/tools');
+                            if (category.id === 'networking') navigate('/networking');
                         }}
                         className="flex flex-col items-center justify-center min-w-[80px] h-20 bg-surface rounded-2xl border border-white/5 shrink-0 hover:bg-white/5 active:scale-95 transition-all group"
                     >

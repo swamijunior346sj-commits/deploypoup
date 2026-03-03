@@ -133,15 +133,15 @@ export default function EbookDetails() {
             <div className="fixed bottom-12 left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-md z-[100] levitate-btn">
                 <button
                     onClick={handlePurchase}
-                    className="w-full flex items-center justify-between p-2 pl-6 bg-white border border-white rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.4)] active:scale-95 transition-all group"
+                    className="w-full flex items-center justify-between p-2 pl-6 bg-zinc-900/80 backdrop-blur-xl border border-white/10 rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.8)] active:scale-95 transition-all group"
                 >
-                    <div className="flex flex-col items-start">
-                        <span className="text-[10px] text-black/40 uppercase font-black tracking-tighter">Investimento</span>
-                        <span className="text-lg font-black text-black tracking-tight">{product.price}</span>
+                    <div className="flex flex-col items-start px-2">
+                        <span className="text-[10px] text-zinc-500 uppercase font-black tracking-tighter">Investimento</span>
+                        <span className="text-xl font-black text-white tracking-tight">{product.price}</span>
                     </div>
-                    <div className="h-14 px-8 bg-black rounded-[20px] flex items-center justify-center gap-2 group-hover:bg-primary transition-colors">
-                        <span className="text-white text-[11px] font-black uppercase tracking-[0.15em] group-hover:text-black">Adquirir</span>
-                        <span className="material-symbols-outlined text-white text-sm group-hover:text-black">arrow_forward</span>
+                    <div className="h-14 px-8 bg-primary rounded-[20px] flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(15,182,127,0.3)]">
+                        <span className="text-black text-[11px] font-black uppercase tracking-[0.15em]">Adquirir Agora</span>
+                        <span className="material-symbols-outlined text-black text-sm font-bold">arrow_forward</span>
                     </div>
                 </button>
             </div>

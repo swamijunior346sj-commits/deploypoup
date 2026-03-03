@@ -1,11 +1,12 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import { useAuth } from '../contexts/AuthContext';
+import { useData } from '../contexts/DataContext';
 
 export default function Profile() {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { clearAllData } = useData();
 
   const handleSignOut = async () => {
     await signOut();
@@ -31,7 +32,6 @@ export default function Profile() {
         </div>
 
         <div className="space-y-1">
-
           <div onClick={() => navigate('/personal-data')} className="flex items-center justify-between py-4 border-b border-white/5 group cursor-pointer">
             <div className="flex items-center space-x-4">
               <span className="material-symbols-outlined text-primary">account_circle</span>
@@ -64,10 +64,24 @@ export default function Profile() {
           </div>
         </div>
 
-        <div className="mt-12">
+        <div className="mt-12 space-y-4">
           <button onClick={handleSignOut} className="w-full py-4 flex items-center justify-center space-x-2 text-red-500 font-semibold bg-transparent rounded-2xl border border-red-500/20 active:bg-red-500/10 transition-colors">
             <span className="material-symbols-outlined text-lg">logout</span>
             <span className="text-sm">Sair da Conta</span>
+          </button>
+
+          <button
+            onClick={async () => {
+              if (window.confirm('TEM CERTEZA? Isso apagará permanentemente todos os seus dados no app e no banco de dados. Esta ação não pode ser desfeita.')) {
+                await clearAllData();
+                alert('Todos os dados foram resetados com sucesso.');
+                navigate('/dashboard');
+              }
+            }}
+            className="w-full py-4 flex flex-col items-center justify-center space-y-1 text-zinc-600 font-bold bg-transparent rounded-2xl border border-dashed border-zinc-800 hover:border-red-900/40 hover:text-red-900 transition-all active:scale-95"
+          >
+            <span className="text-[10px] uppercase tracking-widest">Zona de Perigo</span>
+            <span className="text-[11px] uppercase tracking-[0.2em]">Limpar todos os dados</span>
           </button>
         </div>
 

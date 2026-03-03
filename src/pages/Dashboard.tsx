@@ -3,14 +3,14 @@ import { useData } from '../contexts/DataContext';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { transactions, assets, goals, loading } = useData();
+  const { transactions, assets, goals, loading, xp, level, levelName, currentMaxXP, addXP } = useData();
 
   const totalAssets = assets.reduce((acc, asset) => acc + Number(asset.current_value), 0);
   const totalExpenses = transactions
     .filter(t => t.type === 'expense')
     .reduce((acc, t) => acc + Number(t.amount), 0);
 
-  const totalBalance = totalAssets - totalExpenses; // Just a simple calculation example
+  const totalBalance = totalAssets - totalExpenses;
 
   if (loading) {
     return (
@@ -28,10 +28,10 @@ export default function Dashboard() {
           <button onClick={() => navigate('/profile')} className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition-all overflow-hidden group">
             <span className="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">person</span>
           </button>
-          <div className="flex items-center gap-3">
-            {/* Logo or Title could go here if needed */}
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-black text-primary border border-primary/30 px-2 py-0.5 rounded-full uppercase tracking-widest">{levelName}</span>
           </div>
-          <div className="w-10"></div> {/* Spacer to maintain centering if needed */}
+          <div className="w-10"></div>
         </div>
       </header>
 
@@ -69,73 +69,55 @@ export default function Dashboard() {
             <h3 className="text-xs font-light tracking-[0.2em] text-white uppercase">Alocação por Conta</h3>
             <span className="material-symbols-outlined text-zinc-600 text-sm">pie_chart</span>
           </div>
-          <div className="flex items-center justify-between gap-6" onClick={() => navigate('/analysis')}>
-            <div className="relative w-32 h-32 flex-shrink-0">
-              <svg className="w-full h-full transform -rotate-90">
-                <circle cx="64" cy="64" fill="none" r="60" stroke="#1c1c1c" strokeWidth="0.5"></circle>
-                <circle className="drop-shadow-[0_0_4px_rgba(15,182,127,0.5)]" cx="64" cy="64" fill="none" r="60" stroke="#0FB67F" strokeDasharray="376" strokeDashoffset="200" strokeLinecap="round" strokeWidth="1.5"></circle>
-                <circle className="drop-shadow-[0_0_4px_rgba(168,85,247,0.5)] transform rotate-[170deg] origin-center" cx="64" cy="64" fill="none" r="60" stroke="#A855F7" strokeDasharray="376" strokeDashoffset="300" strokeLinecap="round" strokeWidth="1.5"></circle>
-                <circle className="drop-shadow-[0_0_4px_rgba(245,158,11,0.5)] transform rotate-[250deg] origin-center" cx="64" cy="64" fill="none" r="60" stroke="#F59E0B" strokeDasharray="376" strokeDashoffset="350" strokeLinecap="round" strokeWidth="1.5"></circle>
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-[10px] text-zinc-500 uppercase tracking-widest">Total</span>
-                <span className="text-sm font-light text-white">100%</span>
+          {assets.length > 0 ? (
+            <div className="flex items-center justify-between gap-6" onClick={() => navigate('/analysis')}>
+              <div className="relative w-32 h-32 flex-shrink-0">
+                <svg className="w-full h-full transform -rotate-90">
+                  <circle cx="64" cy="64" fill="none" r="60" stroke="#1c1c1c" strokeWidth="0.5"></circle>
+                  <circle className="drop-shadow-[0_0_4px_rgba(15,182,127,0.5)]" cx="64" cy="64" fill="none" r="60" stroke="#0FB67F" strokeDasharray="376" strokeDashoffset="200" strokeLinecap="round" strokeWidth="1.5"></circle>
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-[10px] text-zinc-500 uppercase tracking-widest">Total</span>
+                  <span className="text-sm font-light text-white">100%</span>
+                </div>
+              </div>
+              <div className="flex-1 space-y-3">
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full border border-primary bg-primary/20"></div>
+                    <span className="text-zinc-300 font-light">Investimentos</span>
+                  </div>
+                  <span className="text-white font-medium">100%</span>
+                </div>
               </div>
             </div>
-            <div className="flex-1 space-y-3">
-              <div className="flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full border border-primary bg-primary/20"></div>
-                  <span className="text-zinc-300 font-light">Investimentos</span>
-                </div>
-                <span className="text-white font-medium">45%</span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full border border-accent-purple bg-accent-purple/20"></div>
-                  <span className="text-zinc-300 font-light">Corrente</span>
-                </div>
-                <span className="text-white font-medium">30%</span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full border border-accent-gold bg-accent-gold/20"></div>
-                  <span className="text-zinc-300 font-light">Reserva</span>
-                </div>
-                <span className="text-white font-medium">25%</span>
-              </div>
+          ) : (
+            <div className="py-8 text-center border border-dashed border-zinc-800 rounded-sm">
+              <p className="text-[10px] text-zinc-600 uppercase tracking-widest">Aguardando seu primeiro aporte</p>
+              <button
+                onClick={() => navigate('/add-account')}
+                className="mt-2 text-[10px] text-primary font-bold uppercase tracking-widest"
+              >
+                Adicionar Conta
+              </button>
             </div>
-          </div>
+          )}
         </section>
 
         <section className="space-y-4">
           <div className="flex justify-between items-end border-b border-white/5 pb-2">
-            <h3 className="text-xs font-light tracking-[0.2em] text-white uppercase">Conquistas Recentes</h3>
+            <h3 className="text-xs font-light tracking-[0.2em] text-white uppercase">Sua Experiência ({levelName})</h3>
           </div>
-          <div className="flex items-center gap-6 overflow-x-auto no-scrollbar py-2">
-            <div className="flex flex-col items-center gap-2 min-w-[64px]">
-              <div className="w-12 h-12 rounded-full border border-primary flex items-center justify-center shadow-[0_0_5px_theme('colors.primary'),_0_0_15px_rgba(15,182,127,0.3)]">
-                <span className="material-symbols-outlined text-primary text-2xl">workspace_premium</span>
-              </div>
-              <span className="text-[8px] text-zinc-500 uppercase tracking-widest text-center">Elite Saver</span>
+          <div className="flex flex-col gap-4">
+            <div className="flex justify-between items-end mb-1">
+              <span className="text-2xl font-black text-white">Nível {level}</span>
+              <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">{xp} / {currentMaxXP} XP</span>
             </div>
-            <div className="flex flex-col items-center gap-2 min-w-[64px]">
-              <div className="w-12 h-12 rounded-full border border-primary flex items-center justify-center">
-                <span className="material-symbols-outlined text-primary text-2xl">military_tech</span>
-              </div>
-              <span className="text-[8px] text-zinc-500 uppercase tracking-widest text-center">Invester</span>
-            </div>
-            <div className="flex flex-col items-center gap-2 min-w-[64px]">
-              <div className="w-12 h-12 rounded-full border border-primary flex items-center justify-center">
-                <span className="material-symbols-outlined text-primary text-2xl">shield</span>
-              </div>
-              <span className="text-[8px] text-zinc-500 uppercase tracking-widest text-center">Protected</span>
-            </div>
-            <div className="flex flex-col items-center gap-2 min-w-[64px]">
-              <div className="w-12 h-12 rounded-full border border-primary flex items-center justify-center">
-                <span className="material-symbols-outlined text-primary text-2xl">bolt</span>
-              </div>
-              <span className="text-[8px] text-zinc-500 uppercase tracking-widest text-center">Fast Growth</span>
+            <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-primary shadow-[0_0_10px_rgba(15,182,127,0.5)] transition-all duration-1000"
+                style={{ width: `${(xp / currentMaxXP) * 100}%` }}
+              ></div>
             </div>
           </div>
         </section>
@@ -146,55 +128,19 @@ export default function Dashboard() {
             <span className="material-symbols-outlined text-zinc-600 text-sm">task_alt</span>
           </div>
           <div className="space-y-3">
-            <div onClick={() => navigate('/new-transaction')} className="bg-transparent border border-primary rounded-sm p-3 flex items-center justify-between group transition-all hover:bg-white/5 cursor-pointer">
+            <div onClick={() => { addXP(1); navigate('/new-transaction'); }} className="bg-transparent border border-primary rounded-sm p-3 flex items-center justify-between group transition-all hover:bg-white/5 cursor-pointer">
               <div className="flex items-center gap-3">
                 <div className="w-5 h-5 rounded-full border border-primary/30 flex items-center justify-center bg-primary/5">
-                  <span className="material-symbols-outlined text-primary text-[14px]">check</span>
+                  <span className="material-symbols-outlined text-primary text-[14px]">add</span>
                 </div>
                 <span className="text-xs font-light text-zinc-300 tracking-wide">Registrar gasto</span>
               </div>
-              <span className="text-[10px] text-primary tracking-widest uppercase opacity-80">+5 XP</span>
+              <span className="text-[10px] text-primary tracking-widest uppercase opacity-80">+1 XP</span>
             </div>
-            <div onClick={() => navigate('/goals')} className="bg-transparent border border-primary rounded-sm p-3 flex items-center justify-between group transition-all hover:bg-white/5 cursor-pointer">
+            <div onClick={() => { addXP(5); navigate('/goals'); }} className="bg-transparent border border-primary rounded-sm p-3 flex items-center justify-between group transition-all hover:bg-white/5 cursor-pointer">
               <div className="w-5 h-5 rounded-full border border-primary flex items-center justify-center"></div>
               <span className="text-xs font-light text-zinc-300 tracking-wide flex-1 ml-3">Revisar metas</span>
-              <span className="text-[10px] text-zinc-600 tracking-widest uppercase">Pendente</span>
-            </div>
-            <div onClick={() => navigate('/ai-assistant')} className="bg-transparent border border-primary rounded-sm p-3 flex items-center justify-between group transition-all hover:bg-white/5 cursor-pointer">
-              <div className="w-5 h-5 rounded-full border border-primary flex items-center justify-center"></div>
-              <span className="text-xs font-light text-zinc-300 tracking-wide flex-1 ml-3">Ler insight IA</span>
-              <span className="text-[10px] text-zinc-600 tracking-widest uppercase">Pendente</span>
-            </div>
-          </div>
-        </section>
-
-        <section className="space-y-6">
-          <div className="flex justify-between items-end border-b border-white/5 pb-2">
-            <h3 className="text-xs font-light tracking-[0.2em] text-white uppercase">Desafios Diários</h3>
-          </div>
-          <div className="bg-transparent border border-primary rounded-sm p-5 relative overflow-hidden">
-            <div className="flex justify-between items-start mb-6">
-              <div>
-                <h4 className="text-xs font-medium text-white mb-1 tracking-wide">Desafio Ativo</h4>
-                <p className="text-[10px] text-zinc-500 font-light leading-relaxed">Comece seu primeiro desafio hoje.</p>
-              </div>
-              <div className="flex flex-col items-end">
-                <div className="flex items-center gap-1 mb-1">
-                  <span className="material-symbols-outlined text-primary text-lg opacity-30">local_fire_department</span>
-                  <span className="text-sm font-semibold text-white">0</span>
-                </div>
-                <span className="text-[9px] text-zinc-600 uppercase tracking-widest">Dias Streak</span>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between items-end text-[10px] text-zinc-400 font-light tracking-wide mb-1">
-                <span>Progresso</span>
-                <span>0%</span>
-              </div>
-              <div className="thin-progress-bar bg-zinc-900 h-[1px]">
-                <div className="thin-progress-fill w-[0%] h-[1px] shadow-[0_0_8px_rgba(15,182,127,0.6)]">
-                </div>
-              </div>
+              <span className="text-[10px] text-zinc-600 tracking-widest uppercase">+5 XP</span>
             </div>
           </div>
         </section>

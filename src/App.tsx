@@ -47,6 +47,9 @@ import CourseDetails from './pages/CourseDetails';
 import Mentorships from './pages/Mentorships';
 import MentorshipDetails from './pages/MentorshipDetails';
 import EditBudget from './pages/EditBudget';
+import Cart from './pages/Cart';
+import Tools from './pages/Tools';
+import Networking from './pages/Networking';
 
 export default function App() {
   return (
@@ -89,6 +92,9 @@ export default function App() {
               <Route path="/budget-details" element={<BudgetDetails />} />
               <Route path="/edit-budget" element={<EditBudget />} />
               <Route path="/spending-analysis" element={<SpendingAnalysis />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/tools" element={<Tools />} />
+              <Route path="/networking" element={<Networking />} />
               <Route path="/shop" element={<Shop />} />
               <Route path="/ebooks" element={<Ebooks />} />
               <Route path="/ebook/:id" element={<EbookDetails />} />

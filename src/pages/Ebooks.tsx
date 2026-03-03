@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import Header from '../components/Header';
 
 export const ebooksData = [
     {
@@ -58,63 +59,63 @@ export default function Ebooks() {
     const navigate = useNavigate();
 
     return (
-        <div className="bg-background-dark font-display min-h-screen flex flex-col pt-6 pb-12 overflow-x-hidden selection:bg-primary/30">
-            {/* Header */}
-            <header className="px-6 mb-8 flex items-center justify-between sticky top-0 bg-background-dark/80 backdrop-blur-md z-10 py-4">
-                <button
-                    onClick={() => navigate('/shop')}
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-transparent border border-white/10 active:scale-95 transition-all text-light-gray"
-                >
-                    <span className="material-symbols-outlined text-lg">arrow_back</span>
-                </button>
-                <div className="text-center">
-                    <h1 className="text-lg font-bold text-off-white tracking-tight">E-Books</h1>
-                    <p className="text-[10px] text-light-gray opacity-70 tracking-widest uppercase">Biblioteca Premium</p>
-                </div>
-                <button
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-transparent border border-white/10 active:scale-95 transition-all text-light-gray"
-                >
-                    <span className="material-symbols-outlined text-lg">search</span>
-                </button>
-            </header>
+        <div className="bg-black font-display text-white min-h-screen pb-20 overflow-x-hidden selection:bg-primary/30">
+            <Header showBack title="Livros Digitais" onBack={() => navigate('/shop')} />
 
-            {/* Ebooks Grid */}
-            <div className="px-6">
-                <div className="grid grid-cols-2 gap-4">
+            <main className="px-6 pt-6">
+                <div className="flex justify-between items-center mb-10 border-b border-white/5 pb-4">
+                    <div>
+                        <h2 className="text-2xl font-black text-white leading-none mb-1">E-books</h2>
+                        <span className="text-zinc-500 text-[10px] font-black uppercase tracking-[0.2em]">Biblioteca Estruturada</span>
+                    </div>
+                    <span className="material-symbols-outlined text-primary text-2xl">auto_stories</span>
+                </div>
+
+                <div className="grid grid-cols-1 gap-8">
                     {ebooksData.map((ebook) => (
                         <div
                             key={ebook.id}
                             onClick={() => navigate(`/ebook/${ebook.id}`)}
-                            className="flex flex-col gap-2 p-3 rounded-2xl bg-transparent border border-white/10 hover:border-primary/30 transition-all active:scale-[0.98] group cursor-pointer"
+                            className="bg-zinc-900 rounded-[2.5rem] border border-white/5 overflow-hidden active:scale-[0.98] transition-all cursor-pointer shadow-2xl group flex h-full"
                         >
-                            <div className="relative aspect-[3/4] rounded-xl overflow-hidden w-full">
-                                <img src={ebook.coverUrl} alt={ebook.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                            <div className="relative w-1/3 aspect-[3/4] overflow-hidden">
+                                <img src={ebook.coverUrl} className="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-700 shadow-2xl" alt={ebook.title} />
+                                <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent"></div>
                                 {ebook.tag && (
-                                    <div className="absolute top-2 left-2 px-1.5 py-0.5 bg-primary text-black text-[8px] font-black uppercase tracking-widest rounded shadow-[0_0_10px_rgba(15,182,127,0.4)]">
+                                    <div className="absolute top-4 left-4 px-1.5 py-0.5 bg-primary text-black text-[7px] font-black uppercase tracking-widest rounded shadow-xl">
                                         {ebook.tag}
                                     </div>
                                 )}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                             </div>
 
-                            <div className="flex flex-col mt-1">
-                                <h4 className="text-white text-sm font-bold leading-tight line-clamp-2">{ebook.title}</h4>
-                                <span className="text-light-gray text-[10px] mt-1 line-clamp-1">{ebook.author}</span>
+                            <div className="p-6 flex-1 flex flex-col justify-between">
+                                <div>
+                                    <h3 className="text-base font-black text-white leading-tight uppercase tracking-tight mb-1 group-hover:text-primary transition-colors">{ebook.title}</h3>
+                                    <p className="text-zinc-500 text-[9px] font-bold uppercase tracking-widest mb-4">{ebook.author}</p>
 
-                                <div className="flex items-center gap-1 mt-2">
-                                    <span className="material-symbols-outlined text-primary text-[12px]">star</span>
-                                    <span className="text-[10px] text-white font-bold">{ebook.rating}</span>
-                                    <span className="text-[9px] text-light-gray">({ebook.reviews})</span>
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="flex items-center gap-1.5 grayscale opacity-60">
+                                            <span className="material-symbols-outlined text-[10px] text-zinc-400">menu_book</span>
+                                            <span className="text-[8px] text-zinc-500 font-black uppercase tracking-widest">{ebook.pages} Páginas</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="text-[10px] text-white font-black">{ebook.rating}</span>
+                                            <span className="material-symbols-outlined text-primary text-xs filled">star</span>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="mt-3 flex items-center justify-between">
-                                    <span className="text-primary font-bold">{ebook.price}</span>
+                                <div className="flex justify-between items-center bg-black/50 p-4 rounded-3xl border border-white/5">
+                                    <p className="text-lg font-black text-primary">{ebook.price}</p>
+                                    <button className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-black shadow-lg shadow-primary/20">
+                                        <span className="material-symbols-outlined font-black">download</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
-            </div>
+            </main>
         </div>
     );
 }

@@ -5,6 +5,7 @@ interface HeaderProps {
     title?: string;
     subtitle?: string;
     showBack?: boolean;
+    onBack?: () => void;
     rightElement?: ReactNode;
     sticky?: boolean;
 }
@@ -13,16 +14,25 @@ export default function Header({
     title,
     subtitle,
     showBack = false,
+    onBack,
     rightElement,
 }: HeaderProps) {
     const navigate = useNavigate();
+
+    const handleBack = () => {
+        if (onBack) {
+            onBack();
+        } else {
+            navigate(-1);
+        }
+    };
 
     return (
         <header className="px-6 pt-4 pb-4 flex items-center justify-between">
             <div className="flex items-center space-x-4">
                 {showBack && (
                     <button
-                        onClick={() => navigate(-1)}
+                        onClick={handleBack}
                         className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95"
                     >
                         <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">arrow_back_ios_new</span>

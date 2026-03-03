@@ -7,10 +7,24 @@ interface DataContextType {
     transactions: Transaction[];
     assets: Asset[];
     goals: Goal[];
-    budgets: any[]; // Temporary 'any' until Budget type is defined or imported
+    budgets: any[];
     loading: boolean;
     refreshData: () => Promise<void>;
+    xp: number;
+    level: number;
+    currentMaxXP: number;
+    addXP: (amount: number) => void;
+    levelName: string;
+    levelNames: string[];
+    clearAllData: () => Promise<void>;
 }
+
+export const LEVEL_NAMES = [
+    "Novato", "Iniciante", "Aprendiz", "Poupador", "Poupador Ativo",
+    "Investidor", "Estrategista", "Analista", "Planejador", "Gestor",
+    "Visionário", "Mestre", "Águia", "Tubarão", "Elite",
+    "Magnata", "Barão", "Soberano", "Lenda do POUP"
+];
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
@@ -21,6 +35,60 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [goals, setGoals] = useState<Goal[]>([]);
     const [budgets, setBudgets] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+
+    const [xp, setXp] = useState(() => Number(localStorage.getItem('poup_xp') || 0));
+    const [level, setLevel] = useState(() => Number(localStorage.getItem('poup_level') || 1));
+
+    const currentMaxXP = Math.min(1000, Math.round(100 * Math.pow(1.1, level - 1)));
+    const levelName = LEVEL_NAMES[Math.min(level - 1, LEVEL_NAMES.length - 1)];
+
+    const addXP = (amount: number) => {
+        setXp(prev => {
+            const nextXp = prev + amount;
+            if (nextXp >= currentMaxXP) {
+                setLevel(l => {
+                    const nextL = l + 1;
+                    localStorage.setItem('poup_level', String(nextL));
+                    return nextL;
+                });
+                const leftover = nextXp - currentMaxXP;
+                localStorage.setItem('poup_xp', String(leftover));
+                return leftover;
+            }
+            localStorage.setItem('poup_xp', String(nextXp));
+            return nextXp;
+        });
+    };
+
+    const clearAllData = async () => {
+        if (!user) return;
+        setLoading(true);
+        try {
+            // Delete from all tables in Supabase for this user
+            await Promise.all([
+                supabase.from('transactions').delete().eq('user_id', user.id),
+                supabase.from('assets').delete().eq('user_id', user.id),
+                supabase.from('goals').delete().eq('user_id', user.id),
+                supabase.from('budgets').delete().eq('user_id', user.id)
+            ]);
+
+            // Reset local state
+            setTransactions([]);
+            setAssets([]);
+            setGoals([]);
+            setBudgets([]);
+            setXp(0);
+            setLevel(1);
+            localStorage.setItem('poup_xp', '0');
+            localStorage.setItem('poup_level', '1');
+
+            await fetchData();
+        } catch (error) {
+            console.error('Error clearing data:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const fetchData = async () => {
         if (!user) return;
@@ -59,30 +127,31 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         fetchData();
 
         // Real-time subscriptions
-        const transactionsChannel = supabase
-            .channel('public:transactions')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'transactions', filter: `user_id=eq.${user.id}` }, () => fetchData())
-            .subscribe();
-
-        const assetsChannel = supabase
-            .channel('public:assets')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'assets', filter: `user_id=eq.${user.id}` }, () => fetchData())
-            .subscribe();
-
-        const goalsChannel = supabase
-            .channel('public:goals')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'goals', filter: `user_id=eq.${user.id}` }, () => fetchData())
-            .subscribe();
+        const channels = [
+            supabase.channel('public:transactions').on('postgres_changes', { event: '*', schema: 'public', table: 'transactions', filter: `user_id=eq.${user.id}` }, () => {
+                fetchData();
+                addXP(1);
+            }),
+            supabase.channel('public:assets').on('postgres_changes', { event: '*', schema: 'public', table: 'assets', filter: `user_id=eq.${user.id}` }, () => {
+                fetchData();
+                addXP(1);
+            }),
+            supabase.channel('public:goals').on('postgres_changes', { event: '*', schema: 'public', table: 'goals', filter: `user_id=eq.${user.id}` }, () => {
+                fetchData();
+                addXP(5);
+            })
+        ].map(c => c.subscribe());
 
         return () => {
-            supabase.removeChannel(transactionsChannel);
-            supabase.removeChannel(assetsChannel);
-            supabase.removeChannel(goalsChannel);
+            channels.forEach(c => supabase.removeChannel(c));
         };
-    }, [user]);
+    }, [user, level]);
 
     return (
-        <DataContext.Provider value={{ transactions, assets, goals, budgets, loading, refreshData: fetchData }}>
+        <DataContext.Provider value={{
+            transactions, assets, goals, budgets, loading,
+            refreshData: fetchData, xp, level, currentMaxXP, addXP, levelName, levelNames: LEVEL_NAMES, clearAllData
+        }}>
             {children}
         </DataContext.Provider>
     );
