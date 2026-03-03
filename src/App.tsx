@@ -10,10 +10,8 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import Accounts from './pages/Accounts';
-import Missions from './pages/Missions';
 import Analysis from './pages/Analysis';
 import Profile from './pages/Profile';
-import Ranking from './pages/Ranking';
 import Reports from './pages/Reports';
 import AddAccount from './pages/AddAccount';
 import AddCard from './pages/AddCard';
@@ -62,10 +60,8 @@ export default function App() {
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/accounts" element={<Accounts />} />
-            <Route path="/missions" element={<Missions />} />
             <Route path="/analysis" element={<Analysis />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/ranking" element={<Ranking />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/add-account" element={<AddAccount />} />
             <Route path="/add-card" element={<AddCard />} />

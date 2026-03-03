@@ -115,22 +115,15 @@ export default function Dashboard() {
               </div>
               <p className="text-[9px] text-zinc-500 mt-4 font-bold uppercase">Meta: 80%</p>
             </div>
-            <div onClick={() => navigate('/ranking')} className="cursor-pointer bg-zinc-950 border border-zinc-900 rounded-[24px] p-5 flex flex-col items-center overflow-hidden">
-              <h3 className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-4 w-full">Score IA</h3>
+            <div onClick={() => navigate('/compound-interest')} className="cursor-pointer bg-zinc-950 border border-zinc-900 rounded-[24px] p-5 flex flex-col items-center overflow-hidden">
+              <h3 className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-4 w-full">Simulador</h3>
               <div className="relative w-20 h-20 flex flex-col items-center justify-center">
-                <svg className="w-full h-full transform -rotate-90 absolute top-0 left-0">
-                  <circle className="text-zinc-900" cx="40" cy="40" fill="transparent" r="34" stroke="currentColor" strokeWidth="4"></circle>
-                  <circle className="text-primary" cx="40" cy="40" fill="transparent" r="34" stroke="currentColor" strokeDasharray="213" strokeDashoffset="40" strokeLinecap="round" strokeWidth="4"></circle>
-                </svg>
+                <span className="material-symbols-outlined text-primary text-4xl">calculate</span>
                 <div className="absolute inset-0 w-full h-full animate-rotate-glow pointer-events-none">
                   <div className="absolute top-1 left-1/2 -translate-x-1/2 w-4 h-4 bg-primary rounded-full blur-[8px] opacity-40"></div>
                 </div>
-                <div className="relative z-10 flex flex-col items-center justify-center">
-                  <span className="text-lg font-bold font-display">845</span>
-                  <span className="text-[8px] text-primary font-bold">EXCELENTE</span>
-                </div>
               </div>
-              <p className="text-[9px] text-zinc-500 mt-4 font-bold uppercase">+15 pts mês</p>
+              <p className="text-[9px] text-zinc-500 mt-4 font-bold uppercase truncate max-w-full">Juros Compostos</p>
             </div>
           </div>
         </div>

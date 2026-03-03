@@ -3,14 +3,11 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Footer from './Footer';
 
 const navTabs = [
-  { path: '/dashboard', label: 'INÍCIO' },
-  { path: '/transactions', label: 'TRANSAÇÕES' },
-  { path: '/investment-portfolio', label: 'CARTEIRA' },
-  { path: '/accounts', label: 'CONTAS' },
-  { path: '/goals', label: 'METAS' },
-  { path: '/reports', label: 'RELATÓRIOS' },
-  { path: '/missions', label: 'MISSÕES' },
-  { path: '/compound-interest', label: 'SIMULADOR' },
+  { path: '/dashboard', label: 'Início', icon: 'grid_view' },
+  { path: '/transactions', label: 'Extrato', icon: 'receipt_long' },
+  { path: '/reports', label: 'Análise', icon: 'bar_chart' },
+  { path: '/investment-portfolio', label: 'Ativos', icon: 'account_balance_wallet' },
+  { path: '/goals', label: 'Metas', icon: 'ads_click' },
 ];
 
 export default function Layout() {
@@ -28,73 +25,82 @@ export default function Layout() {
     if (tabPath === '/dashboard') return location.pathname === '/dashboard';
     if (tabPath === '/transactions') return location.pathname.includes('/transaction');
     if (tabPath === '/investment-portfolio') return location.pathname.includes('/investment') || location.pathname.includes('/asset');
-    if (tabPath === '/accounts') return location.pathname === '/accounts' || location.pathname.includes('/add-account') || location.pathname.includes('/add-card');
-    if (tabPath === '/goals') return location.pathname.includes('/goal');
+    if (tabPath === '/goals') return location.pathname.includes('/goal') || location.pathname.includes('/add-goal');
     if (tabPath === '/reports') return location.pathname.includes('/report') || location.pathname.includes('/spending-analysis') || location.pathname.includes('/savings-simulator') || location.pathname.includes('/financial-performance');
-    if (tabPath === '/missions') return location.pathname.includes('/mission') || location.pathname.includes('/ranking');
-    if (tabPath === '/compound-interest') return location.pathname.includes('/compound');
     return location.pathname === tabPath;
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background-dark text-white font-sans">
-      {/* Top Header */}
-      <header className="fixed top-0 left-0 right-0 z-[55] bg-background-dark/90 backdrop-blur-xl border-b border-zinc-800">
-        {/* Top Row: Menu + Title + Notifications */}
-        <div className="flex items-center justify-between px-6 pt-12 pb-3">
-          <button
-            onClick={() => navigate('/profile')}
-            className="w-11 h-11 rounded-full flex items-center justify-center active:scale-95 transition-all hover:bg-zinc-800/50"
-          >
-            <span className="material-symbols-outlined text-white text-2xl">menu</span>
-          </button>
+    <div className="flex flex-col min-h-screen bg-background-dark text-white font-sans overflow-x-hidden">
+      {/* Mini Header (fixed at top) */}
+      <header className="fixed top-0 left-0 right-0 z-[55] bg-background-dark/80 backdrop-blur-xl px-6 pt-12 pb-4 flex items-center justify-between">
+        <button
+          onClick={() => navigate('/profile')}
+          className="w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-all bg-white/5 hover:bg-white/10"
+        >
+          <span className="material-symbols-outlined text-white text-xl">person</span>
+        </button>
 
-          <h1 className="text-[10px] font-display font-bold tracking-[0.4em] text-white uppercase">
-            POUP
-          </h1>
+        <h1 className="text-[10px] font-display font-bold tracking-[0.4em] text-white uppercase ml-4">
+          POUP
+        </h1>
 
-          <button
-            onClick={() => navigate('/notifications')}
-            className="w-11 h-11 rounded-full flex items-center justify-center relative active:scale-95 transition-all hover:bg-zinc-800/50"
-          >
-            <div className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-primary border-2 border-background-dark z-10"></div>
-            <span className="material-symbols-outlined text-white text-2xl">notifications</span>
-          </button>
+        <button
+          onClick={() => navigate('/notifications')}
+          className="w-10 h-10 rounded-full flex items-center justify-center relative active:scale-90 transition-all bg-white/5 hover:bg-white/10"
+        >
+          <div className="absolute top-2.5 right-2.5 w-1.5 h-1.5 rounded-full bg-primary ring-4 ring-background-dark/40"></div>
+          <span className="material-symbols-outlined text-white text-xl">notifications</span>
+        </button>
+      </header>
+
+      {/* Main Content Area */}
+      <main className="flex-grow pt-[100px] pb-[120px]">
+        <Outlet />
+        <div className="px-6 mb-8">
+          <Footer />
         </div>
+      </main>
 
-        {/* Navigation Tabs */}
-        <div className="flex overflow-x-auto hide-scrollbar px-4 gap-1">
+      {/* NEW PREMIUM FLOATING BOTTOM NAVIGATION */}
+      <nav className="fixed bottom-8 left-6 right-6 z-[100] flex justify-center pointer-events-none">
+        <div className="pointer-events-auto flex items-center gap-1 p-2 bg-zinc-900/40 backdrop-blur-2xl border border-white/5 rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all">
           {navTabs.map((tab) => {
             const active = isTabActive(tab.path);
             return (
               <button
                 key={tab.path}
                 onClick={() => navigate(tab.path)}
-                className={`whitespace-nowrap pb-3 px-3 text-[10px] font-bold tracking-widest transition-colors ${active
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-zinc-500'
-                  }`}
+                className={`flex flex-col items-center justify-center min-w-[64px] h-12 rounded-[24px] transition-all duration-300 relative group
+                  ${active ? 'bg-primary/20 text-primary' : 'text-zinc-500 hover:text-zinc-300'}`}
               >
-                {tab.label}
+                <span className={`material-symbols-outlined transition-all duration-300 ${active ? 'text-2xl filled scale-110' : 'text-xl group-hover:scale-110'}`}>
+                  {tab.icon}
+                </span>
+                {active && (
+                  <div className="absolute -bottom-1 w-1 h-1 bg-primary rounded-full animate-pulse-glow"></div>
+                )}
+                {/* Optional mini label for better accessibility */}
+                {/* <span className={`text-[8px] font-black uppercase tracking-widest mt-0.5 transition-all ${active ? 'opacity-100' : 'opacity-0 scale-50'}`}>
+                  {tab.label}
+                </span> */}
               </button>
             );
           })}
         </div>
-      </header>
+      </nav>
 
       <style>{`
+        /* Hide scrollbar functionality if needed elsewhere */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        @keyframes aura-shine {
+          0% { box-shadow: 0 0 10px rgba(15,182,127,0); }
+          50% { box-shadow: 0 0 20px rgba(15,182,127,0.2); }
+          100% { box-shadow: 0 0 10px rgba(15,182,127,0); }
+        }
       `}</style>
-
-      <main className="flex-grow pt-[120px]">
-        <Outlet />
-        <div className="px-6">
-          <Footer />
-        </div>
-      </main>
-
-      <div className="h-8"></div>
     </div>
   );
 }
