@@ -31,7 +31,6 @@ import EditGoal from './pages/EditGoal';
 import PersonalData from './pages/PersonalData';
 import Onboarding from './pages/Onboarding';
 import Consent from './pages/Consent';
-import InvestmentPortfolio from './pages/InvestmentPortfolio';
 import NewInvestment from './pages/NewInvestment';
 import AssetDetails from './pages/AssetDetails';
 import Budgets from './pages/Budgets';
@@ -76,7 +75,6 @@ export default function App() {
             <Route path="/edit-goal" element={<EditGoal />} />
             <Route path="/personal-data" element={<PersonalData />} />
             <Route path="/financial-performance" element={<FinancialPerformance />} />
-            <Route path="/investment-portfolio" element={<InvestmentPortfolio />} />
             <Route path="/new-investment" element={<NewInvestment />} />
             <Route path="/asset-details" element={<AssetDetails />} />
             <Route path="/budgets" element={<Budgets />} />

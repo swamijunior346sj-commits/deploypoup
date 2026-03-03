@@ -6,7 +6,6 @@ const navTabs = [
   { path: '/dashboard', label: 'Início', icon: 'grid_view' },
   { path: '/transactions', label: 'Transações', icon: 'receipt_long' },
   { path: '/analysis', label: 'Análise', icon: 'bar_chart' },
-  { path: '/investment-portfolio', label: 'Ativos', icon: 'account_balance_wallet' },
   { path: '/goals', label: 'Metas', icon: 'ads_click' },
 ];
 
@@ -25,14 +24,14 @@ export default function Layout() {
   const isTabActive = (tabPath: string) => {
     if (tabPath === '/dashboard') return location.pathname === '/dashboard';
     if (tabPath === '/transactions') return location.pathname.includes('/transaction');
-    if (tabPath === '/investment-portfolio') return location.pathname.includes('/investment') || location.pathname.includes('/asset');
+    if (tabPath === '/analysis') return location.pathname.includes('/analysis') || location.pathname.includes('/asset-details') || location.pathname.includes('/investment');
     if (tabPath === '/goals') return location.pathname.includes('/goal') || location.pathname.includes('/add-goal');
     if (tabPath === '/reports') return location.pathname.includes('/report') || location.pathname.includes('/spending-analysis') || location.pathname.includes('/savings-simulator') || location.pathname.includes('/financial-performance');
     return location.pathname === tabPath;
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background-dark text-white font-sans overflow-x-hidden">
+    <div className="flex flex-col min-h-screen bg-background-black text-white font-sans overflow-x-hidden">
       {/* Mini Header (fixed at top) */}
       {!isDashboard && (
         <header className="fixed top-0 left-0 right-0 z-[55] bg-background-dark/80 backdrop-blur-xl px-6 pt-12 pb-4 flex items-center justify-between">

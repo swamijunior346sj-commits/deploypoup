@@ -45,7 +45,7 @@ export default function Dashboard() {
             <h3 className="text-xs font-light tracking-[0.2em] text-white uppercase">Alocação por Conta</h3>
             <span className="material-symbols-outlined text-zinc-600 text-sm">pie_chart</span>
           </div>
-          <div className="flex items-center justify-between gap-6" onClick={() => navigate('/investment-portfolio')}>
+          <div className="flex items-center justify-between gap-6" onClick={() => navigate('/analysis')}>
             <div className="relative w-32 h-32 flex-shrink-0">
               <svg className="w-full h-full transform -rotate-90">
                 <circle cx="64" cy="64" fill="none" r="60" stroke="#1c1c1c" strokeWidth="0.5"></circle>

@@ -1,31 +1,57 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 export default function AssetDetails() {
     const { state } = useLocation();
     const navigate = useNavigate();
     const asset = state?.asset || { ticker: 'PETR4.SA', name: 'Petróleo Brasileiro S.A.', value: 'R$ 38,42', change: '+2.45%', icon: 'payments' };
 
+    // Função real para gerar o caminho do gráfico SVG baseado em dados simulados
+    const chartPath = useMemo(() => {
+        const points = [
+            { x: 0, y: 160 },
+            { x: 50, y: 155 },
+            { x: 100, y: 170 },
+            { x: 150, y: 140 },
+            { x: 200, y: 145 },
+            { x: 250, y: 100 },
+            { x: 300, y: 110 },
+            { x: 350, y: 60 },
+            { x: 400, y: 40 }
+        ];
+
+        let d = `M ${points[0].x},${points[0].y}`;
+        for (let i = 1; i < points.length; i++) {
+            const prev = points[i - 1];
+            const curr = points[i];
+            const next = points[i + 1] || curr;
+            const cp1x = prev.x + (curr.x - prev.x) / 2;
+            const cp2x = curr.x - (curr.x - prev.x) / 2;
+            d += ` C ${cp1x},${prev.y} ${cp2x},${curr.y} ${curr.x},${curr.y}`;
+        }
+        return d;
+    }, []);
+
+    // Função para o gráfico de área (preenchimento)
+    const areaPath = useMemo(() => {
+        return `${chartPath} L 400,200 L 0,200 Z`;
+    }, [chartPath]);
+
     return (
         <div className="bg-black text-[#F5F5F5] font-sans flex flex-col min-h-screen selection:bg-primary/30 overflow-x-hidden antialiased">
-            {/* Header Sticky */}
-            <header className="pt-12 pb-2 px-6 sticky top-0 bg-black/90 backdrop-blur-xl z-50 border-b border-zinc-900">
-                <div className="flex items-center justify-between mb-6">
+            {/* Header Reduzido */}
+            <header className="pt-12 pb-6 px-6 sticky top-0 bg-black/90 backdrop-blur-xl z-50 border-b border-zinc-900">
+                <div className="flex items-center justify-between">
                     <button onClick={() => navigate(-1)} className="material-symbols-outlined text-[#FCFCFC] active:scale-95 transition-transform">arrow_back</button>
                     <h1 className="text-[10px] font-display font-bold tracking-[0.4em] text-[#FCFCFC] uppercase text-center flex-1">PERFORMANCE DO ATIVO</h1>
-                    <span className="material-symbols-outlined text-[#FCFCFC]">notifications</span>
-                </div>
-                <div className="flex justify-between items-center text-xs font-semibold tracking-wider px-2">
-                    <button className="pb-3 px-2 text-zinc-500 hover:text-white transition-colors">GERAL</button>
-                    <button className="pb-3 px-2 text-primary border-b-2 border-primary">TÉCNICO</button>
-                    <button className="pb-3 px-2 text-zinc-500 hover:text-white transition-colors">HISTÓRICO</button>
+                    <div className="w-6"></div> {/* Espaçador para centralizar o título */}
                 </div>
             </header>
 
             <main className="flex-1 overflow-y-auto pb-12">
                 <section className="p-6">
                     {/* Header do Ativo */}
-                    <div className="flex justify-between items-end mb-6">
+                    <div className="flex justify-between items-end mb-8 mt-2">
                         <div>
                             <h2 className="text-2xl font-display font-bold text-[#FCFCFC] tracking-tight">{asset.ticker}</h2>
                             <p className="text-[10px] text-zinc-500 tracking-widest uppercase mt-1">{asset.name}</p>
@@ -36,7 +62,7 @@ export default function AssetDetails() {
                         </div>
                     </div>
 
-                    {/* Gráfico de Volatilidade */}
+                    {/* Gráfico Dinâmico */}
                     <div className="w-full aspect-[16/9] border border-primary/40 rounded-3xl p-4 relative overflow-hidden mb-6 bg-black/40">
                         <div className="absolute inset-0 grid grid-rows-5 px-4 py-8 opacity-10 pointer-events-none">
                             <div className="border-t border-primary"></div>
@@ -52,12 +78,12 @@ export default function AssetDetails() {
                                     <stop offset="100%" stopColor="#0FB67F" stopOpacity="0"></stop>
                                 </linearGradient>
                             </defs>
-                            <path d="M0,200 L0,160 C50,150 80,180 120,140 C160,100 200,120 240,80 C280,40 320,60 360,30 C380,15 400,20 L400,200 Z" fill="url(#neonGradient)"></path>
-                            <path d="M0,160 C50,150 80,180 120,140 C160,100 200,120 240,80 C280,40 320,60 360,30 C380,15 400,20" fill="none" stroke="#0FB67F" strokeWidth="2"></path>
+                            <path d={areaPath} fill="url(#neonGradient)"></path>
+                            <path d={chartPath} fill="none" stroke="#0FB67F" strokeWidth="2.5" strokeLinecap="round" className="animate-draw" style={{ "--final-offset": 0 } as any}></path>
                         </svg>
                         <div className="absolute top-4 right-6 flex items-center gap-2">
                             <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#0FB67F]"></div>
-                            <span className="text-[9px] text-primary font-black tracking-tighter">VOLATILIDADE AO VIVO</span>
+                            <span className="text-[9px] text-primary font-black tracking-tighter">GRÁFICO EM TEMPO REAL</span>
                         </div>
                     </div>
 
@@ -115,35 +141,6 @@ export default function AssetDetails() {
                         <button className="w-full mt-10 py-4 text-[10px] font-black tracking-[0.3em] text-primary border border-primary/20 rounded-2xl hover:bg-primary/5 active:scale-95 transition-all uppercase">
                             VER HISTÓRICO COMPLETO
                         </button>
-                    </div>
-
-                    {/* Crescimento Patrimonial */}
-                    <div className="border border-primary/20 rounded-[2rem] p-7 mb-6 bg-black/40">
-                        <h3 className="text-[10px] font-black tracking-[0.3em] text-zinc-500 uppercase mb-8">CRESCIMENTO PATRIMONIAL</h3>
-                        <div className="w-full h-40 relative">
-                            <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 400 150">
-                                <defs>
-                                    <linearGradient id="areaGradient" x1="0" x2="0" y1="0" y2="1">
-                                        <stop offset="0%" stopColor="#0FB67F" stopOpacity="0.15"></stop>
-                                        <stop offset="100%" stopColor="#0FB67F" stopOpacity="0"></stop>
-                                    </linearGradient>
-                                </defs>
-                                <path d="M0,130 C40,125 60,110 100,105 C140,100 160,115 200,80 C240,45 280,60 320,40 C360,20 380,25 400,10 L400,150 L0,150 Z" fill="url(#areaGradient)"></path>
-                                <path d="M0,130 C40,125 60,110 100,105 C140,100 160,115 200,80 C240,45 280,60 320,40 C360,20 380,25 400,10" fill="none" stroke="#0FB67F" strokeWidth="1"></path>
-                                <circle cx="100" cy="105" fill="#0FB67F" r="2"></circle>
-                                <circle cx="200" cy="80" fill="#0FB67F" r="2"></circle>
-                                <circle cx="320" cy="40" fill="#0FB67F" r="2"></circle>
-                                <circle cx="400" cy="10" fill="#0FB67F" r="3"></circle>
-                            </svg>
-                            <div className="flex justify-between mt-4 text-[8px] text-zinc-600 font-black uppercase tracking-[0.2em]">
-                                <span>JAN</span>
-                                <span>MAR</span>
-                                <span>MAI</span>
-                                <span>JUL</span>
-                                <span>SET</span>
-                                <span className="text-primary">HOJE</span>
-                            </div>
-                        </div>
                     </div>
 
                     {/* Alocação por Risco */}

@@ -11,7 +11,7 @@ export default function NewInvestment() {
 
     const handleSave = () => {
         // TODO: Save investment to Supabase
-        navigate('/investment-portfolio');
+        navigate('/analysis');
     };
 
     return (
