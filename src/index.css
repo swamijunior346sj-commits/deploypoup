@@ -1,14 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #10B981;
-  --color-secondary: #A855F7;
-  --color-background-dark: #000000;
-  --color-card-dark: #0A0A0A;
-  --color-gold: #FFD700;
-  --color-silver: #C0C0C0;
-  --color-bronze: #CD7F32;
-  --color-neon-green: #39FF14;
+  --color-primary: #0FB67F;
+  --color-primary-dark: #0A8F63;
+  --color-background-black: #000000;
+  --color-card-dark: #131418;
+  --color-card-thin: #0D0E10;
+  --color-border-gray: #2A2B30;
+  --color-accent-purple: #A855F7;
+  --color-accent-blue: #3B82F6;
+  --color-accent-gold: #F59E0B;
+  --color-gradient-green: #042017;
 
   --color-brand-bg: #000000;
   --color-brand-card: #0D0E10;
@@ -23,8 +25,8 @@
   --font-display: "Montserrat", sans-serif;
   --font-sans: "Inter", sans-serif;
 
-  --animate-pulse-glow: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  --animate-shimmer: shimmer 3s infinite linear;
+  --animate-pulse-glow: pulse-glow-v2 2s ease-in-out infinite;
+  --animate-shimmer-path: shimmer-path 3s infinite linear;
   --animate-rotate-glow: rotate-glow 4s linear infinite;
   --animate-aura-breathe: aura-breathe 3s ease-in-out infinite;
   --animate-breathing: breathing 3s ease-in-out infinite;
@@ -55,6 +57,18 @@
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  .thin-progress-bar {
+    @apply h-[2px] bg-zinc-800 rounded-full overflow-visible relative;
+  }
+
+  .thin-progress-fill {
+    @apply h-full bg-primary rounded-full relative;
+  }
+
+  .progress-tip-glow {
+    @apply absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_10px_2px_rgba(15,182,127,0.8)];
   }
 
   @keyframes levitate {
@@ -123,13 +137,31 @@
     }
   }
 
-  @keyframes shimmer {
+  @keyframes shimmer-path {
     0% {
-      transform: translateX(-150%);
+      stroke-dashoffset: 301.59;
+      opacity: 0;
+    }
+
+    50% {
+      opacity: 1;
     }
 
     100% {
-      transform: translateX(150%);
+      stroke-dashoffset: -301.59;
+      opacity: 0;
+    }
+  }
+
+  @keyframes pulse-glow-v2 {
+
+    0%,
+    100% {
+      filter: drop-shadow(0 0 2px rgba(15, 182, 127, 0.6));
+    }
+
+    50% {
+      filter: drop-shadow(0 0 8px rgba(15, 182, 127, 0.9));
     }
   }
 
