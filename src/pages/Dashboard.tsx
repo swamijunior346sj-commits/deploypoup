@@ -30,7 +30,7 @@ export default function Dashboard() {
           </div>
           <button onClick={() => navigate('/notifications')} className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:border-white/30 transition-all relative">
             <span className="absolute top-2.5 right-3 w-1 h-1 bg-primary rounded-full animate-pulse shadow-[0_0_5px_theme('colors.primary'),_0_0_15px_rgba(15,182,127,0.3)]"></span>
-            <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 0, 'wght' 200" }}>notifications</span>
+            <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 0, 'wght' 200" }}>notifications_active</span>
           </button>
         </div>
       </header>

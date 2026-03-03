@@ -56,7 +56,7 @@ export default function Profile() {
           </div>
           <div className="flex items-center justify-between py-4 border-b border-zinc-900 group cursor-pointer">
             <div className="flex items-center space-x-4">
-              <span className="material-symbols-outlined text-primary">notifications</span>
+              <span className="material-symbols-outlined text-primary">notifications_active</span>
               <span className="text-sm font-medium text-zinc-300">Notificações</span>
             </div>
             <span className="material-symbols-outlined text-zinc-600 text-sm">chevron_right</span>

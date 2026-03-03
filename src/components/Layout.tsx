@@ -7,6 +7,7 @@ const navTabs = [
   { path: '/transactions', label: 'Transações', icon: 'receipt_long' },
   { path: '/analysis', label: 'Análise', icon: 'bar_chart' },
   { path: '/goals', label: 'Metas', icon: 'ads_click' },
+  { path: '/shop', label: 'Loja', icon: 'storefront' },
 ];
 
 export default function Layout() {
@@ -27,6 +28,7 @@ export default function Layout() {
     if (tabPath === '/analysis') return location.pathname.includes('/analysis') || location.pathname.includes('/asset-details') || location.pathname.includes('/investment');
     if (tabPath === '/goals') return location.pathname.includes('/goal') || location.pathname.includes('/add-goal');
     if (tabPath === '/reports') return location.pathname.includes('/report') || location.pathname.includes('/spending-analysis') || location.pathname.includes('/savings-simulator') || location.pathname.includes('/financial-performance');
+    if (tabPath === '/shop') return location.pathname.includes('/shop');
     return location.pathname === tabPath;
   };
 
@@ -51,7 +53,7 @@ export default function Layout() {
             className="w-10 h-10 rounded-full flex items-center justify-center relative active:scale-90 transition-all bg-white/5 hover:bg-white/10"
           >
             <div className="absolute top-2.5 right-2.5 w-1.5 h-1.5 rounded-full bg-primary ring-4 ring-background-dark/40"></div>
-            <span className="material-symbols-outlined text-white text-xl">notifications</span>
+            <span className="material-symbols-outlined text-white text-xl">notifications_active</span>
           </button>
         </header>
       )}

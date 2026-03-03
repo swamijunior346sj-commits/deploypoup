@@ -1,154 +1,191 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
+import { useData } from '../contexts/DataContext';
 
 export default function AddGoalValue() {
     const navigate = useNavigate();
     const location = useLocation();
-    const goal = location.state?.goal || { name: 'Viagem Europa', current: 9750, percentage: 65 };
-    const [amount, setAmount] = useState('0,00');
+    const { refreshData } = useData();
+    const goal = location.state?.goal || { id: '', name: 'Reserva de Emergência', current_amount: 0, target_amount: 10000 };
+
+    const [amount, setAmount] = useState('0');
+    const [loading, setLoading] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
 
-    const handleConfirm = () => {
-        setShowSuccess(true);
+    const percentage = Math.round((goal.current_amount / (goal.target_amount || 1)) * 100);
+
+    const handleConfirm = async () => {
+        const numericAmount = parseFloat(amount.replace(/[^0-9,.-]+/g, "").replace(',', '.'));
+        if (isNaN(numericAmount) || numericAmount <= 0) {
+            return;
+        }
+
+        if (goal.id) {
+            setLoading(true);
+            try {
+                const { error } = await supabase
+                    .from('goals')
+                    .update({ current_amount: goal.current_amount + numericAmount })
+                    .eq('id', goal.id);
+
+                if (error) throw error;
+
+                await refreshData();
+                setShowSuccess(true);
+            } catch (error) {
+                console.error('Error adding value to goal:', error);
+                alert('Erro ao confirmar aporte.');
+            } finally {
+                setLoading(false);
+            }
+        } else {
+            // Modo de visualização/Fallback
+            setShowSuccess(true);
+        }
+    };
+
+    const handleQuickAdd = (value: number) => {
+        const currentNumeric = parseFloat(amount.replace(/[^0-9,.-]+/g, "").replace(',', '.')) || 0;
+        const newAmount = currentNumeric + value;
+        setAmount(newAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+    };
+
+    const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value) {
+            const numericValue = parseInt(value, 10) / 100;
+            setAmount(numericValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+        } else {
+            setAmount('0,00');
+        }
     };
 
     return (
-        <div className="bg-black text-[#fcfcfc] font-sans h-screen flex flex-col overflow-hidden relative">
-            <header className="px-6 pt-14 pb-4 flex items-center justify-between sticky top-0 bg-black/95 backdrop-blur-xl z-50">
-                <button onClick={() => navigate(-1)} className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95">
-                    <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">arrow_back_ios_new</span>
-                </button>
-                <h1 className="text-xs font-display font-bold tracking-[0.3em] uppercase text-[#fcfcfc]">Adicionar Valor</h1>
-                <div className="w-10"></div>
-            </header>
+        <div className="bg-background-dark font-display min-h-screen flex flex-col overflow-x-hidden justify-center text-off-white selection:bg-primary/30">
+            {/* Main Content Container */}
+            <div className={`flex flex-col w-full max-w-md mx-auto px-6 pt-12 transition-all duration-500 ${showSuccess ? 'blur-md opacity-40 pointer-events-none select-none' : ''}`}>
 
-            <main className="flex-grow flex flex-col px-6">
-                <div className="flex flex-col items-center justify-center py-12">
-                    <span className="text-[10px] font-display font-bold tracking-[0.2em] text-[#a7a7a7] uppercase mb-2 text-center">Quanto deseja aportar?</span>
-                    <div className="relative w-full">
+                {/* Header Navigation */}
+                <div className="absolute top-6 left-6 z-50">
+                    <button onClick={() => navigate(-1)} className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors active:scale-90">
+                        <span className="material-symbols-outlined text-light-gray">arrow_back</span>
+                    </button>
+                </div>
+
+                {/* Header */}
+                <header className="text-center mb-12">
+                    <h2 className="text-light-gray tracking-[0.2em] text-xs font-light leading-tight uppercase opacity-80">
+                        Adicionar Valor
+                    </h2>
+                </header>
+
+                {/* Amount Display */}
+                <div className="text-center mb-16 relative w-full flex justify-center">
+                    <div className="relative inline-flex items-center justify-center">
+                        <span className="text-off-white text-5xl font-extralight tracking-tight mr-2">R$</span>
                         <input
-                            className="bg-transparent border-none text-center text-5xl font-display font-bold text-primary drop-shadow-[0_0_15px_rgba(15,182,127,0.6)] focus:ring-0 focus:outline-none w-full"
                             type="text"
-                            value={`R$ ${amount}`}
-                            onChange={(e) => setAmount(e.target.value.replace('R$ ', ''))}
+                            inputMode="numeric"
+                            value={amount}
+                            onChange={handleAmountChange}
+                            className="bg-transparent border-none text-off-white text-5xl font-extralight tracking-tight p-0 outline-none focus:ring-0 text-left w-auto min-w-[120px]"
+                            style={{ width: `${Math.max(3, amount.length)}ch` }}
+                            placeholder="0,00"
                         />
                     </div>
                 </div>
 
+                {/* Inputs & Selections */}
                 <div className="space-y-4">
-                    <label className="text-[10px] font-display font-bold tracking-[0.2em] text-[#a7a7a7] uppercase ml-1">Meta de Destino</label>
-                    <div className="bg-[#121212] p-5 rounded-[24px] flex items-center justify-between border border-white/5 active:scale-[0.98] transition-all">
-                        <div className="flex items-center gap-4">
-                            <div
-                                className="circular-progress-small"
-                                style={{ '--percentage': goal.percentage } as any}
-                            >
-                                <span className="text-[10px] font-bold text-[#fcfcfc]">{goal.percentage}%</span>
+                    {/* Destination Goal Selection */}
+                    <div className="bg-surface rounded-xl p-5 flex items-center justify-between thin-border group active:bg-surface/80 transition-colors cursor-pointer">
+                        <div className="flex items-center gap-5">
+                            {/* Circular Progress Indicator */}
+                            <div className="relative flex items-center justify-center w-12 h-12 rounded-full circular-progress">
+                                <span className="text-[10px] font-medium text-primary">{percentage}%</span>
                             </div>
-                            <div>
-                                <h3 className="text-sm font-semibold text-[#fcfcfc]">{goal.name}</h3>
-                                <p className="text-[10px] text-[#a7a7a7] tracking-wide">Saldo: R$ {goal.current.toLocaleString('pt-BR')}</p>
+                            <div className="flex flex-col">
+                                <span className="text-light-gray text-[10px] uppercase tracking-wider font-medium">Meta de Destino</span>
+                                <span className="text-off-white text-base font-light">{goal.name}</span>
                             </div>
                         </div>
-                        <span className="material-symbols-outlined text-[#a7a7a7]">chevron_right</span>
+                        <span className="material-symbols-outlined text-light-gray/40 text-xl">chevron_right</span>
                     </div>
 
-                    <label className="text-[10px] font-display font-bold tracking-[0.2em] text-[#a7a7a7] uppercase ml-1 block mt-6">Conta de Origem</label>
-                    <div className="bg-[#121212] p-5 rounded-[24px] flex items-center justify-between border border-white/5 active:scale-[0.98] transition-all">
-                        <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center">
-                                <span className="material-symbols-outlined text-primary">account_balance</span>
+                    {/* Origin Account Selection */}
+                    <div className="bg-surface rounded-xl p-5 flex items-center justify-between thin-border active:bg-surface/80 transition-colors cursor-pointer">
+                        <div className="flex items-center gap-5">
+                            <div className="w-12 h-12 rounded-full bg-background-dark flex items-center justify-center thin-border">
+                                <span className="material-symbols-outlined text-primary font-light text-2xl">account_balance_wallet</span>
                             </div>
-                            <div>
-                                <h3 className="text-sm font-semibold text-[#fcfcfc]">Minha Carteira</h3>
-                                <p className="text-[10px] text-[#a7a7a7] tracking-wide">Disponível: R$ 1.200,50</p>
+                            <div className="flex flex-col">
+                                <span className="text-light-gray text-[10px] uppercase tracking-wider font-medium">Conta de Origem</span>
+                                <span className="text-off-white text-base font-light">Saldo: R$ 12.450,00</span>
                             </div>
                         </div>
-                        <span className="material-symbols-outlined text-[#a7a7a7]">unfold_more</span>
+                        <span className="material-symbols-outlined text-light-gray/40 text-xl">chevron_right</span>
                     </div>
                 </div>
-            </main>
 
-            <footer className="p-6 pb-10 flex flex-col items-center gap-6 z-10">
-                <button
-                    onClick={handleConfirm}
-                    className="w-full py-5 bg-primary rounded-2xl text-black font-display font-bold text-xs tracking-widest uppercase shadow-[0_8px_30px_rgba(15,182,127,0.4)] active:scale-95 transition-transform"
-                >
-                    Confirmar Aporte
-                </button>
-                <div className="flex flex-col items-center">
-                    <span className="text-[8px] font-display font-bold tracking-[0.4em] text-[#a7a7a7] opacity-50 uppercase">Powered by</span>
-                    <span className="text-[9px] font-display font-bold tracking-[0.2em] text-[#a7a7a7] opacity-80 uppercase mt-1">Poup Intelligence</span>
+                {/* Quick Add Options */}
+                <div className="flex gap-3 mt-10 justify-center">
+                    <button
+                        onClick={() => handleQuickAdd(100)}
+                        className="bg-surface thin-border rounded-lg px-5 py-2.5 text-off-white text-sm font-light hover:border-primary/50 transition-colors active:scale-95"
+                    >
+                        + R$ 100
+                    </button>
+                    <button
+                        onClick={() => handleQuickAdd(500)}
+                        className="bg-surface thin-border rounded-lg px-5 py-2.5 text-off-white text-sm font-light hover:border-primary/50 transition-colors active:scale-95"
+                    >
+                        + R$ 500
+                    </button>
+                    <button
+                        onClick={() => handleQuickAdd(1000)}
+                        className="bg-surface thin-border rounded-lg px-5 py-2.5 text-off-white text-sm font-light hover:border-primary/50 transition-colors active:scale-95"
+                    >
+                        + R$ 1.000
+                    </button>
                 </div>
-            </footer>
+
+                {/* Bottom Action Button */}
+                <div className="w-full max-w-md mx-auto pb-12 mt-12">
+                    <button
+                        onClick={handleConfirm}
+                        disabled={loading || amount === '0,00' || amount === '0'}
+                        className="w-full py-5 rounded-xl border border-primary/40 flex items-center justify-center gap-2 group hover:bg-primary/5 transition-all active:scale-[0.98] disabled:opacity-50 disabled:grayscale"
+                    >
+                        <span className="text-primary tracking-[0.15em] text-xs font-semibold uppercase">
+                            {loading ? 'Processando...' : 'Confirmar Aporte'}
+                        </span>
+                        {!loading && <span className="material-symbols-outlined text-primary text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>}
+                    </button>
+                </div>
+            </div>
 
             {/* Success Modal */}
             {showSuccess && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm animate-in fade-in duration-300">
-                    <div className="relative w-full h-full max-w-[430px] flex flex-col items-center justify-center px-6">
-                        <div className="w-full bg-[#121212] border border-primary/40 rounded-[2.5rem] p-8 shadow-[0_0_30px_rgba(15,182,127,0.15)] relative animate-in zoom-in slide-in-from-bottom-10 duration-500">
-                            {/* Close Button */}
-                            <button
-                                onClick={() => navigate('/goals')}
-                                className="absolute top-5 right-5 w-8 h-8 flex items-center justify-center bg-white/5 rounded-full active:scale-90 transition-transform z-10"
-                            >
-                                <span className="material-symbols-outlined text-[#a7a7a7] text-lg">close</span>
-                            </button>
-                            <div className="absolute -top-12 left-1/2 -translate-x-1/2">
-                                <div className="relative flex items-center justify-center animate-float-icon">
-                                    <div className="absolute inset-0 bg-primary blur-[25px] opacity-40 rounded-full"></div>
-                                    <div className="relative bg-[#121212] p-5 rounded-full border-2 border-primary shadow-[0_10px_30px_rgba(15,182,127,0.4)]">
-                                        <span className="material-symbols-outlined text-6xl text-primary font-bold">check_circle</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="mt-12 text-center flex flex-col items-center">
-                                <h4 className="text-primary text-[10px] font-black tracking-[0.3em] uppercase mb-1 opacity-80">Sucesso no Investimento</h4>
-                                <h2 className="text-white text-2xl font-black tracking-tight uppercase mb-6 italic font-display">Aporte Confirmado!</h2>
-
-                                <div className="relative w-56 h-56 flex items-center justify-center mb-8">
-                                    <svg className="absolute w-full h-full -rotate-90 transform" viewBox="0 0 100 100">
-                                        <circle className="text-white/5" cx="50" cy="50" fill="transparent" r="45" stroke="currentColor" strokeWidth="7"></circle>
-                                        <circle className="text-primary animate-pulse-glow" cx="50" cy="50" fill="transparent" r="45" stroke="currentColor" strokeDasharray="282.7" strokeDashoffset="79.1" strokeLinecap="round" strokeWidth="7"></circle>
-                                    </svg>
-                                    <div className="flex flex-col items-center">
-                                        <span className="text-5xl font-extrabold text-white tracking-tighter font-display">72%</span>
-                                        <span className="text-[10px] font-bold text-primary uppercase tracking-[0.2em] animate-breathing mt-1">+7% HOJE</span>
-                                    </div>
-                                </div>
-
-                                <div className="mb-8">
-                                    <p className="text-slate-400 text-sm font-medium leading-relaxed">
-                                        Você investiu com sucesso <br />
-                                        <span className="text-primary text-2xl font-black block mt-1 tracking-tight">R$ {amount}</span>
-                                    </p>
-                                </div>
-
-                                <div className="flex flex-wrap justify-center gap-2 mb-8">
-                                    <div className="flex items-center gap-2 bg-[#121212] border border-primary/30 rounded-full px-4 py-2 shadow-inner">
-                                        <span className="material-symbols-outlined text-lg text-primary">bolt</span>
-                                        <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wider">+50 XP</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 bg-[#121212] border border-primary/30 rounded-full px-4 py-2 shadow-inner">
-                                        <span className="material-symbols-outlined text-lg text-primary">local_fire_department</span>
-                                        <span className="text-[10px] font-bold text-slate-200 uppercase tracking-wider">Recorde de Streak!</span>
-                                    </div>
-                                </div>
-
-                                <button
-                                    onClick={() => navigate('/dashboard')}
-                                    className="w-full bg-primary hover:bg-primary/90 text-black font-black py-5 rounded-2xl text-[11px] tracking-[0.2em] transition-all shadow-[0_0_20px_rgba(15,182,127,0.3)] active:scale-[0.98] font-display"
-                                >
-                                    IR PARA O DASHBOARD
-                                </button>
-                            </div>
+                <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[110] flex flex-col items-center justify-center p-8">
+                    <div className="w-full max-w-[320px] glow-border border-primary rounded-[40px] bg-black/60 backdrop-blur-xl p-10 flex flex-col items-center text-center animate-in fade-in zoom-in duration-500">
+                        <div className="mb-8">
+                            <span className="material-symbols-outlined text-primary text-[84px] font-light neon-text-glow leading-none">
+                                check_circle
+                            </span>
                         </div>
-
-                        <div className="mt-12 opacity-30 flex flex-col items-center gap-2">
-                            <span className="text-[9px] font-bold tracking-[0.4em] text-white"></span>
-                            <div className="h-[2px] w-8 bg-primary rounded-full"></div>
-                        </div>
+                        <h2 className="text-[#FCFCFC] font-display font-bold text-[18px] tracking-[0.2em] uppercase mb-12">
+                            Aporte Confirmado!
+                        </h2>
+                        <button
+                            onClick={() => {
+                                setShowSuccess(false);
+                                navigate('/goals');
+                            }}
+                            className="w-full py-4 rounded-2xl border border-primary bg-transparent text-primary text-[14px] font-bold uppercase tracking-[0.3em] active:bg-primary/10 transition-all font-display"
+                        >
+                            Concluir
+                        </button>
                     </div>
                 </div>
             )}

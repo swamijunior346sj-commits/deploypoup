@@ -42,6 +42,14 @@ import SavingsSimulator from './pages/SavingsSimulator';
 import SpendingAnalysis from './pages/SpendingAnalysis';
 import FinancialPerformance from './pages/FinancialPerformance';
 import EditTransaction from './pages/EditTransaction';
+import Shop from './pages/Shop';
+import Ebooks from './pages/Ebooks';
+import EbookDetails from './pages/EbookDetails';
+import Courses from './pages/Courses';
+import CourseDetails from './pages/CourseDetails';
+import Mentorships from './pages/Mentorships';
+import MentorshipDetails from './pages/MentorshipDetails';
+import EditBudget from './pages/EditBudget';
 
 export default function App() {
   return (
@@ -84,8 +92,16 @@ export default function App() {
               <Route path="/budgets" element={<Budgets />} />
               <Route path="/new-budget" element={<NewBudget />} />
               <Route path="/budget-details" element={<BudgetDetails />} />
+              <Route path="/edit-budget" element={<EditBudget />} />
               <Route path="/savings-simulator" element={<SavingsSimulator />} />
               <Route path="/spending-analysis" element={<SpendingAnalysis />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/ebooks" element={<Ebooks />} />
+              <Route path="/ebook/:id" element={<EbookDetails />} />
+              <Route path="/courses" element={<Courses />} />
+              <Route path="/course/:id" element={<CourseDetails />} />
+              <Route path="/mentorships" element={<Mentorships />} />
+              <Route path="/mentorship/:id" element={<MentorshipDetails />} />
             </Route>
           </Routes>
         </Router>

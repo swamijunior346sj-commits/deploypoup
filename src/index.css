@@ -539,6 +539,29 @@
     box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
   }
 
+  /* Glow Slider - Thumb Customs for EditBudget */
+  .glow-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #0FB67F;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #FCFCFC;
+    box-shadow: 0 0 10px rgba(15, 182, 127, 0.5);
+  }
+
+  .glow-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: #0FB67F;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #FCFCFC;
+    box-shadow: 0 0 10px rgba(15, 182, 127, 0.5);
+  }
+
   /* Utility Classes for Goals Renovation */
   .glass {
     background: #0D0E10;
