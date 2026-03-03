@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 export default function PersonalData() {
   const { user } = useAuth();
-  
+
   const [formData, setFormData] = useState({
     nome: 'Ricardo Oliveira Silva',
     email: user?.email || 'ricardo.silva@exemplo.com',
@@ -30,7 +30,7 @@ export default function PersonalData() {
   );
 
   return (
-    <div className="flex flex-col min-h-[100dvh] bg-background-dark text-white font-sans">
+    <div className="flex flex-col min-h-[100dvh] bg-background-dark text-text-value font-sans">
       <Header
         showBack
         title="Dados Pessoais"
@@ -42,7 +42,7 @@ export default function PersonalData() {
           <div className="relative">
             <div className="w-28 h-28 rounded-full border-2 border-primary p-1">
               <div className="w-full h-full rounded-full bg-zinc-800 overflow-hidden flex items-center justify-center">
-                <span className="material-symbols-outlined text-zinc-600 text-5xl">person</span>
+                <span className="material-symbols-outlined text-text-label text-5xl">person</span>
               </div>
             </div>
             <button className="absolute bottom-0 right-0 bg-primary text-black w-8 h-8 rounded-full flex items-center justify-center border-4 border-background-dark">
@@ -60,7 +60,7 @@ export default function PersonalData() {
                 placeholder=" "
                 value={formData.nome}
                 onChange={handleChange}
-                className="floating-label-input block w-full bg-transparent border-0 px-0 pt-6 pb-2 text-sm focus:ring-0 text-white font-medium"
+                className="floating-label-input block w-full bg-transparent border-0 px-0 pt-6 pb-2 text-sm focus:ring-0 text-text-value font-medium"
               />
               <label htmlFor="nome" className="absolute left-0 top-0 origin-[0] transition-all duration-200 text-[10px] font-bold uppercase tracking-widest pointer-events-none">Nome Completo</label>
             </div>
@@ -72,7 +72,7 @@ export default function PersonalData() {
                 placeholder=" "
                 value={formData.email}
                 onChange={handleChange}
-                className="floating-label-input block w-full bg-transparent border-0 px-0 pt-6 pb-2 text-sm focus:ring-0 text-white font-medium"
+                className="floating-label-input block w-full bg-transparent border-0 px-0 pt-6 pb-2 text-sm focus:ring-0 text-text-value font-medium"
               />
               <label htmlFor="email" className="absolute left-0 top-0 origin-[0] transition-all duration-200 text-[10px] font-bold uppercase tracking-widest pointer-events-none">E-mail</label>
             </div>
@@ -85,7 +85,7 @@ export default function PersonalData() {
                   placeholder=" "
                   value={formData.tel}
                   onChange={handleChange}
-                  className="floating-label-input block w-full bg-transparent border-0 px-0 pt-6 pb-2 text-sm focus:ring-0 text-white font-medium"
+                  className="floating-label-input block w-full bg-transparent border-0 px-0 pt-6 pb-2 text-sm focus:ring-0 text-text-value font-medium"
                 />
                 <label htmlFor="tel" className="absolute left-0 top-0 origin-[0] transition-all duration-200 text-[10px] font-bold uppercase tracking-widest pointer-events-none">Telefone</label>
               </div>
@@ -97,7 +97,7 @@ export default function PersonalData() {
                   placeholder=" "
                   value={formData.nascimento}
                   onChange={handleChange}
-                  className="floating-label-input block w-full bg-transparent border-0 px-0 pt-6 pb-2 text-sm focus:ring-0 text-white font-medium"
+                  className="floating-label-input block w-full bg-transparent border-0 px-0 pt-6 pb-2 text-sm focus:ring-0 text-text-value font-medium"
                 />
                 <label htmlFor="nascimento" className="absolute left-0 top-0 origin-[0] transition-all duration-200 text-[10px] font-bold uppercase tracking-widest pointer-events-none">Data de Nascimento</label>
               </div>
@@ -114,7 +114,7 @@ export default function PersonalData() {
                   placeholder=" "
                   value={formData.cep}
                   onChange={handleChange}
-                  className="floating-label-input block w-full bg-transparent border-0 px-0 pt-6 pb-2 text-sm focus:ring-0 text-white font-medium"
+                  className="floating-label-input block w-full bg-transparent border-0 px-0 pt-6 pb-2 text-sm focus:ring-0 text-text-value font-medium"
                 />
                 <label htmlFor="cep" className="absolute left-0 top-0 origin-[0] transition-all duration-200 text-[10px] font-bold uppercase tracking-widest pointer-events-none">CEP</label>
               </div>
@@ -126,7 +126,7 @@ export default function PersonalData() {
                   placeholder=" "
                   value={formData.cidade}
                   onChange={handleChange}
-                  className="floating-label-input block w-full bg-transparent border-0 px-0 pt-6 pb-2 text-sm focus:ring-0 text-white font-medium"
+                  className="floating-label-input block w-full bg-transparent border-0 px-0 pt-6 pb-2 text-sm focus:ring-0 text-text-value font-medium"
                 />
                 <label htmlFor="cidade" className="absolute left-0 top-0 origin-[0] transition-all duration-200 text-[10px] font-bold uppercase tracking-widest pointer-events-none">Cidade/UF</label>
               </div>
@@ -145,7 +145,7 @@ export default function PersonalData() {
           <div className="flex items-center justify-center space-x-2 text-zinc-700">
             <span className="material-symbols-outlined text-base">auto_awesome</span>
             <p className="text-[9px] font-bold tracking-[0.3em] uppercase">
-              
+
             </p>
           </div>
         </footer>

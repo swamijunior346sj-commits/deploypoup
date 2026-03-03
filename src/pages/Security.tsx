@@ -17,17 +17,17 @@ export default function Security() {
               <span className="material-symbols-outlined text-primary text-4xl">shield</span>
             </div>
             <h2 className="text-lg font-display font-bold">Proteção Ativa</h2>
-            <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mt-1">Sua conta está segura</p>
-            <p className="text-[8px] text-zinc-600 uppercase font-bold tracking-tighter mt-1">{user?.email}</p>
+            <p className="text-[10px] text-text-label uppercase font-bold tracking-widest mt-1">Sua conta está segura</p>
+            <p className="text-[8px] text-text-label opacity-70 uppercase font-bold tracking-tighter mt-1">{user?.email}</p>
           </div>
 
           <div className="space-y-2">
             <Card className="p-5 flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <span className="material-symbols-outlined text-zinc-500">fingerprint</span>
+                <span className="material-symbols-outlined text-text-label">fingerprint</span>
                 <div>
                   <p className="text-sm font-semibold">Biometria / Face ID</p>
-                  <p className="text-[10px] text-zinc-600 uppercase font-bold">Acesso rápido e seguro</p>
+                  <p className="text-[10px] text-text-label opacity-70 uppercase font-bold">Acesso rápido e seguro</p>
                 </div>
               </div>
               <label className="relative inline-block w-11 h-6 cursor-pointer">
@@ -38,10 +38,10 @@ export default function Security() {
 
             <Card className="p-5 flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <span className="material-symbols-outlined text-zinc-500">lock_reset</span>
+                <span className="material-symbols-outlined text-text-label">lock_reset</span>
                 <div>
                   <p className="text-sm font-semibold">Alterar Senha</p>
-                  <p className="text-[10px] text-zinc-600 uppercase font-bold">Gerenciar via Supabase</p>
+                  <p className="text-[10px] text-text-label opacity-70 uppercase font-bold">Gerenciar via Supabase</p>
                 </div>
               </div>
               <span className="material-symbols-outlined text-zinc-700">chevron_right</span>
@@ -49,10 +49,10 @@ export default function Security() {
 
             <Card className="p-5 flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <span className="material-symbols-outlined text-zinc-500">phonelink_setup</span>
+                <span className="material-symbols-outlined text-text-label">phonelink_setup</span>
                 <div>
                   <p className="text-sm font-semibold">Autenticação em 2 Fatores</p>
-                  <p className="text-[10px] text-zinc-600 uppercase font-bold">Configurado no Supabase</p>
+                  <p className="text-[10px] text-text-label opacity-70 uppercase font-bold">Configurado no Supabase</p>
                 </div>
               </div>
               <label className="relative inline-block w-11 h-6 cursor-pointer">
@@ -63,10 +63,10 @@ export default function Security() {
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase px-2">Dispositivos Conectados</h3>
+            <h3 className="text-[10px] font-bold tracking-widest text-text-label uppercase px-2">Dispositivos Conectados</h3>
             <Card className="p-5 flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <span className="material-symbols-outlined text-zinc-500">smartphone</span>
+                <span className="material-symbols-outlined text-text-label">smartphone</span>
                 <div>
                   <p className="text-sm font-semibold">Sessão Atual</p>
                   <p className="text-[10px] text-primary uppercase font-bold">Ativo agora</p>

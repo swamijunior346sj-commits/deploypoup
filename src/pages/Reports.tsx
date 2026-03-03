@@ -58,7 +58,7 @@ export default function Reports() {
               </div>
 
               {/* Candlestick Chart */}
-              <div className="w-full aspect-[4/3] bg-[#0D0E10] rounded-3xl border border-zinc-800/50 p-4 relative overflow-hidden flex items-end gap-1.5">
+              <div className="w-full aspect-[4/3] bg-transparent rounded-3xl border border-zinc-800/50 p-4 relative overflow-hidden flex items-end gap-1.5">
                 <div className="absolute inset-0 grid grid-rows-5 px-4 py-8">
                   {[...Array(5)].map((_, i) => (
                     <div key={i} className="border-t border-zinc-800/30"></div>
@@ -86,7 +86,7 @@ export default function Reports() {
 
             {/* Stats Cards */}
             <section className="px-6 grid grid-cols-2 gap-4 mb-8">
-              <div className="bg-[#0D0E10] border border-zinc-800 p-5 rounded-3xl">
+              <div className="bg-transparent border border-zinc-800 p-5 rounded-3xl">
                 <span className="text-[9px] font-bold tracking-widest text-zinc-500 uppercase">Lucro Real</span>
                 <p className="text-lg font-display font-bold text-[#FCFCFC] mt-1">R$ 14.280</p>
                 <div className="flex items-center gap-1 mt-2">
@@ -94,7 +94,7 @@ export default function Reports() {
                   <span className="text-[10px] text-primary font-bold">+12.4%</span>
                 </div>
               </div>
-              <div className="bg-[#0D0E10] border border-zinc-800 p-5 rounded-3xl">
+              <div className="bg-transparent border border-zinc-800 p-5 rounded-3xl">
                 <span className="text-[9px] font-bold tracking-widest text-zinc-500 uppercase">Total Rendido</span>
                 <p className="text-lg font-display font-bold text-[#FCFCFC] mt-1">R$ 4.120</p>
                 <div className="flex items-center gap-1 mt-2 text-zinc-500">
@@ -106,7 +106,7 @@ export default function Reports() {
 
             {/* Growth Chart */}
             <section className="px-6 space-y-6">
-              <div className="bg-[#0D0E10] border border-zinc-800 rounded-3xl p-6">
+              <div className="bg-transparent border border-zinc-800 rounded-3xl p-6">
                 <h3 className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 uppercase mb-4">Crescimento Patrimonial</h3>
                 <div className="h-32 relative">
                   <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 300 100">
@@ -123,7 +123,7 @@ export default function Reports() {
               </div>
 
               {/* Risk Allocation */}
-              <div className="bg-[#0D0E10] border border-zinc-800 rounded-3xl p-6 flex items-center justify-between">
+              <div className="bg-transparent border border-zinc-800 rounded-3xl p-6 flex items-center justify-between">
                 <div className="space-y-4">
                   <h3 className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 uppercase">Alocação por Risco</h3>
                   <div className="space-y-2">
@@ -159,7 +159,7 @@ export default function Reports() {
           <div>
             {/* Total Budget Circle */}
             <section className="p-6">
-              <div className="bg-[#0D0E10] border border-zinc-800 rounded-[32px] p-8 flex flex-col items-center">
+              <div className="bg-transparent border border-zinc-800 rounded-[32px] p-8 flex flex-col items-center">
                 <h2 className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 uppercase mb-6 text-center">ORÇAMENTO TOTAL</h2>
                 <div className="relative w-48 h-48 flex items-center justify-center">
                   <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
@@ -196,7 +196,7 @@ export default function Reports() {
             <section className="px-6 space-y-4">
               <h3 className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 uppercase px-2">Categorias</h3>
               {budgetCategories.map((cat) => (
-                <div key={cat.name} className="bg-[#0D0E10] border border-zinc-800 rounded-3xl p-5">
+                <div key={cat.name} className="bg-transparent border border-zinc-800 rounded-3xl p-5">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center">
                       <span className="material-symbols-outlined text-primary text-[20px]">{cat.icon}</span>
@@ -241,7 +241,7 @@ export default function Reports() {
           <div>
             {/* Patrimônio Total Card */}
             <section className="p-6">
-              <div className="bg-[#0D0E10] border border-zinc-800 rounded-[32px] p-8">
+              <div className="bg-transparent border border-zinc-800 rounded-[32px] p-8">
                 <h2 className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 uppercase mb-2">PATRIMÔNIO TOTAL</h2>
                 <div className="flex items-baseline gap-3">
                   <span className="text-3xl font-display font-bold text-[#FCFCFC] leading-none">R$ 54.320,00</span>
@@ -278,7 +278,7 @@ export default function Reports() {
                   </div>
                 </div>
               </div>
-              <div className="bg-[#0D0E10] border border-zinc-800 rounded-3xl p-6 h-48 flex items-end justify-between gap-2">
+              <div className="bg-transparent border border-zinc-800 rounded-3xl p-6 h-48 flex items-end justify-between gap-2">
                 {[
                   { month: 'JUN', rec: 80, des: 40 },
                   { month: 'JUL', rec: 90, des: 50 },
@@ -307,7 +307,7 @@ export default function Reports() {
             {/* Fluxo de Caixa Diário */}
             <section className="px-6 mb-8">
               <h3 className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 uppercase px-2 mb-4">Fluxo de Caixa Diário</h3>
-              <div className="bg-[#0D0E10] border border-zinc-800 rounded-3xl p-6 relative overflow-hidden h-40">
+              <div className="bg-transparent border border-zinc-800 rounded-3xl p-6 relative overflow-hidden h-40">
                 <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 400 150">
                   <defs>
                     <linearGradient id="lineGradientGeral" x1="0%" x2="0%" y1="0%" y2="100%">
@@ -351,7 +351,7 @@ export default function Reports() {
         <section className="px-6 mt-10">
           <button
             onClick={() => navigate('/savings-simulator')}
-            className="w-full bg-[#0D0E10] border border-zinc-800 rounded-2xl p-5 flex items-center justify-between active:scale-[0.98] transition-transform"
+            className="w-full bg-transparent border border-zinc-800 rounded-2xl p-5 flex items-center justify-between active:scale-[0.98] transition-transform"
           >
             <div className="flex items-center gap-4">
               <div className="bg-primary/10 p-3 rounded-xl">
@@ -371,7 +371,7 @@ export default function Reports() {
           <div className="flex items-center space-x-2 opacity-30">
             <span className="material-symbols-outlined text-[10px]">auto_awesome</span>
             <p className="text-[8px] font-bold tracking-[0.4em] uppercase text-[#FCFCFC]">
-              
+
             </p>
           </div>
         </footer>

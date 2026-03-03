@@ -12,21 +12,21 @@ export default function Goals() {
 
     if (loading) {
         return (
-            <div className="bg-black text-white min-h-screen flex items-center justify-center">
+            <div className="bg-black text-text-value min-h-screen flex items-center justify-center">
                 <div className="animate-pulse text-primary tracking-widest uppercase font-bold text-xs">Calculando Metas...</div>
             </div>
         );
     }
 
     return (
-        <div className="bg-black font-display text-slate-100 min-h-screen pb-32 overflow-x-hidden">
+        <div className="bg-black font-display text-text-value min-h-screen pb-32 overflow-x-hidden">
             {/* Gamification Level Bar */}
             <section className="px-6 py-6">
                 <div className="rounded-xl p-5 relative overflow-hidden neon-glow">
                     <div className="flex justify-between items-end mb-3">
                         <div>
                             <span className="text-primary text-xs font-bold uppercase tracking-wider">Nível Atual</span>
-                            <h2 className="text-3xl font-black text-white leading-none">Nível {level}</h2>
+                            <h2 className="text-3xl font-black text-text-value leading-none">Nível {level}</h2>
                         </div>
                         <div className="text-right">
                             <p className="text-slate-300 text-xs font-medium">{currentXP} / {maxXP} XP</p>
@@ -58,11 +58,11 @@ export default function Goals() {
                                 <div
                                     key={goal.id}
                                     onClick={() => navigate(`/goal-details/${goal.id}`)}
-                                    className="rounded-xl p-4 flex flex-col items-center text-center bg-zinc-900/20 border border-white/5 cursor-pointer active:scale-95 transition-transform"
+                                    className="rounded-xl p-4 flex flex-col items-center text-center bg-transparent border border-white/10 cursor-pointer active:scale-95 transition-transform"
                                 >
                                     <div className="relative w-20 h-20 mb-3 flex items-center justify-center">
                                         <svg className="w-full h-full -rotate-90" viewBox="0 0 80 80">
-                                            <circle className="text-white/5" cx="40" cy="40" fill="transparent" r="36" stroke="currentColor" strokeWidth="2"></circle>
+                                            <circle className="text-text-value/5" cx="40" cy="40" fill="transparent" r="36" stroke="currentColor" strokeWidth="2"></circle>
                                             <circle
                                                 className="text-primary transition-all duration-1000"
                                                 cx="40" cy="40" fill="transparent" r="36"
@@ -73,10 +73,10 @@ export default function Goals() {
                                                 style={{ filter: 'drop-shadow(0 0 3px rgba(15, 182, 127, 0.4))' }}
                                             ></circle>
                                         </svg>
-                                        <span className="absolute text-sm font-light text-white">{percentage}%</span>
+                                        <span className="absolute text-sm font-light text-text-value">{percentage}%</span>
                                     </div>
-                                    <p className="text-xs font-medium text-white mb-1 truncate w-full px-1">{goal.name}</p>
-                                    <p className="text-[9px] text-slate-500">R$ {goal.current_amount.toLocaleString('pt-BR')} / {goal.target_amount.toLocaleString('pt-BR')}</p>
+                                    <p className="text-xs font-medium text-text-value mb-1 truncate w-full px-1">{goal.name}</p>
+                                    <p className="text-[9px] text-text-label">R$ {goal.current_amount.toLocaleString('pt-BR')} / {goal.target_amount.toLocaleString('pt-BR')}</p>
                                 </div>
                             );
                         })

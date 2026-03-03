@@ -44,8 +44,8 @@ export default function Login() {
         <div className="w-20 h-20 rounded-full border-2 border-primary flex items-center justify-center mb-6">
           <span className="text-4xl font-bold text-primary font-display">$</span>
         </div>
-        <h2 className="text-3xl font-display font-extrabold text-white mb-2 tracking-wide">POUP</h2>
-        <h1 className="text-center text-xs font-display font-bold tracking-[0.3em] uppercase leading-relaxed max-w-[200px] text-zinc-400">
+        <h2 className="text-3xl font-display font-extrabold text-text-value mb-2 tracking-wide">POUP</h2>
+        <h1 className="text-center text-xs font-display font-bold tracking-[0.3em] uppercase leading-relaxed max-w-[200px] text-text-label">
           Gestão Financeira Inteligente
         </h1>
       </div>
@@ -92,7 +92,7 @@ export default function Login() {
             <button
               type="button"
               onClick={handleGoogleLogin}
-              className="w-full bg-zinc-900/50 border border-zinc-800 text-white h-14 rounded-full flex items-center justify-center space-x-3 hover:bg-zinc-900 transition-colors active:scale-[0.98] duration-200"
+              className="w-full bg-transparent border border-white/10 text-text-value h-14 rounded-full flex items-center justify-center space-x-3 hover:bg-white/5 transition-colors active:scale-[0.98] duration-200"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
@@ -121,7 +121,7 @@ export default function Login() {
         <footer className="flex flex-col items-center justify-center space-y-2 text-zinc-800">
           <span className="material-symbols-outlined text-sm">auto_awesome</span>
           <p className="text-[8px] font-bold tracking-[0.4em] uppercase text-zinc-700">
-            
+
           </p>
         </footer>
       </div>

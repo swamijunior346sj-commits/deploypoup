@@ -10,7 +10,7 @@ export default function EditBudget() {
     const budgetName = state?.budget?.name || 'Alimentação';
     const currentSpent = state?.budget?.spent || 842.50;
     const initialTarget = state?.budget?.target || 5000;
-    const totalGlobal = 15000; // Simulação de orçamento global
+    const totalGlobal = 5000; // Limite máximo simulação do HTML
 
     const [limit, setLimit] = useState(initialTarget);
     const [showSuccess, setShowSuccess] = useState(false);
@@ -35,21 +35,20 @@ export default function EditBudget() {
         <div className="bg-background-dark font-display min-h-screen flex flex-col pb-6 overflow-x-hidden selection:bg-primary/30">
             <div className="flex flex-col flex-1 mx-auto w-full max-w-md">
                 {/* Header */}
-                <header className="flex items-center justify-between p-6 pt-8">
+                <header className="flex items-center justify-between p-6 pt-8 relative">
                     <button
                         onClick={() => navigate(-1)}
-                        className="text-off-white/60 hover:text-off-white transition-colors active:scale-95"
+                        className="text-off-white/60 hover:text-off-white transition-colors active:scale-95 absolute left-6 p-2 rounded-full hover:bg-white/5"
                     >
                         <span className="material-symbols-outlined text-[28px]">arrow_back_ios</span>
                     </button>
                     <h1 className="text-lg font-bold text-slate-100 flex-1 text-center font-display">
                         {budgetName}
                     </h1>
-                    <div className="w-10"></div>
                 </header>
 
                 {/* Circular Gauge Section */}
-                <section className="flex flex-col items-center px-6 mb-2 py-10">
+                <section className="flex flex-col items-center px-6 mb-2 py-12">
                     <div className="relative w-[260px] h-[260px] mb-6">
                         <svg height="260" viewBox="0 0 260 260" width="260" className="-rotate-90">
                             <defs>
@@ -71,8 +70,8 @@ export default function EditBudget() {
                         </svg>
                         <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
                             <span className="text-sm font-medium uppercase tracking-[0.2em] text-[#71717A] mb-1">{budgetName}</span>
-                            <span className="text-5xl font-extrabold text-slate-100">{usedPercentage}%</span>
-                            <span className="text-primary text-sm font-bold mt-2">R$ {currentSpent.toLocaleString('pt-BR')} / {limit.toLocaleString('pt-BR')}</span>
+                            <span className="text-5xl text-slate-100 font-extralight">{usedPercentage}%</span>
+                            <span className="text-primary text-sm mt-2 font-light">R$ {currentSpent.toLocaleString('pt-BR')} / {limit.toLocaleString('pt-BR')}</span>
                         </div>
                     </div>
                     <div className="text-center">
@@ -82,14 +81,14 @@ export default function EditBudget() {
                 </section>
 
                 {/* Category Adjustments */}
-                <main className="flex-1 px-6 py-4">
-                    <div className="flex flex-col items-center justify-center space-y-8 py-6">
+                <main className="flex-1 px-6 py-4 space-y-8">
+                    <div className="flex flex-col items-center justify-center space-y-8 py-10">
                         <div className="text-center">
-                            <span className="text-[#71717A] text-sm block mb-2">Valor do Limite</span>
+                            <span className="text-[#71717A] text-sm block mb-2 font-medium">Valor do Limite</span>
                             <div className="flex items-baseline justify-center gap-2">
                                 <span className="text-2xl font-bold text-primary">R$</span>
                                 <input
-                                    className="bg-transparent border-none text-5xl font-extrabold text-slate-100 focus:ring-0 p-0 w-48 text-center"
+                                    className="bg-transparent border-none text-5xl text-slate-100 focus:ring-0 p-0 w-48 text-center font-extralight"
                                     type="number"
                                     value={limit}
                                     onChange={(e) => setLimit(Number(e.target.value))}
@@ -117,13 +116,13 @@ export default function EditBudget() {
                         </div>
 
                         <div className="grid grid-cols-2 gap-4 w-full">
-                            <div className="bg-highlight/40 p-4 rounded-xl border border-white/5">
-                                <p className="text-[#71717A] text-[10px] uppercase font-bold mb-1 tracking-wider">Gasto Atual</p>
-                                <p className="text-slate-100 font-bold">R$ {currentSpent.toLocaleString('pt-BR')}</p>
+                            <div className="bg-transparent p-4 rounded-xl border border-highlight/50">
+                                <p className="text-[#71717A] text-[10px] uppercase mb-1 font-medium tracking-wider">Gasto Atual</p>
+                                <p className="text-slate-100 font-semibold text-sm">R$ {currentSpent.toLocaleString('pt-BR')}</p>
                             </div>
-                            <div className="bg-highlight/40 p-4 rounded-xl border border-white/5">
-                                <p className="text-[#71717A] text-[10px] uppercase font-bold mb-1 tracking-wider">Disponível</p>
-                                <p className="text-primary font-bold">R$ {available.toLocaleString('pt-BR')}</p>
+                            <div className="bg-transparent p-4 rounded-xl border border-highlight/50">
+                                <p className="text-[#71717A] text-[10px] uppercase mb-1 font-medium tracking-wider">Disponível</p>
+                                <p className="text-primary font-semibold text-sm">R$ {available.toLocaleString('pt-BR')}</p>
                             </div>
                         </div>
                     </div>
@@ -133,9 +132,9 @@ export default function EditBudget() {
                 <footer className="p-6">
                     <button
                         onClick={handleConfirm}
-                        className="w-full py-4 bg-transparent border border-primary text-slate-100 font-bold hover:bg-primary/5 active:scale-[0.98] transition-all flex items-center justify-center gap-3 rounded-full"
+                        className="w-full py-3 bg-transparent border border-primary text-slate-100 font-bold hover:bg-primary/5 active:scale-[0.98] transition-all flex items-center justify-center gap-2 rounded-full"
                     >
-                        <span className="text-[11px] uppercase tracking-[0.2em] font-black">Confirmar Alterações</span>
+                        <span>CONFIRMAR ALTERAÇÕES</span>
                         <span className="material-symbols-outlined text-[20px]">check_circle</span>
                     </button>
                 </footer>

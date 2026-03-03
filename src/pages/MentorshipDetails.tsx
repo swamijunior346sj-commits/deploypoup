@@ -78,12 +78,12 @@ export default function MentorshipDetails() {
 
                 {/* Info Cards */}
                 <div className="grid grid-cols-2 gap-4 mb-10">
-                    <div className="bg-surface border border-white/5 rounded-2xl p-4 flex flex-col items-center justify-center text-center">
+                    <div className="bg-transparent border border-white/10 rounded-2xl p-4 flex flex-col items-center justify-center text-center">
                         <span className="material-symbols-outlined text-primary text-2xl mb-2">video_camera_front</span>
                         <h4 className="text-white text-xs font-bold uppercase">100% Online</h4>
                         <p className="text-[#a7a7a7] text-[10px] mt-1">Via Google Meet</p>
                     </div>
-                    <div className="bg-surface border border-white/5 rounded-2xl p-4 flex flex-col items-center justify-center text-center">
+                    <div className="bg-transparent border border-white/10 rounded-2xl p-4 flex flex-col items-center justify-center text-center">
                         <span className="material-symbols-outlined text-primary text-2xl mb-2">event_available</span>
                         <h4 className="text-white text-xs font-bold uppercase">Agenda Flex</h4>
                         <p className="text-[#a7a7a7] text-[10px] mt-1">Escolha o horário</p>

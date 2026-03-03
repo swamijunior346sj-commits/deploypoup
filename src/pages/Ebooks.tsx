@@ -63,7 +63,7 @@ export default function Ebooks() {
             <header className="px-6 mb-8 flex items-center justify-between sticky top-0 bg-background-dark/80 backdrop-blur-md z-10 py-4">
                 <button
                     onClick={() => navigate('/shop')}
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-surface border border-white/5 active:scale-95 transition-all text-light-gray"
+                    className="w-10 h-10 rounded-full flex items-center justify-center bg-transparent border border-white/10 active:scale-95 transition-all text-light-gray"
                 >
                     <span className="material-symbols-outlined text-lg">arrow_back</span>
                 </button>
@@ -72,7 +72,7 @@ export default function Ebooks() {
                     <p className="text-[10px] text-light-gray opacity-70 tracking-widest uppercase">Biblioteca Premium</p>
                 </div>
                 <button
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-surface border border-white/5 active:scale-95 transition-all text-light-gray"
+                    className="w-10 h-10 rounded-full flex items-center justify-center bg-transparent border border-white/10 active:scale-95 transition-all text-light-gray"
                 >
                     <span className="material-symbols-outlined text-lg">search</span>
                 </button>
@@ -85,7 +85,7 @@ export default function Ebooks() {
                         <div
                             key={ebook.id}
                             onClick={() => navigate(`/ebook/${ebook.id}`)}
-                            className="flex flex-col gap-2 p-3 rounded-2xl bg-surface border border-white/5 hover:border-primary/30 transition-all active:scale-[0.98] group cursor-pointer"
+                            className="flex flex-col gap-2 p-3 rounded-2xl bg-transparent border border-white/10 hover:border-primary/30 transition-all active:scale-[0.98] group cursor-pointer"
                         >
                             <div className="relative aspect-[3/4] rounded-xl overflow-hidden w-full">
                                 <img src={ebook.coverUrl} alt={ebook.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />

@@ -45,7 +45,7 @@ export default function Consent() {
                 {/* Consent Toggles */}
                 <div className="flex flex-col gap-4 mb-10">
                     {/* AI Analysis */}
-                    <div className="bg-[#0D0E10] p-5 rounded-2xl flex items-center justify-between border border-[#FCFCFC]/5 shadow-xl">
+                    <div className="bg-transparent border border-white/10 shadow-xl">
                         <div className="flex flex-col gap-1">
                             <h3 className="font-bold text-[#FCFCFC]">Análise de Gastos pela IA</h3>
                             <p className="text-xs text-[#A7A7A7]">Insights personalizados sobre suas finanças.</p>
@@ -62,7 +62,7 @@ export default function Consent() {
                     </div>
 
                     {/* Reports */}
-                    <div className="bg-[#0D0E10] p-5 rounded-2xl flex items-center justify-between border border-[#FCFCFC]/5 shadow-xl">
+                    <div className="bg-transparent border border-white/10 shadow-xl">
                         <div className="flex flex-col gap-1">
                             <h3 className="font-bold text-[#FCFCFC] text-sm">Compartilhamento para Relatórios</h3>
                             <p className="text-xs text-[#A7A7A7]">Envio de extratos consolidados por e-mail.</p>
@@ -79,7 +79,7 @@ export default function Consent() {
                     </div>
 
                     {/* Notifications */}
-                    <div className="bg-[#0D0E10] p-5 rounded-2xl flex items-center justify-between border border-[#FCFCFC]/5 shadow-xl">
+                    <div className="bg-transparent border border-white/10 shadow-xl">
                         <div className="flex flex-col gap-1">
                             <h3 className="font-bold text-[#FCFCFC]">Comunicações e Alertas</h3>
                             <p className="text-xs text-[#A7A7A7]">Notificações importantes sobre sua conta.</p>

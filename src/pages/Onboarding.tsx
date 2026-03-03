@@ -122,7 +122,7 @@ export default function Onboarding() {
 
                         {/* IA Alert Card */}
                         <div className="w-full p-1 bg-gradient-to-r from-primary/30 to-transparent rounded-xl">
-                            <div className="flex items-center gap-4 rounded-xl bg-[#0D0E10] p-5 shadow-xl border border-primary/10">
+                            <div className="flex items-center gap-4 rounded-xl bg-transparent p-5 shadow-xl border border-white/10">
                                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/20 text-primary">
                                     <span className="material-symbols-outlined">smart_toy</span>
                                 </div>
@@ -195,13 +195,13 @@ export default function Onboarding() {
                                 <span className="text-xs font-medium text-[#D6D6D6]">Mestre</span>
                             </div>
                             <div className="flex flex-col items-center gap-2">
-                                <div className="w-20 h-20 bg-[#0D0E10] border border-primary/10 rounded-full flex items-center justify-center opacity-80">
+                                <div className="w-20 h-20 bg-transparent border border-white/10">
                                     <span className="material-symbols-outlined text-primary/40 text-4xl">military_tech</span>
                                 </div>
                                 <span className="text-xs font-medium text-[#D6D6D6]/50">Elite</span>
                             </div>
                             <div className="flex flex-col items-center gap-2">
-                                <div className="w-20 h-20 bg-[#0D0E10] border border-primary/10 rounded-full flex items-center justify-center opacity-80">
+                                <div className="w-20 h-20 bg-transparent border border-white/10">
                                     <span className="material-symbols-outlined text-primary/40 text-4xl">rewarded_ads</span>
                                 </div>
                                 <span className="text-xs font-medium text-[#D6D6D6]/50">Expert</span>
@@ -219,7 +219,7 @@ export default function Onboarding() {
                         </div>
 
                         {/* Gamified Card */}
-                        <div className="bg-[#0D0E10] border border-primary/10 rounded-xl p-5 shadow-2xl">
+                        <div className="bg-transparent border border-white/10 rounded-xl p-5 shadow-2xl">
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex flex-col">
                                     <span className="text-xs font-bold text-primary uppercase tracking-widest">Missão Diária</span>

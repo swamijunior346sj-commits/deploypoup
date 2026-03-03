@@ -40,22 +40,22 @@ export default function Dashboard() {
           <div className="flex flex-col space-y-8">
             <div className="flex flex-col items-start py-2">
               <div className="flex items-baseline gap-1">
-                <span className="text-xs font-light text-zinc-500">R$</span>
-                <span className="text-4xl font-display font-thin text-white tracking-tighter">
+                <span className="text-xs font-light text-text-label">R$</span>
+                <span className="text-4xl font-extralight text-text-value tracking-tighter">
                   {totalBalance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                 </span>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div onClick={() => navigate('/analysis')} className="border border-primary/40 bg-transparent rounded-sm p-4 flex flex-col gap-1 transition-all hover:border-primary cursor-pointer">
+              <div onClick={() => navigate('/analysis')} className="border border-primary/20 bg-transparent rounded-sm p-4 flex flex-col gap-1 transition-all hover:border-primary/50 cursor-pointer">
                 <span className="text-[9px] font-medium tracking-widest text-primary uppercase">Ativos</span>
-                <span className="text-lg font-display font-light text-white">
+                <span className="text-lg font-light text-text-value">
                   R$ {totalAssets.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}
                 </span>
               </div>
-              <div onClick={() => navigate('/analysis')} className="border border-primary/40 bg-transparent rounded-sm p-4 flex flex-col gap-1 transition-all hover:border-primary cursor-pointer">
+              <div onClick={() => navigate('/analysis')} className="border border-primary/20 bg-transparent rounded-sm p-4 flex flex-col gap-1 transition-all hover:border-primary/50 cursor-pointer">
                 <span className="text-[9px] font-medium tracking-widest text-primary uppercase">Despesas Totais</span>
-                <span className="text-lg font-display font-light text-white">
+                <span className="text-lg font-light text-text-value">
                   R$ {totalExpenses.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}
                 </span>
               </div>

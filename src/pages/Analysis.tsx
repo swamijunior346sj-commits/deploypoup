@@ -33,10 +33,10 @@ export default function Analysis() {
           {/* Efeito de luz atrás do card principal */}
           <div className="absolute inset-0 bg-primary/10 blur-[100px] rounded-full scale-75 opacity-50 group-hover:opacity-100 transition-opacity"></div>
 
-          <div className="neon-border rounded-[2.5rem] p-4 bg-black/40 backdrop-blur-sm relative flex flex-col items-center justify-center min-h-[240px] w-full overflow-hidden">
-            <label className="absolute top-10 text-[10px] uppercase tracking-[0.5em] text-[#71717A] font-bold">PATRIMÔNIO TOTAL</label>
+          <div className="bg-transparent border border-white/10">
+            <label className="absolute top-10 text-[10px] uppercase tracking-[0.5em] text-text-label font-bold">PATRIMÔNIO TOTAL</label>
             <div className="flex flex-col items-center justify-center w-full px-2 mt-4">
-              <span className="text-white text-[12vw] xs:text-6xl font-display font-light tracking-tighter premium-text-glow leading-none text-center whitespace-nowrap">
+              <span className="text-text-value text-[12vw] xs:text-6xl font-display font-extralight tracking-tighter premium-text-glow leading-none text-center whitespace-nowrap">
                 R$ {totalAssetsValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </span>
               <div className="flex items-center space-x-2 mt-10">
@@ -60,24 +60,24 @@ export default function Analysis() {
               <circle className="concentric-ring animate-draw ring-3" cx="50" cy="50" opacity="0.4" r="30" stroke="#0FB67F" strokeWidth="3" style={{ "--final-offset": 120 } as any}></circle>
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
-              <span className="text-[10px] text-[#71717A] uppercase font-bold tracking-[0.3em]">Ativos</span>
-              <span className="text-3xl font-display font-light text-white">{assets.length}</span>
+              <span className="text-[10px] text-text-label uppercase font-bold tracking-[0.3em]">Ativos</span>
+              <span className="text-3xl font-display font-light text-text-value">{assets.length}</span>
             </div>
           </div>
           <div className="flex-1 ml-8 space-y-6">
-            <h3 className="text-[10px] uppercase tracking-[0.5em] text-[#71717A] font-black">DISTRIBUIÇÃO</h3>
+            <h3 className="text-[10px] uppercase tracking-[0.5em] text-text-label font-black">DISTRIBUIÇÃO</h3>
             <div className="space-y-5">
               <div className="flex items-center justify-between text-[13px] tracking-[0.1em] font-medium">
-                <span className="text-[#71717A]">RENDA FIXA</span>
-                <span className="font-bold text-white">{distFixed}%</span>
+                <span className="text-text-label">RENDA FIXA</span>
+                <span className="font-bold text-text-value">{distFixed}%</span>
               </div>
               <div className="flex items-center justify-between text-[13px] tracking-[0.1em] font-medium">
-                <span className="text-[#71717A]">RENDA VAR.</span>
-                <span className="font-bold text-white">{distVar}%</span>
+                <span className="text-text-label">RENDA VAR.</span>
+                <span className="font-bold text-text-value">{distVar}%</span>
               </div>
               <div className="flex items-center justify-between text-[13px] tracking-[0.1em] font-medium">
-                <span className="text-[#71717A]">CRIPTO</span>
-                <span className="font-bold text-white">{distCripto}%</span>
+                <span className="text-text-label">CRIPTO</span>
+                <span className="font-bold text-text-value">{distCripto}%</span>
               </div>
             </div>
           </div>
@@ -85,9 +85,9 @@ export default function Analysis() {
 
         <section>
           <div className="flex items-center justify-between mb-10">
-            <h2 className="text-[10px] font-display font-bold tracking-[0.4em] text-white uppercase">MEUS ATIVOS</h2>
+            <h2 className="text-[10px] font-display font-bold tracking-[0.4em] text-text-value uppercase">MEUS ATIVOS</h2>
             <div className="h-[1px] flex-1 mx-6 bg-zinc-900/50"></div>
-            <button className="text-[10px] text-[#71717A] font-bold uppercase tracking-[0.3em] hover:text-primary transition-colors">VER TUDO</button>
+            <button className="text-[10px] text-text-label font-bold uppercase tracking-[0.3em] hover:text-primary transition-colors">VER TUDO</button>
           </div>
           <div className="space-y-5">
             {assets.length > 0 ? (
@@ -100,18 +100,18 @@ export default function Analysis() {
                   {/* Brilho atrás de cada card da lista */}
                   <div className="absolute inset-0 bg-primary/5 blur-2xl rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
-                  <div className="neon-border rounded-2xl p-7 flex items-center justify-between bg-black/40 backdrop-blur-sm relative active:scale-[0.98] transition-all">
+                  <div className="bg-transparent border border-white/10">
                     <div className="flex items-center space-x-6">
                       <div className="w-12 h-12 border border-zinc-800 rounded-full flex items-center justify-center bg-black">
                         <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">{asset.icon || 'monetization_on'}</span>
                       </div>
                       <div>
-                        <p className="text-[15px] font-bold font-display tracking-[0.1em] text-white">{asset.ticker || 'ATIVO'}</p>
-                        <p className="text-[10px] text-[#71717A] font-bold uppercase tracking-[0.2em] mt-1">{asset.name}</p>
+                        <p className="text-[15px] font-bold font-display tracking-[0.1em] text-text-value">{asset.ticker || 'ATIVO'}</p>
+                        <p className="text-[10px] text-text-label font-bold uppercase tracking-[0.2em] mt-1">{asset.name}</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-semibold text-white tracking-wide">R$ {Number(asset.current_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                      <p className="text-sm font-semibold text-text-value tracking-wide">R$ {Number(asset.current_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
                       <p className={`text-[11px] font-black tracking-widest mt-1.5 ${asset.change_percentage >= 0 ? 'text-primary neon-text-glow' : 'text-red-500'}`}>
                         {asset.change_percentage >= 0 ? '+' : ''}{asset.change_percentage}%
                       </p>

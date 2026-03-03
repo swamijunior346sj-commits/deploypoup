@@ -49,14 +49,14 @@ export default function Signup() {
     };
 
     return (
-        <div className={`bg-background-dark font-display antialiased text-white-pure min-h-screen ${showSuccess ? 'overflow-hidden' : ''}`}>
+        <div className={`bg-background-dark font-display antialiased text-text-value-pure min-h-screen ${showSuccess ? 'overflow-hidden' : ''}`}>
             <div className={`relative flex h-auto min-h-screen w-full max-w-[430px] mx-auto flex-col bg-background-dark p-6 ${showSuccess ? 'blur-sm pointer-events-none' : ''}`}>
 
                 {/* Header Section */}
                 <div className="flex items-center justify-between mb-8">
                     <button
                         onClick={() => navigate(-1)}
-                        className="text-white-pure hover:opacity-80 transition-opacity p-2 -ml-2"
+                        className="text-text-value-pure hover:opacity-80 transition-opacity p-2 -ml-2"
                     >
                         <span className="material-symbols-outlined text-2xl">arrow_back</span>
                     </button>
@@ -66,16 +66,16 @@ export default function Signup() {
                 {/* Hero Section */}
                 <div className="mb-10">
                     <h2 className="text-3xl font-extrabold leading-tight mb-3">Comece sua jornada para a liberdade financeira.</h2>
-                    <p className="text-neutral-text text-sm font-medium">Cadastre-se para acessar recursos premium do Gestão Financeira Inteligente.</p>
+                    <p className="text-text-label text-sm font-medium">Cadastre-se para acessar recursos premium do Gestão Financeira Inteligente.</p>
                 </div>
 
                 {/* Form Section */}
                 <form onSubmit={handleSignup} className="flex flex-col gap-8">
                     {/* Nome Input */}
                     <div className="custom-input flex flex-col gap-1 border-b border-neutral-border transition-colors duration-300 focus-within:border-primary">
-                        <label className="text-xs font-semibold tracking-wider text-neutral-text uppercase">Nome Completo</label>
+                        <label className="text-xs font-semibold tracking-wider text-text-label uppercase">Nome Completo</label>
                         <input
-                            className="bg-transparent border-none px-0 py-3 text-white-pure placeholder:text-neutral-text/40 focus:ring-0 text-base"
+                            className="bg-transparent border-none px-0 py-3 text-text-value-pure placeholder:text-text-label/40 focus:ring-0 text-base"
                             placeholder="Como deseja ser chamado?"
                             type="text"
                             value={name}
@@ -86,9 +86,9 @@ export default function Signup() {
 
                     {/* E-mail Input */}
                     <div className="custom-input flex flex-col gap-1 border-b border-neutral-border transition-colors duration-300 focus-within:border-primary">
-                        <label className="text-xs font-semibold tracking-wider text-neutral-text uppercase">E-mail</label>
+                        <label className="text-xs font-semibold tracking-wider text-text-label uppercase">E-mail</label>
                         <input
-                            className="bg-transparent border-none px-0 py-3 text-white-pure placeholder:text-neutral-text/40 focus:ring-0 text-base"
+                            className="bg-transparent border-none px-0 py-3 text-text-value-pure placeholder:text-text-label/40 focus:ring-0 text-base"
                             placeholder="seu@email.com"
                             type="email"
                             value={email}
@@ -99,9 +99,9 @@ export default function Signup() {
 
                     {/* Senha Input */}
                     <div className="custom-input flex flex-col gap-1 border-b border-neutral-border transition-colors duration-300 relative focus-within:border-primary">
-                        <label className="text-xs font-semibold tracking-wider text-neutral-text uppercase">Senha</label>
+                        <label className="text-xs font-semibold tracking-wider text-text-label uppercase">Senha</label>
                         <input
-                            className="bg-transparent border-none px-0 py-3 text-white-pure placeholder:text-neutral-text/40 focus:ring-0 text-base pr-10"
+                            className="bg-transparent border-none px-0 py-3 text-text-value-pure placeholder:text-text-label/40 focus:ring-0 text-base pr-10"
                             placeholder="Mínimo 8 caracteres"
                             type={showPassword ? 'text' : 'password'}
                             value={password}
@@ -110,7 +110,7 @@ export default function Signup() {
                         />
                         <span
                             onClick={() => setShowPassword(!showPassword)}
-                            className="material-symbols-outlined absolute right-0 bottom-3 text-neutral-text/60 cursor-pointer hover:text-white-pure transition-colors"
+                            className="material-symbols-outlined absolute right-0 bottom-3 text-text-label/60 cursor-pointer hover:text-text-value-pure transition-colors"
                         >
                             {showPassword ? 'visibility_off' : 'visibility'}
                         </span>
@@ -127,7 +127,7 @@ export default function Signup() {
                             />
                             <span className="material-symbols-outlined absolute text-black font-bold scale-0 peer-checked:scale-100 transition-transform left-1/2 -ml-[8px] text-base">check</span>
                         </label>
-                        <p className="text-sm text-neutral-text">Aceito os <span className="text-primary hover:underline cursor-pointer">Termos de Uso</span> e Política de Privacidade</p>
+                        <p className="text-sm text-text-label">Aceito os <span className="text-primary hover:underline cursor-pointer">Termos de Uso</span> e Política de Privacidade</p>
                     </div>
 
                     {error && <p className="text-red-500 text-xs font-bold uppercase tracking-wider">{error}</p>}
@@ -150,7 +150,7 @@ export default function Signup() {
 
                         <button
                             onClick={handleGoogleSignup}
-                            className="w-full bg-neutral-dark border border-neutral-border hover:bg-white-pure/5 text-white-pure font-bold py-4 rounded-xl flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
+                            className="w-full bg-neutral-dark border border-neutral-border hover:bg-white-pure/5 text-text-value-pure font-bold py-4 rounded-xl flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
                             type="button"
                         >
                             <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -185,7 +185,7 @@ export default function Signup() {
             {/* Success Popup Modal */}
             {showSuccess && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
-                    <div className="w-full max-w-[360px] bg-[#0D0E10] border border-[#222426] rounded-3xl p-8 flex flex-col items-center text-center relative overflow-hidden" style={{ boxShadow: '0 0 40px -10px rgba(15, 182, 127, 0.3)' }}>
+                    <div className="w-full max-w-[360px] bg-transparent border border-white/10 rounded-3xl p-8 flex flex-col items-center text-center relative overflow-hidden" style={{ boxShadow: '0 0 40px -10px rgba(15, 182, 127, 0.3)' }}>
                         {/* Decorative glow */}
                         <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/10 rounded-full blur-[60px]"></div>
 

@@ -42,8 +42,8 @@ export default function AssetDetails() {
             {/* Header Reduzido */}
             <header className="pt-12 pb-6 px-6 sticky top-0 bg-black/90 backdrop-blur-xl z-50 border-b border-zinc-900">
                 <div className="flex items-center justify-between">
-                    <button onClick={() => navigate(-1)} className="material-symbols-outlined text-[#FCFCFC] active:scale-95 transition-transform">arrow_back</button>
-                    <h1 className="text-[10px] font-display font-bold tracking-[0.4em] text-[#FCFCFC] uppercase text-center flex-1">PERFORMANCE DO ATIVO</h1>
+                    <button onClick={() => navigate(-1)} className="material-symbols-outlined text-text-value active:scale-95 transition-transform">arrow_back</button>
+                    <h1 className="text-[10px] font-display font-bold tracking-[0.4em] text-text-value uppercase text-center flex-1">PERFORMANCE DO ATIVO</h1>
                     <div className="w-6"></div> {/* Espaçador para centralizar o título */}
                 </div>
             </header>
@@ -53,11 +53,11 @@ export default function AssetDetails() {
                     {/* Header do Ativo */}
                     <div className="flex justify-between items-end mb-8 mt-2">
                         <div>
-                            <h2 className="text-2xl font-display font-bold text-[#FCFCFC] tracking-tight">{asset.ticker}</h2>
+                            <h2 className="text-2xl font-display font-bold text-text-value tracking-tight">{asset.ticker}</h2>
                             <p className="text-[10px] text-zinc-500 tracking-widest uppercase mt-1">{asset.name}</p>
                         </div>
                         <div className="text-right">
-                            <p className="text-xl font-bold text-primary neon-text-glow">{asset.value}</p>
+                            <p className="text-xl font-extralight text-primary neon-text-glow">{asset.value}</p>
                             <p className="text-[10px] text-primary font-bold tracking-tight mt-1">{asset.change} (Hoje)</p>
                         </div>
                     </div>
@@ -91,7 +91,7 @@ export default function AssetDetails() {
                     <div className="neon-border rounded-2xl p-7 mb-4 flex flex-col items-center justify-center text-center bg-black/40 group relative overflow-hidden">
                         <div className="absolute inset-0 bg-primary/5 blur-3xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
                         <span className="text-[10px] font-display font-bold tracking-[0.3em] text-zinc-500 uppercase mb-3 relative z-10">SALDO ATUAL</span>
-                        <p className="text-3xl font-display font-bold text-[#FCFCFC] relative z-10 tracking-tight">R$ 15.368,00</p>
+                        <p className="text-3xl font-display font-bold text-text-value relative z-10 tracking-tight">R$ 15.368,00</p>
                         <div className="mt-3 flex items-center gap-2 relative z-10">
                             <span className="material-symbols-outlined text-primary text-sm">trending_up</span>
                             <span className="text-xs text-primary font-black tracking-wide">+R$ 842,10 (Este Mês)</span>
@@ -102,11 +102,11 @@ export default function AssetDetails() {
                     <div className="grid grid-cols-2 gap-4 mb-6">
                         <div className="border border-primary/20 rounded-2xl p-6 bg-black/40">
                             <span className="text-[9px] font-black tracking-[0.2em] text-zinc-500 uppercase">PREÇO MÉDIO</span>
-                            <p className="text-xl font-display font-bold text-[#FCFCFC] mt-2 tracking-tight">R$ 34,12</p>
+                            <p className="text-xl font-display font-bold text-text-value mt-2 tracking-tight">R$ 34,12</p>
                         </div>
                         <div className="border border-primary/20 rounded-2xl p-6 bg-black/40">
                             <span className="text-[9px] font-black tracking-[0.2em] text-zinc-500 uppercase">QUANTIDADE</span>
-                            <p className="text-xl font-display font-bold text-[#FCFCFC] mt-2 tracking-tight">400 UN</p>
+                            <p className="text-xl font-display font-bold text-text-value mt-2 tracking-tight">400 UN</p>
                         </div>
                     </div>
 
@@ -127,7 +127,7 @@ export default function AssetDetails() {
                                             <span className="material-symbols-outlined text-primary text-xl">{move.icon}</span>
                                         </div>
                                         <div>
-                                            <p className="text-[14px] font-bold text-[#FCFCFC] tracking-wide">{move.title}</p>
+                                            <p className="text-[14px] font-bold text-text-value tracking-wide">{move.title}</p>
                                             <p className="text-[10px] text-zinc-600 font-bold tracking-widest mt-1 uppercase">{move.date}</p>
                                         </div>
                                     </div>
@@ -156,7 +156,7 @@ export default function AssetDetails() {
                                 </svg>
                                 <div className="absolute inset-0 flex flex-col items-center justify-center relative z-10">
                                     <span className="text-[9px] text-zinc-500 uppercase font-black tracking-widest">SCORE</span>
-                                    <span className="text-lg font-display font-bold text-[#FCFCFC]">B1</span>
+                                    <span className="text-lg font-display font-bold text-text-value">B1</span>
                                 </div>
                             </div>
                             <div className="flex-1 space-y-5">
@@ -168,7 +168,7 @@ export default function AssetDetails() {
                                     <div key={i}>
                                         <div className="flex justify-between text-[10px] font-black mb-1.5 tracking-widest">
                                             <span className="text-zinc-500">{item.label}</span>
-                                            <span className="text-[#FCFCFC]">{item.value}</span>
+                                            <span className="text-text-value">{item.value}</span>
                                         </div>
                                         <div className="h-[2px] w-full bg-zinc-900 rounded-full overflow-hidden">
                                             <div className="h-full bg-primary" style={{ width: item.width, opacity: item.opacity }}></div>

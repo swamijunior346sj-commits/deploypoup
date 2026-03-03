@@ -50,7 +50,7 @@ export default function Mentorships() {
             <header className="px-6 mb-8 flex items-center justify-between sticky top-0 bg-background-dark/80 backdrop-blur-md z-10 py-4">
                 <button
                     onClick={() => navigate('/shop')}
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-surface border border-white/5 active:scale-95 transition-all text-light-gray"
+                    className="w-10 h-10 rounded-full flex items-center justify-center bg-transparent border border-white/10 active:scale-95 transition-all text-light-gray"
                 >
                     <span className="material-symbols-outlined text-lg">arrow_back</span>
                 </button>
@@ -59,7 +59,7 @@ export default function Mentorships() {
                     <p className="text-[10px] text-light-gray opacity-70 tracking-widest uppercase">Assessoria 1 a 1</p>
                 </div>
                 <button
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-surface border border-white/5 active:scale-95 transition-all text-light-gray"
+                    className="w-10 h-10 rounded-full flex items-center justify-center bg-transparent border border-white/10 active:scale-95 transition-all text-light-gray"
                 >
                     <span className="material-symbols-outlined text-lg">filter_list</span>
                 </button>
@@ -71,7 +71,7 @@ export default function Mentorships() {
                     <div
                         key={mentorship.id}
                         onClick={() => navigate(`/mentorship/${mentorship.id}`)}
-                        className="flex flex-col rounded-[24px] bg-surface border border-white/5 hover:border-primary/30 transition-all active:scale-[0.98] group cursor-pointer p-5"
+                        className="flex flex-col rounded-[24px] bg-transparent border border-white/10 hover:border-primary/30 transition-all active:scale-[0.98] group cursor-pointer p-5"
                     >
                         <div className="flex gap-4">
                             <div className="relative w-24 h-24 rounded-full overflow-hidden shrink-0 border-2 border-primary/20 p-1">

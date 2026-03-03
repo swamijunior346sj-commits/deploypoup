@@ -30,7 +30,7 @@ export default function SavingsSimulator() {
             <main className="flex-1 px-6 pb-40">
                 {/* Total Card */}
                 <section className="mt-4 mb-8">
-                    <div className="bg-zinc-900/30 border border-zinc-800/50 rounded-[2.5rem] p-10 relative overflow-hidden text-center">
+                    <div className="bg-transparent border border-white/10 rounded-[2.5rem] p-10 relative overflow-hidden text-center">
                         <div className="absolute top-0 left-0 w-40 h-40 bg-primary/5 blur-[80px] rounded-full -ml-20 -mt-20"></div>
                         <label className="text-[10px] uppercase tracking-[0.4em] text-zinc-500 font-bold mb-4 block">ECONOMIA POTENCIAL TOTAL</label>
                         <div className="flex flex-col items-center">
@@ -87,7 +87,7 @@ export default function SavingsSimulator() {
                         <h2 className="text-xs font-display font-bold tracking-[0.2em] text-[#FCFCFC] uppercase">INSIGHTS DA IA</h2>
                     </div>
                     <div className="space-y-4">
-                        <div className="bg-[#0D0E10] border-l-4 border-l-primary rounded-r-2xl p-5">
+                        <div className="bg-transparent border border-white/10 border-l-4 border-l-primary">
                             <p className="text-xs text-zinc-400 leading-relaxed mb-4">
                                 Você pode economizar <span className="text-primary font-bold">R$ 45,00</span> mensais cancelando assinaturas que não usa há 3 meses.
                             </p>
@@ -97,7 +97,7 @@ export default function SavingsSimulator() {
                                 </button>
                             </div>
                         </div>
-                        <div className="bg-[#0D0E10] border-l-4 border-l-primary rounded-r-2xl p-5">
+                        <div className="bg-transparent border border-white/10 border-l-4 border-l-primary">
                             <p className="text-xs text-zinc-400 leading-relaxed mb-4">
                                 Seus gastos com Lazer estão <span className="text-primary font-bold">20% acima</span> da média. Tente reduzir R$ 100,00 para bater sua meta.
                             </p>
@@ -146,11 +146,11 @@ export default function SavingsSimulator() {
 
                 {/* Stats Cards */}
                 <section className="grid grid-cols-2 gap-4 mb-10">
-                    <div className="bg-[#0D0E10] border border-zinc-800/50 rounded-2xl p-6 flex flex-col justify-between h-28">
+                    <div className="bg-transparent border border-white/10">
                         <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest leading-tight">Economia Anual Estimada</p>
                         <p className="text-xl font-bold font-display text-primary">R$ {(total * 12).toLocaleString('pt-BR')}</p>
                     </div>
-                    <div className="bg-[#0D0E10] border border-zinc-800/50 rounded-2xl p-6 flex flex-col justify-between h-28">
+                    <div className="bg-transparent border border-white/10">
                         <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest leading-tight">Tempo poupado para Meta</p>
                         <p className="text-xl font-bold font-display text-[#FCFCFC]">- 4 Meses</p>
                     </div>
@@ -170,7 +170,7 @@ export default function SavingsSimulator() {
                     <div className="flex items-center space-x-2 opacity-30">
                         <span className="material-symbols-outlined text-[10px]">auto_awesome</span>
                         <p className="text-[8px] font-bold tracking-[0.5em] uppercase text-[#FCFCFC]">
-                            
+
                         </p>
                     </div>
                 </footer>

@@ -48,7 +48,7 @@ export default function Shop() {
                     <p className="text-light-gray text-xs mt-1 opacity-70 tracking-wide uppercase">Marketplace do Investidor</p>
                 </div>
                 <button
-                    className="w-10 h-10 rounded-full flex items-center justify-center relative bg-surface border border-white/5 active:scale-95 transition-all"
+                    className="w-10 h-10 rounded-full flex items-center justify-center relative bg-transparent border border-white/10 active:scale-95 transition-all"
                 >
                     <span className="material-symbols-outlined text-off-white text-lg">shopping_cart</span>
                 </button>
@@ -100,7 +100,7 @@ export default function Shop() {
 
                 <div className="space-y-4">
                     {featuredProducts.map((product) => (
-                        <div key={product.id} onClick={() => navigate(`/ebook/${product.id}`)} className="flex gap-4 p-4 rounded-2xl bg-surface border border-white/5 hover:border-white/10 transition-colors active:scale-[0.98] cursor-pointer">
+                        <div key={product.id} onClick={() => navigate(`/ebook/${product.id}`)} className="flex gap-4 p-4 rounded-2xl bg-transparent border border-white/10 hover:border-white/10 transition-colors active:scale-[0.98] cursor-pointer">
                             <div className="relative w-24 h-28 rounded-xl overflow-hidden shrink-0">
                                 <img src={product.image} alt={product.title} className="absolute inset-0 w-full h-full object-cover" />
                                 {product.tag && (

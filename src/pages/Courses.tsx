@@ -50,7 +50,7 @@ export default function Courses() {
             <header className="px-6 mb-8 flex items-center justify-between sticky top-0 bg-background-dark/80 backdrop-blur-md z-10 py-4">
                 <button
                     onClick={() => navigate('/shop')}
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-surface border border-white/5 active:scale-95 transition-all text-light-gray"
+                    className="w-10 h-10 rounded-full flex items-center justify-center bg-transparent border border-white/10 active:scale-95 transition-all text-light-gray"
                 >
                     <span className="material-symbols-outlined text-lg">arrow_back</span>
                 </button>
@@ -59,7 +59,7 @@ export default function Courses() {
                     <p className="text-[10px] text-light-gray opacity-70 tracking-widest uppercase">Educação Premium</p>
                 </div>
                 <button
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-surface border border-white/5 active:scale-95 transition-all text-light-gray"
+                    className="w-10 h-10 rounded-full flex items-center justify-center bg-transparent border border-white/10 active:scale-95 transition-all text-light-gray"
                 >
                     <span className="material-symbols-outlined text-lg">search</span>
                 </button>
@@ -71,7 +71,7 @@ export default function Courses() {
                     <div
                         key={course.id}
                         onClick={() => navigate(`/course/${course.id}`)}
-                        className="flex flex-col rounded-2xl bg-surface border border-white/5 hover:border-primary/30 transition-all active:scale-[0.98] group cursor-pointer overflow-hidden"
+                        className="flex flex-col rounded-2xl bg-transparent border border-white/10 hover:border-primary/30 transition-all active:scale-[0.98] group cursor-pointer overflow-hidden"
                     >
                         <div className="relative h-40 w-full overflow-hidden">
                             <img src={course.coverUrl} alt={course.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />

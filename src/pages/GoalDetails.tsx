@@ -76,13 +76,13 @@ export default function GoalDetails() {
                         ></circle>
                     </svg>
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className="text-5xl font-extrabold tracking-tighter text-white">{percentage}%</span>
+                        <span className="text-5xl font-extralight tracking-tighter text-text-value">{percentage}%</span>
                         <span className="text-xs uppercase tracking-[0.2em] text-primary mt-2 font-semibold">Concluído</span>
                     </div>
                 </div>
                 <div className="mt-8 text-center px-6 w-full">
                     <p className="text-slate-400 text-sm font-medium">Você está quase lá!</p>
-                    <div className="flex justify-around mt-6 bg-slate-900/30 p-4 rounded-2xl border border-white/5">
+                    <div className="flex justify-around mt-6 bg-transparent p-4 rounded-2xl border border-white/10">
                         <div className="flex flex-col items-center">
                             <span className="text-slate-500 text-[10px] uppercase tracking-widest font-bold">Saldo Atual</span>
                             <span className="text-xl font-bold text-white mt-1">R$ {goal.current_amount.toLocaleString('pt-BR')}</span>
