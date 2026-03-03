@@ -8,8 +8,8 @@ export default function AIAssistant() {
   return (
     <div className="bg-brand-bg text-brand-primaryText font-sans flex flex-col min-h-screen relative">
       <header className="px-6 pt-12 pb-4 flex items-center justify-between sticky top-0 bg-brand-bg/90 backdrop-blur-xl z-50">
-        <button onClick={() => navigate(-1)} className="w-10 h-10 rounded-full bg-brand-card border border-white/5 flex items-center justify-center active:scale-95 transition-transform">
-          <span className="material-symbols-outlined text-brand-subtitle text-xl">arrow_back_ios_new</span>
+        <button onClick={() => navigate(-1)} className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95">
+          <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">arrow_back_ios_new</span>
         </button>
         <h1 className="text-xs font-display font-bold tracking-[0.3em] uppercase text-brand-primaryText text-center px-2">Assistente IA & Análise</h1>
         <div className="w-10 h-10 rounded-full overflow-hidden border border-white/5 shrink-0">

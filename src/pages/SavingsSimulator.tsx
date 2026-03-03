@@ -19,7 +19,7 @@ export default function SavingsSimulator() {
     return (
         <div className="bg-black text-[#FCFCFC] font-sans flex flex-col min-h-screen overflow-x-hidden">
             <header className="pt-14 pb-4 px-6 flex items-center justify-between sticky top-0 bg-black/90 backdrop-blur-md z-20">
-                <button onClick={() => navigate(-1)} className="p-2 -ml-2 hover:bg-zinc-900 rounded-full transition-colors active:scale-95">
+                <button onClick={() => navigate(-1)} className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95">
                     <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">arrow_back_ios_new</span>
                 </button>
                 <h1 className="text-[10px] font-display font-bold tracking-[0.3em] text-[#FCFCFC] uppercase flex-1 text-center pr-8">

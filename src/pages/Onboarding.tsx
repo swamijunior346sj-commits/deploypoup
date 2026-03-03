@@ -19,8 +19,11 @@ export default function Onboarding() {
             {step === 1 && (
                 <>
                     <header className="flex items-center justify-between p-6">
-                        <button onClick={() => navigate(-1)} className="text-white flex items-center justify-center p-2 rounded-full hover:bg-primary/10 transition-colors active:scale-95">
-                            <span className="material-symbols-outlined">arrow_back</span>
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95"
+                        >
+                            <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">arrow_back_ios_new</span>
                         </button>
                         <div className="text-primary font-bold text-lg tracking-tight">POUP</div>
                         <div className="w-10"></div>
@@ -165,8 +168,11 @@ export default function Onboarding() {
                 <div className="relative flex flex-col flex-1 overflow-hidden">
                     {/* Header */}
                     <div className="flex items-center p-4 pb-2 justify-between">
-                        <button onClick={() => setStep(2)} className="text-white flex size-12 shrink-0 items-center cursor-pointer active:scale-95 transition-transform">
-                            <span className="material-symbols-outlined">arrow_back</span>
+                        <button
+                            onClick={() => setStep(2)}
+                            className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95"
+                        >
+                            <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">arrow_back_ios_new</span>
                         </button>
                         <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Onboarding</h2>
                     </div>

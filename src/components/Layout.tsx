@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Footer from './Footer';
 
@@ -22,31 +22,6 @@ export default function Layout() {
   if (isLogin) {
     return <Outlet />;
   }
-
-  // Swipe handling
-  const touchStartX = useRef(0);
-  const touchEndX = useRef(0);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-  const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.touches[0].clientX;
-  };
-  const handleTouchEnd = () => {
-    const diff = touchStartX.current - touchEndX.current;
-    if (Math.abs(diff) < 60) return; // too small
-
-    const currentIdx = navTabs.findIndex((t) => isTabActive(t.path));
-    if (currentIdx === -1) return;
-
-    if (diff > 60 && currentIdx < navTabs.length - 1) {
-      navigate(navTabs[currentIdx + 1].path);
-    }
-    if (diff < -60 && currentIdx > 0) {
-      navigate(navTabs[currentIdx - 1].path);
-    }
-  };
 
   // Check if any tab matches current path
   const isTabActive = (tabPath: string) => {
@@ -96,8 +71,8 @@ export default function Layout() {
                 key={tab.path}
                 onClick={() => navigate(tab.path)}
                 className={`whitespace-nowrap pb-3 px-3 text-[10px] font-bold tracking-widest transition-colors ${active
-                    ? 'text-primary border-b-2 border-primary'
-                    : 'text-zinc-500'
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-zinc-500'
                   }`}
               >
                 {tab.label}
@@ -112,12 +87,7 @@ export default function Layout() {
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
 
-      <main
-        className="flex-grow pt-[120px]"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
+      <main className="flex-grow pt-[120px]">
         <Outlet />
         <div className="px-6">
           <Footer />

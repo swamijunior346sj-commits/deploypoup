@@ -23,9 +23,9 @@ export default function Header({
                 {showBack && (
                     <button
                         onClick={() => navigate(-1)}
-                        className="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-900 border border-zinc-800 active:scale-95 transition-transform"
+                        className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95"
                     >
-                        <span className="material-symbols-outlined text-zinc-300 text-sm">arrow_back_ios_new</span>
+                        <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">arrow_back_ios_new</span>
                     </button>
                 )}
                 <div className="space-y-1">

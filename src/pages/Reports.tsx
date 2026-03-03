@@ -6,23 +6,6 @@ export default function Reports() {
   const tabs = ['GERAL', 'INVESTIMENTOS', 'ORÇAMENTOS'] as const;
   const [activeTab, setActiveTab] = useState<typeof tabs[number]>('INVESTIMENTOS');
 
-  // Swipe handling
-  const touchStartX = useRef(0);
-  const touchEndX = useRef(0);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-  const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.touches[0].clientX;
-  };
-  const handleTouchEnd = () => {
-    const diff = touchStartX.current - touchEndX.current;
-    const idx = tabs.indexOf(activeTab);
-    if (diff > 60 && idx < tabs.length - 1) setActiveTab(tabs[idx + 1]);
-    if (diff < -60 && idx > 0) setActiveTab(tabs[idx - 1]);
-  };
-
   const candlesticks = [
     { wickTop: 16, body: 48, wickBottom: 12, up: false },
     { wickTop: 24, body: 64, wickBottom: 16, up: true },
@@ -47,8 +30,8 @@ export default function Reports() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`flex-1 py-2.5 text-[10px] font-bold tracking-widest rounded-xl transition-all ${activeTab === tab
-                  ? 'bg-primary text-black shadow-[0_0_15px_rgba(15,182,127,0.3)]'
-                  : 'text-zinc-500'
+                ? 'bg-primary text-black shadow-[0_0_15px_rgba(15,182,127,0.3)]'
+                : 'text-zinc-500'
                 }`}
             >
               {tab}
@@ -57,12 +40,7 @@ export default function Reports() {
         </div>
       </div>
 
-      <main
-        className="flex-1 overflow-y-auto pb-32"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
+      <main className="flex-1 overflow-y-auto pb-32">
         {/* ===== INVESTIMENTOS TAB ===== */}
         {activeTab === 'INVESTIMENTOS' && (
           <div>

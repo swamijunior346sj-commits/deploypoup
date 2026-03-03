@@ -23,9 +23,9 @@ export default function NewCategory() {
             <header className="px-6 pt-12 pb-6 flex items-center justify-between sticky top-0 bg-black/80 backdrop-blur-md z-30">
                 <button
                     onClick={() => navigate(-1)}
-                    className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center active:scale-90 transition-transform"
+                    className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95"
                 >
-                    <span className="material-symbols-outlined text-zinc-400 text-sm">arrow_back_ios_new</span>
+                    <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">arrow_back_ios_new</span>
                 </button>
                 <h1 className="text-xs font-display font-bold tracking-[0.2em] uppercase text-center">NOVA CATEGORIA</h1>
                 <div className="w-10"></div>
@@ -51,8 +51,8 @@ export default function NewCategory() {
                                 key={icon}
                                 onClick={() => setSelectedIcon(icon)}
                                 className={`aspect-square rounded-2xl flex items-center justify-center border transition-all active:scale-90 ${selectedIcon === icon
-                                        ? 'bg-primary/10 border-primary/40 text-primary'
-                                        : 'bg-zinc-900 border-zinc-800 text-zinc-600'
+                                    ? 'bg-primary/10 border-primary/40 text-primary'
+                                    : 'bg-zinc-900 border-zinc-800 text-zinc-600'
                                     }`}
                             >
                                 <span className={`material-symbols-outlined text-2xl ${selectedIcon === icon ? 'filled' : ''}`}>{icon}</span>
@@ -69,8 +69,8 @@ export default function NewCategory() {
                                 key={color}
                                 onClick={() => setSelectedColor(color)}
                                 className={`flex-shrink-0 w-8 h-8 rounded-full transition-all active:scale-90 ${selectedColor === color
-                                        ? 'ring-2 ring-white ring-offset-2 ring-offset-black scale-110'
-                                        : ''
+                                    ? 'ring-2 ring-white ring-offset-2 ring-offset-black scale-110'
+                                    : ''
                                     }`}
                                 style={{ backgroundColor: color }}
                             ></button>

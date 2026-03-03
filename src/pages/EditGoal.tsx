@@ -25,9 +25,9 @@ export default function EditGoal() {
             <header className="px-6 pt-14 pb-4 flex items-center sticky top-0 bg-black/95 backdrop-blur-xl z-10">
                 <button
                     onClick={() => navigate(-1)}
-                    className="w-10 h-10 flex items-center justify-start -ml-2 active:scale-90 transition-transform"
+                    className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95"
                 >
-                    <span className="material-symbols-outlined text-[#fcfcfc] text-2xl">arrow_back_ios</span>
+                    <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">arrow_back_ios_new</span>
                 </button>
                 <h1 className="flex-grow text-center text-xs font-display font-bold tracking-[0.3em] uppercase text-[#fcfcfc] pr-8">Editar Meta</h1>
             </header>

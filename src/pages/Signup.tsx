@@ -53,8 +53,11 @@ export default function Signup() {
             <div className={`relative flex h-auto min-h-screen w-full max-w-[430px] mx-auto flex-col bg-background-dark p-6 ${showSuccess ? 'blur-sm pointer-events-none' : ''}`}>
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
-                    <button onClick={() => navigate(-1)} className="text-[#FCFCFC] hover:opacity-80 transition-opacity active:scale-95">
-                        <span className="material-symbols-outlined text-2xl">arrow_back</span>
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95"
+                    >
+                        <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">arrow_back_ios_new</span>
                     </button>
                     <h1 className="text-xl font-bold flex-1 text-center pr-6">Crie sua Conta</h1>
                 </div>

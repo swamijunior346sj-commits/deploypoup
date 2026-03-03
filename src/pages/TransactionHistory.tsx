@@ -7,8 +7,8 @@ export default function TransactionHistory() {
         <div className="bg-background-dark text-white font-sans flex flex-col min-h-screen">
             <header className="px-6 pt-12 pb-4 flex items-center justify-between sticky top-0 bg-background-dark/90 backdrop-blur-md z-40">
                 <div className="flex items-center space-x-4">
-                    <button onClick={() => navigate(-1)} className="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-900 border border-zinc-800 active:scale-95 transition-transform">
-                        <span className="material-symbols-outlined text-zinc-300">arrow_back_ios_new</span>
+                    <button onClick={() => navigate(-1)} className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95">
+                        <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">arrow_back_ios_new</span>
                     </button>
                     <h1 className="text-sm font-display font-bold tracking-[0.2em] uppercase">Histórico</h1>
                 </div>

@@ -27,8 +27,8 @@ export default function SpendingAnalysis() {
     return (
         <div className="bg-black text-white font-sans flex flex-col min-h-screen overflow-x-hidden">
             <header className="pt-14 pb-4 px-6 flex items-center justify-between sticky top-0 bg-black/80 backdrop-blur-md z-20">
-                <button onClick={() => navigate(-1)} className="p-2 -ml-2 hover:bg-zinc-900 rounded-full transition-colors active:scale-95">
-                    <span className="material-symbols-outlined text-white text-2xl">arrow_back_ios_new</span>
+                <button onClick={() => navigate(-1)} className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95">
+                    <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">arrow_back_ios_new</span>
                 </button>
                 <h1 className="text-sm font-display font-bold tracking-[0.25em] text-white uppercase flex-1 text-center pr-8">
                     ANÁLISE DE GASTOS
@@ -43,8 +43,8 @@ export default function SpendingAnalysis() {
                             key={p}
                             onClick={() => setActivePeriod(p)}
                             className={`flex-1 py-2 text-[10px] font-bold tracking-widest transition-all ${activePeriod === p
-                                    ? 'bg-primary text-black rounded-xl'
-                                    : 'text-zinc-500 hover:text-white'
+                                ? 'bg-primary text-black rounded-xl'
+                                : 'text-zinc-500 hover:text-white'
                                 }`}
                             style={activePeriod === p ? { boxShadow: '0 0 25px rgba(16,185,129,0.4)' } : {}}
                         >

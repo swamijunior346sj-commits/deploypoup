@@ -26,13 +26,13 @@ export default function Goals() {
     return (
         <div className="bg-black text-[#fcfcfc] font-sans flex flex-col min-h-screen">
             <header className="px-6 pt-14 pb-4 flex items-center justify-between sticky top-0 bg-black/95 backdrop-blur-xl z-50">
-                <button onClick={() => navigate(-1)} className="w-8 h-8 flex items-center justify-start active:scale-95 transition-transform">
-                    <span className="material-symbols-outlined text-[#a7a7a7]">arrow_back_ios</span>
+                <button
+                    onClick={() => navigate(-1)}
+                    className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95"
+                >
+                    <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">arrow_back_ios_new</span>
                 </button>
-                <h1 className="text-xs font-display font-bold tracking-[0.3em] uppercase text-[#fcfcfc]">Minhas Metas</h1>
-                <button className="w-8 h-8 flex items-center justify-end active:scale-95 transition-transform">
-                    <span className="material-symbols-outlined text-primary">add</span>
-                </button>
+                <h1 className="text-xs font-display font-bold tracking-[0.3em] uppercase text-[#fcfcfc] flex-grow text-center pr-8">Minhas Metas</h1>
             </header>
 
             <main className="flex-grow px-6 pt-8 pb-32">
@@ -60,19 +60,6 @@ export default function Goals() {
                             </div>
                         </div>
                     ))}
-
-                    <div className="flex flex-col items-center">
-                        <div className="relative w-[120px] h-[120px] flex items-center justify-center group cursor-pointer">
-                            <div className="absolute inset-0 rounded-full border-2 border-dashed border-primary animate-slow-rotate opacity-60"></div>
-                            <button className="w-[100px] h-[100px] rounded-full flex flex-col items-center justify-center bg-[#222426]/50 group-hover:bg-primary/20 transition-all border border-white/5 active:scale-90	">
-                                <span className="material-symbols-outlined text-primary text-3xl">add</span>
-                            </button>
-                        </div>
-                        <div className="mt-4 text-center">
-                            <h3 className="text-sm font-semibold text-[#d6d6d6] tracking-tight">Nova Meta</h3>
-                            <p className="text-[10px] text-[#a7a7a7] uppercase tracking-widest mt-1">Adicionar</p>
-                        </div>
-                    </div>
                 </div>
 
                 <footer className="mt-20 mb-8">
@@ -84,6 +71,14 @@ export default function Goals() {
                     </div>
                 </footer>
             </main>
+
+            {/* Floating Add Button */}
+            <button
+                onClick={() => navigate('/edit-goal')}
+                className="fixed right-6 bottom-24 w-14 h-14 bg-primary rounded-full shadow-[0_8px_30px_rgba(15,182,127,0.5)] flex items-center justify-center z-[60] active:scale-95 transition-transform hover:shadow-[0_12px_40px_rgba(15,182,127,0.6)] animate-float-icon"
+            >
+                <span className="material-symbols-outlined text-black font-bold text-3xl">add</span>
+            </button>
 
             {/* Details Modal */}
             {selectedGoal && (

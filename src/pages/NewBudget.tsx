@@ -26,8 +26,8 @@ export default function NewBudget() {
         <div className={`bg-black text-[#D6D6D6] font-sans flex flex-col min-h-screen ${showSuccess ? 'overflow-hidden' : 'overflow-x-hidden'}`}>
             <header className="pt-14 pb-4 px-6 grid grid-cols-3 items-center sticky top-0 bg-black/95 backdrop-blur-md z-20">
                 <div className="flex items-center">
-                    <button onClick={() => navigate(-1)} className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-colors active:scale-95">
-                        <span className="material-symbols-outlined text-[#FCFCFC] text-[22px]">arrow_back_ios_new</span>
+                    <button onClick={() => navigate(-1)} className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95">
+                        <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">arrow_back_ios_new</span>
                     </button>
                 </div>
                 <h1 className="text-[11px] font-display font-bold tracking-[0.3em] text-[#FCFCFC] uppercase text-center whitespace-nowrap">
