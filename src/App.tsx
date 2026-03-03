@@ -40,6 +40,7 @@ import BudgetDetails from './pages/BudgetDetails';
 import SavingsSimulator from './pages/SavingsSimulator';
 import SpendingAnalysis from './pages/SpendingAnalysis';
 import FinancialPerformance from './pages/FinancialPerformance';
+import EditTransaction from './pages/EditTransaction';
 
 export default function App() {
   return (
@@ -68,6 +69,7 @@ export default function App() {
             <Route path="/new-transaction" element={<NewTransaction />} />
             <Route path="/transactions" element={<TransactionHistory />} />
             <Route path="/transaction-details" element={<TransactionDetails />} />
+            <Route path="/edit-transaction" element={<EditTransaction />} />
             <Route path="/goals" element={<Goals />} />
             <Route path="/new-goal" element={<NewGoal />} />
             <Route path="/add-goal-value" element={<AddGoalValue />} />

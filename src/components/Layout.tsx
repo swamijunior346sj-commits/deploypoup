@@ -4,8 +4,8 @@ import Footer from './Footer';
 
 const navTabs = [
   { path: '/dashboard', label: 'Início', icon: 'grid_view' },
-  { path: '/transactions', label: 'Extrato', icon: 'receipt_long' },
-  { path: '/reports', label: 'Análise', icon: 'bar_chart' },
+  { path: '/transactions', label: 'Transações', icon: 'receipt_long' },
+  { path: '/analysis', label: 'Análise', icon: 'bar_chart' },
   { path: '/investment-portfolio', label: 'Ativos', icon: 'account_balance_wallet' },
   { path: '/goals', label: 'Metas', icon: 'ads_click' },
 ];

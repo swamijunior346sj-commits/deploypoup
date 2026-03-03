@@ -9,20 +9,7 @@ export default function Dashboard() {
       <header className="px-6 pt-10 pb-6 flex items-center justify-between sticky top-0 bg-background-black/90 backdrop-blur-md z-40 border-b border-white/5">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-3">
-            <div className="relative w-10 h-10 flex-shrink-0 animate-pulse-glow">
-              <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 100 100">
-                <circle className="text-zinc-900" cx="50" cy="50" fill="transparent" r="46" stroke="currentColor" strokeWidth="1.5"></circle>
-                <circle className="text-primary" cx="50" cy="50" fill="transparent" r="46" stroke="currentColor" strokeDasharray="289" strokeDashoffset="86" strokeLinecap="round" strokeWidth="1.5"></circle>
-                <circle className="text-white/40 animate-shimmer-path" cx="50" cy="50" fill="transparent" r="46" stroke="currentColor" strokeDasharray="40 249" strokeLinecap="round" strokeWidth="1.5"></circle>
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-[8px] font-bold text-primary tracking-tighter">820</span>
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[8px] font-medium tracking-[0.2em] text-zinc-500 uppercase">Score POUP</span>
-              <span className="text-[10px] font-light text-zinc-300">Nível Elite</span>
-            </div>
+            {/* Score POUP removido a pedido do usuário */}
           </div>
           <button onClick={() => navigate('/notifications')} className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:border-white/30 transition-all relative">
             <span className="absolute top-2.5 right-3 w-1 h-1 bg-primary rounded-full animate-pulse shadow-[0_0_5px_theme('colors.primary'),_0_0_15px_rgba(15,182,127,0.3)]"></span>
@@ -41,11 +28,11 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div onClick={() => navigate('/reports')} className="border border-primary/40 bg-transparent rounded-sm p-4 flex flex-col gap-1 transition-all hover:border-primary cursor-pointer">
+              <div onClick={() => navigate('/analysis')} className="border border-primary/40 bg-transparent rounded-sm p-4 flex flex-col gap-1 transition-all hover:border-primary cursor-pointer">
                 <span className="text-[9px] font-medium tracking-widest text-primary uppercase">Ativos</span>
                 <span className="text-lg font-display font-light text-white">R$ 138.200</span>
               </div>
-              <div onClick={() => navigate('/reports')} className="border border-primary/40 bg-transparent rounded-sm p-4 flex flex-col gap-1 transition-all hover:border-primary cursor-pointer">
+              <div onClick={() => navigate('/analysis')} className="border border-primary/40 bg-transparent rounded-sm p-4 flex flex-col gap-1 transition-all hover:border-primary cursor-pointer">
                 <span className="text-[9px] font-medium tracking-widest text-primary uppercase">Despesas Futuras</span>
                 <span className="text-lg font-display font-light text-white">R$ 13.750</span>
               </div>
