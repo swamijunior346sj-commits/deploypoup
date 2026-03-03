@@ -1,58 +1,80 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ebooksData } from './Ebooks';
+import { allProducts } from './Shop';
 
 export default function EbookDetails() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const ebook = ebooksData.find(e => e.id === id);
     const [showSuccess, setShowSuccess] = useState(false);
 
-    if (!ebook) {
+    // Find product from the expanded shop list
+    const product = allProducts.find(p => p.id === id);
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    if (!product) {
         return (
-            <div className="bg-background-dark min-h-screen flex items-center justify-center text-off-white">
-                <p>E-Book não encontrado.</p>
-                <button onClick={() => navigate(-1)} className="mt-4 px-4 py-2 border border-primary text-primary rounded-xl">Voltar</button>
+            <div className="bg-background-dark min-h-screen flex flex-col items-center justify-center text-off-white p-6 text-center">
+                <span className="material-symbols-outlined text-6xl text-primary/20 mb-4">search_off</span>
+                <p className="font-bold text-lg mb-2 uppercase tracking-widest">Produto não encontrado</p>
+                <p className="text-sm opacity-60 mb-8">O item que você procura não existe ou foi removido.</p>
+                <button
+                    onClick={() => navigate('/shop')}
+                    className="px-8 py-3 border border-primary text-primary rounded-2xl font-bold uppercase text-[10px] tracking-[0.2em] active:scale-95 transition-all"
+                >
+                    Voltar para Loja
+                </button>
             </div>
         );
     }
 
     const handlePurchase = () => {
-        // Simulando fluxo de compra
         setShowSuccess(true);
         setTimeout(() => setShowSuccess(false), 3000);
     };
 
     return (
-        <div className="bg-background-dark font-display min-h-screen flex flex-col pb-32 overflow-x-hidden selection:bg-primary/30 relative">
+        <div className="bg-background-dark font-display min-h-screen flex flex-col pb-48 overflow-x-hidden selection:bg-primary/30 relative">
+            <style>{`
+                @keyframes levitate {
+                    0% { transform: translateY(0px) translateX(-50%); }
+                    50% { transform: translateY(-10px) translateX(-50%); }
+                    100% { transform: translateY(0px) translateX(-50%); }
+                }
+                .levitate-btn {
+                    animation: levitate 3s ease-in-out infinite;
+                }
+            `}</style>
+
             {/* Header Navigation Floating */}
             <div className="fixed top-6 left-6 right-6 flex justify-between items-center z-50 pointer-events-none">
                 <button
                     onClick={() => navigate(-1)}
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-black/50 backdrop-blur-md border border-white/10 active:scale-95 transition-all text-white pointer-events-auto"
+                    className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95 text-white pointer-events-auto"
                 >
-                    <span className="material-symbols-outlined text-lg">arrow_back</span>
+                    <span className="material-symbols-outlined text-white text-2xl">arrow_back_ios_new</span>
                 </button>
-                <button
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-black/50 backdrop-blur-md border border-white/10 active:scale-95 transition-all text-white pointer-events-auto"
-                >
-                    <span className="material-symbols-outlined text-lg">favorite_border</span>
-                </button>
+                <div className="w-10 pointer-events-none"></div> {/* Spacer for symmetry */}
             </div>
 
             {/* Hero Cover Component */}
-            <div className="relative w-full h-[400px] flex justify-center pt-24 pb-8 bg-gradient-to-b from-surface via-background-dark to-background-dark border-b border-white/5">
+            <div className="relative w-full h-[400px] flex justify-center pt-24 pb-8 bg-black border-b border-white/5 overflow-hidden">
                 {/* Background image reflection mask */}
-                <div className="absolute inset-0 overflow-hidden opacity-20 blur-3xl mix-blend-screen">
-                    <img src={ebook.coverUrl} className="w-full h-full object-cover scale-150" alt="blur-bg" />
+                <div className="absolute inset-0 overflow-hidden opacity-10 blur-3xl scale-125">
+                    <img src={product.image} className="w-full h-full object-cover" alt="blur-bg" />
                 </div>
 
+                {/* Dynamic light behind cover */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/10 blur-[100px] rounded-full"></div>
+
                 {/* Cover Frame */}
-                <div className="relative z-10 w-48 h-[280px] rounded-lg shadow-2xl shadow-black/80 ring-1 ring-white/10 overflow-hidden glow-border">
-                    <img src={ebook.coverUrl} className="w-full h-full object-cover" alt={ebook.title} />
-                    {ebook.tag && (
+                <div className="relative z-10 w-48 h-[280px] rounded-2xl shadow-2xl shadow-black ring-1 ring-white/10 overflow-hidden">
+                    <img src={product.image} className="w-full h-full object-cover" alt={product.title} />
+                    {product.tag && (
                         <div className="absolute top-3 left-3 px-2 py-1 bg-primary text-black text-[9px] font-black uppercase tracking-[0.2em] rounded shadow-[0_0_15px_rgba(15,182,127,0.5)]">
-                            {ebook.tag}
+                            {product.tag}
                         </div>
                     )}
                 </div>
@@ -61,82 +83,81 @@ export default function EbookDetails() {
             {/* Content Details */}
             <main className="px-6 relative z-20 -mt-6">
                 <div className="flex flex-col mb-8">
-                    <h1 className="text-2xl font-bold text-white leading-tight font-display tracking-tight text-center">{ebook.title}</h1>
-                    <p className="text-light-gray text-xs mt-2 text-center">{ebook.author}</p>
+                    <h1 className="text-2xl font-bold text-white leading-tight font-display tracking-tight text-center">{product.title}</h1>
+                    <p className="text-zinc-500 text-xs mt-2 text-center font-bold uppercase tracking-widest">{product.author}</p>
 
-                    <div className="flex items-center justify-center gap-4 mt-5">
-                        <div className="flex items-center gap-1">
-                            <span className="text-white font-bold text-sm tracking-wide">{ebook.rating}</span>
+                    <div className="flex items-center justify-center gap-4 mt-6">
+                        <div className="flex items-center gap-1 bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
+                            <span className="text-white font-bold text-xs tracking-wide">{product.rating}</span>
                             <span className="material-symbols-outlined text-primary text-sm filled">star</span>
-                            <span className="text-xs text-light-gray opacity-60">({ebook.reviews})</span>
                         </div>
-                        <div className="w-1 h-1 rounded-full bg-light-gray/30"></div>
-                        <div className="flex items-center gap-1.5 opacity-80">
-                            <span className="material-symbols-outlined text-light-gray text-sm">book</span>
-                            <span className="text-xs text-light-gray">{ebook.pages} Páginas</span>
-                        </div>
-                        <div className="w-1 h-1 rounded-full bg-light-gray/30"></div>
-                        <div className="flex items-center gap-1.5 opacity-80">
-                            <span className="material-symbols-outlined text-light-gray text-sm">calendar_month</span>
-                            <span className="text-xs text-light-gray">{ebook.published}</span>
+                        <div className="w-1 h-1 rounded-full bg-zinc-800"></div>
+                        <div className="flex items-center gap-1.5 opacity-60">
+                            <span className="material-symbols-outlined text-zinc-400 text-sm">group</span>
+                            <span className="text-xs text-zinc-400">{product.reviews} avaliações</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="w-full h-px bg-white/5 my-8"></div>
+                <div className="grid grid-cols-2 gap-3 mb-8">
+                    <div className="p-4 rounded-2xl bg-surface/40 border border-white/5 text-center">
+                        <span className="block text-[10px] text-zinc-600 font-bold uppercase tracking-widest mb-1">Formato</span>
+                        <span className="text-white text-sm font-bold">{product.type}</span>
+                    </div>
+                    <div className="p-4 rounded-2xl bg-surface/40 border border-white/5 text-center">
+                        <span className="block text-[10px] text-zinc-600 font-bold uppercase tracking-widest mb-1">Data</span>
+                        <span className="text-white text-sm font-bold">{product.published}</span>
+                    </div>
+                </div>
 
-                <div className="mb-8">
-                    <h3 className="text-white text-base font-bold mb-3 uppercase tracking-wider text-[11px] opacity-60">Descrição</h3>
-                    <p className="text-light-gray text-sm leading-relaxed font-light opacity-90">{ebook.description}</p>
+                <div className="mb-10">
+                    <h3 className="text-white text-[10px] font-bold mb-4 uppercase tracking-[0.3em] opacity-40">Sinopse do Item</h3>
+                    <p className="text-zinc-400 text-sm leading-relaxed font-light">{product.description || "Este item premium faz parte do programa de excelência financeira da POUP, garantindo os melhores insights do mercado."}</p>
                 </div>
 
                 {/* Additional Features List */}
                 <div className="space-y-3 mb-12">
-                    <div className="flex items-center gap-3 p-4 rounded-xl bg-surface border border-white/5">
-                        <span className="material-symbols-outlined text-primary text-xl">verified</span>
-                        <div>
-                            <h4 className="text-white text-xs font-bold uppercase tracking-wide">Acesso Vitalício</h4>
-                            <p className="text-[#a7a7a7] text-[10px] mt-0.5">Leia quando e onde quiser, para sempre.</p>
+                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-surface/30 border border-white/5">
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center bg-primary/10">
+                            <span className="material-symbols-outlined text-primary text-xl">verified</span>
                         </div>
-                    </div>
-                    <div className="flex items-center gap-3 p-4 rounded-xl bg-surface border border-white/5">
-                        <span className="material-symbols-outlined text-primary text-xl">devices</span>
                         <div>
-                            <h4 className="text-white text-xs font-bold uppercase tracking-wide">Multiplataforma</h4>
-                            <p className="text-[#a7a7a7] text-[10px] mt-0.5">Disponível no app, tablet e desktop.</p>
+                            <h4 className="text-white text-xs font-bold uppercase tracking-wide">Qualidade Garantida</h4>
+                            <p className="text-zinc-600 text-[10px] mt-0.5">Certificado por especialistas da POUP Lab.</p>
                         </div>
                     </div>
                 </div>
             </main>
 
-            {/* Fixed Action Buy Button */}
-            <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/95 to-transparent z-[90]">
-                <div className="max-w-md mx-auto flex items-center justify-between gap-4">
-                    <div className="flex flex-col">
-                        <span className="text-[10px] text-light-gray uppercase tracking-widest font-semibold mb-0.5">Valor Único</span>
-                        <span className="text-2xl font-bold text-white tracking-tight">{ebook.price}</span>
+            {/* Floating levitating checkout button */}
+            <div className="fixed bottom-12 left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-md z-[100] levitate-btn">
+                <button
+                    onClick={handlePurchase}
+                    className="w-full flex items-center justify-between p-2 pl-6 bg-white border border-white rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.4)] active:scale-95 transition-all group"
+                >
+                    <div className="flex flex-col items-start">
+                        <span className="text-[10px] text-black/40 uppercase font-black tracking-tighter">Investimento</span>
+                        <span className="text-lg font-black text-black tracking-tight">{product.price}</span>
                     </div>
-                    <button
-                        onClick={handlePurchase}
-                        className="flex-1 py-4 font-black rounded-2xl text-xs uppercase tracking-[0.2em] bg-primary text-black shadow-[0_15px_30px_rgba(15,182,127,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all"
-                    >
-                        Adquirir Agora
-                    </button>
-                </div>
+                    <div className="h-14 px-8 bg-black rounded-[20px] flex items-center justify-center gap-2 group-hover:bg-primary transition-colors">
+                        <span className="text-white text-[11px] font-black uppercase tracking-[0.15em] group-hover:text-black">Adquirir</span>
+                        <span className="material-symbols-outlined text-white text-sm group-hover:text-black">arrow_forward</span>
+                    </div>
+                </button>
             </div>
 
             {/* Success Modal Simulation */}
             {showSuccess && (
                 <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[110] flex flex-col items-center justify-center p-8 animate-in fade-in duration-300">
-                    <div className="w-full max-w-[320px] glow-border border-primary rounded-[32px] bg-black/80 p-10 flex flex-col items-center text-center">
-                        <span className="material-symbols-outlined text-primary text-[80px] font-light neon-text-glow mb-6 leading-none">
-                            check_circle
-                        </span>
+                    <div className="w-full max-w-[320px] glow-border border-primary rounded-[40px] bg-black/80 p-12 flex flex-col items-center text-center">
+                        <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mb-8">
+                            <span className="material-symbols-outlined text-primary text-4xl filled">check</span>
+                        </div>
                         <h2 className="text-white font-black text-[16px] tracking-[0.2em] uppercase mb-4">
-                            Compra Realizada!
+                            Sucesso total!
                         </h2>
-                        <p className="text-light-gray text-xs leading-relaxed mb-6">
-                            O e-book foi adicionado à sua biblioteca com sucesso.
+                        <p className="text-zinc-500 text-xs leading-relaxed">
+                            O item já está disponível na sua conta. Vamos juntos rumo à liberdade financeira!
                         </p>
                     </div>
                 </div>

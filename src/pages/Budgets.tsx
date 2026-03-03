@@ -1,35 +1,42 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useData } from '../contexts/DataContext';
 
 export default function Budgets() {
     const navigate = useNavigate();
+    const { budgets, loading } = useData();
 
-    const budgets = [
-        { name: 'Alimentação', type: 'Despesa', icon: 'restaurant', spent: 1250, target: 1800 },
-        { name: 'Moradia', type: 'Despesa', icon: 'home', spent: 2200, target: 2100 },
-        { name: 'Transporte', type: 'Despesa', icon: 'directions_car', spent: 340, target: 800 },
-        { name: 'Lazer', type: 'Despesa', icon: 'confirmation_number', spent: 150, target: 1300 },
-    ];
-
-    const totalSpent = budgets.reduce((acc, b) => acc + b.spent, 0);
-    const totalTarget = budgets.reduce((acc, b) => acc + b.target, 0);
+    const totalSpent = (budgets || []).reduce((acc, b) => acc + (b.spent || 0), 0);
+    const totalTarget = (budgets || []).reduce((acc, b) => acc + (b.target || b.amount || 0), 0);
     const remaining = Math.max(0, totalTarget - totalSpent);
-    const progressPercent = Math.round((totalSpent / totalTarget) * 100);
+    const progressPercent = totalTarget > 0 ? Math.round((totalSpent / totalTarget) * 100) : 0;
 
     const [alertBudget, setAlertBudget] = useState<{ name: string; spent: number; target: number; percentage: number } | null>(null);
 
     useEffect(() => {
-        const exceeded = budgets.find(b => b.type === 'Despesa' && b.spent > b.target);
+        if (loading || !budgets) return;
+        const exceeded = (budgets || []).find(b => b.type === 'Despesa' && (b.spent || 0) > (b.target || b.amount || 0));
         if (exceeded) {
-            const exceededPercent = Math.round(((exceeded.spent - exceeded.target) / exceeded.target) * 100);
+            const target = exceeded.target || exceeded.amount;
+            const exceededPercent = Math.round(((exceeded.spent - target) / target) * 100);
             setAlertBudget({
                 name: exceeded.name,
                 spent: exceeded.spent,
-                target: exceeded.target,
+                target: target,
                 percentage: exceededPercent
             });
+        } else {
+            setAlertBudget(null);
         }
-    }, []);
+    }, [budgets, loading]);
+
+    if (loading) {
+        return (
+            <div className="bg-black text-primary min-h-screen flex items-center justify-center">
+                <div className="animate-pulse tracking-[0.3em] uppercase font-bold text-xs">Sincronizando Orçamentos...</div>
+            </div>
+        );
+    }
 
     return (
         <div className={`relative flex min-h-screen w-full flex-col bg-black overflow-x-hidden max-w-md mx-auto font-display antialiased ${alertBudget ? 'overflow-hidden' : ''}`}>

@@ -28,9 +28,9 @@ export default function CourseDetails() {
             <div className="fixed top-6 left-6 right-6 flex justify-between items-center z-50 pointer-events-none">
                 <button
                     onClick={() => navigate(-1)}
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-black/50 backdrop-blur-md border border-white/10 active:scale-95 transition-all text-white pointer-events-auto"
+                    className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95 text-white pointer-events-auto"
                 >
-                    <span className="material-symbols-outlined text-lg">arrow_back</span>
+                    <span className="material-symbols-outlined text-white text-2xl">arrow_back_ios_new</span>
                 </button>
                 <button
                     className="w-10 h-10 rounded-full flex items-center justify-center bg-black/50 backdrop-blur-md border border-white/10 active:scale-95 transition-all text-white pointer-events-auto"

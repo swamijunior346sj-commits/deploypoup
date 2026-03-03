@@ -13,7 +13,6 @@ import Dashboard from './pages/Dashboard';
 import Accounts from './pages/Accounts';
 import Analysis from './pages/Analysis';
 import Profile from './pages/Profile';
-import Reports from './pages/Reports';
 import AddAccount from './pages/AddAccount';
 import AddCard from './pages/AddCard';
 import Planning from './pages/Planning';
@@ -21,7 +20,6 @@ import CompoundInterest from './pages/CompoundInterest';
 import Investments from './pages/Investments';
 import AIAssistant from './pages/AIAssistant';
 import Security from './pages/Security';
-import Notifications from './pages/Notifications';
 import NewTransaction from './pages/NewTransaction';
 import TransactionHistory from './pages/TransactionHistory';
 import TransactionDetails from './pages/TransactionDetails';
@@ -38,7 +36,6 @@ import AssetDetails from './pages/AssetDetails';
 import Budgets from './pages/Budgets';
 import NewBudget from './pages/NewBudget';
 import BudgetDetails from './pages/BudgetDetails';
-import SavingsSimulator from './pages/SavingsSimulator';
 import SpendingAnalysis from './pages/SpendingAnalysis';
 import FinancialPerformance from './pages/FinancialPerformance';
 import EditTransaction from './pages/EditTransaction';
@@ -67,7 +64,6 @@ export default function App() {
               <Route path="/accounts" element={<Accounts />} />
               <Route path="/analysis" element={<Analysis />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/reports" element={<Reports />} />
               <Route path="/add-account" element={<AddAccount />} />
               <Route path="/add-card" element={<AddCard />} />
               <Route path="/planning" element={<Planning />} />
@@ -75,7 +71,6 @@ export default function App() {
               <Route path="/investments" element={<Investments />} />
               <Route path="/ai-assistant" element={<AIAssistant />} />
               <Route path="/security" element={<Security />} />
-              <Route path="/notifications" element={<Notifications />} />
               <Route path="/new-transaction" element={<NewTransaction />} />
               <Route path="/transactions" element={<TransactionHistory />} />
               <Route path="/transaction-details" element={<TransactionDetails />} />
@@ -93,7 +88,6 @@ export default function App() {
               <Route path="/new-budget" element={<NewBudget />} />
               <Route path="/budget-details" element={<BudgetDetails />} />
               <Route path="/edit-budget" element={<EditBudget />} />
-              <Route path="/savings-simulator" element={<SavingsSimulator />} />
               <Route path="/spending-analysis" element={<SpendingAnalysis />} />
               <Route path="/shop" element={<Shop />} />
               <Route path="/ebooks" element={<Ebooks />} />

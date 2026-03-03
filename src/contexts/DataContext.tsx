@@ -19,12 +19,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [assets, setAssets] = useState<Asset[]>([]);
     const [goals, setGoals] = useState<Goal[]>([]);
-    const [budgets, setBudgets] = useState<any[]>([
-        { name: 'Alimentação', type: 'Despesa', icon: 'restaurant', spent: 1250, amount: 1800 },
-        { name: 'Moradia', type: 'Despesa', icon: 'home', spent: 2200, amount: 2100 },
-        { name: 'Transporte', type: 'Despesa', icon: 'directions_car', spent: 340, amount: 800 },
-        { name: 'Lazer', type: 'Despesa', icon: 'confirmation_number', spent: 150, amount: 1300 },
-    ]);
+    const [budgets, setBudgets] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     const fetchData = async () => {

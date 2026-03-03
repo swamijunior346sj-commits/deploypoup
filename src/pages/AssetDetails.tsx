@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 export default function AssetDetails() {
     const { state } = useLocation();
     const navigate = useNavigate();
-    const asset = state?.asset || { ticker: 'PETR4.SA', name: 'Petróleo Brasileiro S.A.', value: 'R$ 38,42', change: '+2.45%', icon: 'payments' };
+    const asset = state?.asset || { ticker: '---', name: 'Ativo não selecionado', value: 'R$ 0,00', change: '0.00%', icon: 'help' };
 
     // Função real para gerar o caminho do gráfico SVG baseado em dados simulados
     const chartPath = useMemo(() => {
@@ -91,22 +91,22 @@ export default function AssetDetails() {
                     <div className="neon-border rounded-2xl p-7 mb-4 flex flex-col items-center justify-center text-center bg-black/40 group relative overflow-hidden">
                         <div className="absolute inset-0 bg-primary/5 blur-3xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
                         <span className="text-[10px] font-display font-bold tracking-[0.3em] text-zinc-500 uppercase mb-3 relative z-10">SALDO ATUAL</span>
-                        <p className="text-3xl font-display font-bold text-text-value relative z-10 tracking-tight">R$ 15.368,00</p>
+                        <p className="text-3xl font-display font-bold text-text-value relative z-10 tracking-tight">R$ {Number(asset.current_value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
                         <div className="mt-3 flex items-center gap-2 relative z-10">
-                            <span className="material-symbols-outlined text-primary text-sm">trending_up</span>
-                            <span className="text-xs text-primary font-black tracking-wide">+R$ 842,10 (Este Mês)</span>
+                            <span className="material-symbols-outlined text-primary text-sm">info</span>
+                            <span className="text-xs text-primary font-black tracking-wide">Valor Patrimonial</span>
                         </div>
                     </div>
 
                     {/* Stats Grid */}
                     <div className="grid grid-cols-2 gap-4 mb-6">
                         <div className="border border-primary/20 rounded-2xl p-6 bg-black/40">
-                            <span className="text-[9px] font-black tracking-[0.2em] text-zinc-500 uppercase">PREÇO MÉDIO</span>
-                            <p className="text-xl font-display font-bold text-text-value mt-2 tracking-tight">R$ 34,12</p>
+                            <span className="text-[9px] font-black tracking-[0.2em] text-zinc-500 uppercase">TIPO</span>
+                            <p className="text-xl font-display font-bold text-text-value mt-2 tracking-tight capitalize">{asset.type || 'N/A'}</p>
                         </div>
                         <div className="border border-primary/20 rounded-2xl p-6 bg-black/40">
-                            <span className="text-[9px] font-black tracking-[0.2em] text-zinc-500 uppercase">QUANTIDADE</span>
-                            <p className="text-xl font-display font-bold text-text-value mt-2 tracking-tight">400 UN</p>
+                            <span className="text-[9px] font-black tracking-[0.2em] text-zinc-500 uppercase">CRIADO EM</span>
+                            <p className="text-xl font-display font-bold text-text-value mt-2 tracking-tight">{asset.created_at ? new Date(asset.created_at).toLocaleDateString('pt-BR') : '--/--/--'}</p>
                         </div>
                     </div>
 
@@ -116,31 +116,9 @@ export default function AssetDetails() {
                             <h3 className="text-[10px] font-black tracking-[0.3em] text-zinc-500 uppercase">MOVIMENTAÇÕES RECENTES</h3>
                             <span className="material-symbols-outlined text-primary text-sm opacity-60">sync_alt</span>
                         </div>
-                        <div className="space-y-8">
-                            {[
-                                { title: 'Compra Efetuada', date: '12 Out 2023 • 14:30', amount: '+50 UN', value: 'R$ 1.921,00', icon: 'add_circle' },
-                                { title: 'Dividendos Recebidos', date: '05 Out 2023 • 09:15', amount: 'R$ 142,50', value: 'Proventos', icon: 'payments' }
-                            ].map((move, i) => (
-                                <div key={i} className="flex items-center justify-between group active:scale-[0.98] transition-all">
-                                    <div className="flex items-center gap-5">
-                                        <div className="w-11 h-11 rounded-full border border-primary/20 flex items-center justify-center bg-black">
-                                            <span className="material-symbols-outlined text-primary text-xl">{move.icon}</span>
-                                        </div>
-                                        <div>
-                                            <p className="text-[14px] font-bold text-text-value tracking-wide">{move.title}</p>
-                                            <p className="text-[10px] text-zinc-600 font-bold tracking-widest mt-1 uppercase">{move.date}</p>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="text-[14px] font-black text-primary">{move.amount}</p>
-                                        <p className="text-[10px] text-zinc-600 font-bold tracking-widest mt-1 uppercase">{move.value}</p>
-                                    </div>
-                                </div>
-                            ))}
+                        <div className="py-12 text-center border border-dashed border-white/5 rounded-2xl">
+                            <p className="text-[10px] text-zinc-700 uppercase tracking-widest font-bold">Nenhuma movimentação para este ativo</p>
                         </div>
-                        <button className="w-full mt-10 py-4 text-[10px] font-black tracking-[0.3em] text-primary border border-primary/20 rounded-2xl hover:bg-primary/5 active:scale-95 transition-all uppercase">
-                            VER HISTÓRICO COMPLETO
-                        </button>
                     </div>
 
                     {/* Alocação por Risco */}

@@ -11,7 +11,7 @@ export default function SpendingAnalysis() {
         .filter(t => t.type === 'expense')
         .reduce((acc, t) => acc + Number(t.amount), 0);
 
-    const totalLimit = budgets.reduce((acc, b) => acc + Number(b.amount), 0) || 12000;
+    const totalLimit = budgets.reduce((acc, b) => acc + Number(b.amount || b.target), 0) || 0;
     const consumptionPercent = Math.min(Math.round((totalSpent / totalLimit) * 100), 100);
 
     const categories = budgets.map(b => {
@@ -34,7 +34,7 @@ export default function SpendingAnalysis() {
                 <div className="flex items-center justify-between mb-8">
                     <button onClick={() => navigate(-1)} className="material-symbols-outlined text-text-value font-light cursor-pointer active:scale-90 transition-transform">menu</button>
                     <h1 className="text-[10px] font-display font-semibold tracking-[0.5em] text-text-value uppercase opacity-80">ANÁLISE DE GASTOS</h1>
-                    <span className="material-symbols-outlined text-text-value font-light">notifications</span>
+                    <div className="w-6"></div> {/* Spacer for symmetry */}
                 </div>
                 <div className="flex justify-between items-center text-[10px] font-bold tracking-[0.2em]">
                     <button className="pb-3 px-2 text-zinc-600">GERAL</button>
@@ -118,7 +118,13 @@ export default function SpendingAnalysis() {
                             <div>
                                 <h3 className="text-[9px] font-bold tracking-[0.3em] text-primary uppercase mb-3 glow-text">IA INSIGHT</h3>
                                 <p className="text-xs text-zinc-400 leading-relaxed font-light">
-                                    <span className="text-text-value font-medium">Análise preditiva:</span> O consumo em <span className="text-text-value">Alimentação</span> está acelerado. Projeção de excedente em 8% caso o padrão se mantenha.
+                                    {transactions.length > 5 ? (
+                                        <>
+                                            <span className="text-text-value font-medium">Análise preditiva:</span> O consumo em <span className="text-text-value">{categories[0]?.name || 'Geral'}</span> está acelerado. Projeção de excedente em 8% caso o padrão se mantenha.
+                                        </>
+                                    ) : (
+                                        "Aguardando registros reais suficientes para processar insights preditivos."
+                                    )}
                                 </p>
                             </div>
                         </div>

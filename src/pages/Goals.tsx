@@ -5,10 +5,10 @@ export default function Goals() {
     const navigate = useNavigate();
     const { goals, loading } = useData();
 
-    // Mock data for gamification elements (Level/XP)
-    const level = 12;
-    const currentXP = 850;
-    const maxXP = 1000;
+    // Real data for gamification elements (Level/XP)
+    const level = 1;
+    const currentXP = 0;
+    const maxXP = 100;
 
     if (loading) {
         return (

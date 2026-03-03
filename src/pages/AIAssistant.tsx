@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useData } from '../contexts/DataContext';
 
 export default function AIAssistant() {
   const navigate = useNavigate();
+  const { transactions } = useData();
   const [savingsSimulation, setSavingsSimulation] = useState(15);
 
   return (
@@ -34,7 +36,9 @@ export default function AIAssistant() {
                 <span className="material-symbols-outlined text-brand-interactive text-xl">trending_up</span>
               </div>
               <div>
-                <p className="text-[11px] text-brand-secondaryLabel leading-tight">Você economizou <span className="text-brand-primaryText font-bold">R$ 150</span> a mais que semana passada.</p>
+                <p className="text-[11px] text-brand-secondaryLabel leading-tight">
+                  {transactions.length > 0 ? "Analisando seus padrões de gastos..." : "Comece a registrar para ver seu resumo."}
+                </p>
               </div>
             </div>
           </div>
@@ -49,23 +53,9 @@ export default function AIAssistant() {
               <span className="text-[10px] font-bold text-brand-subtitle tracking-widest uppercase">Análise de Gastos</span>
             </div>
             <div className="bg-brand-card rounded-2xl rounded-tl-none p-5 border border-white/5 space-y-4 max-w-[90%]">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-orange-500">restaurant</span>
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-brand-primaryText">Alimentação</h4>
-                  <p className="text-[11px] text-brand-subtitle">80% do orçamento mensal</p>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div className="w-full h-1.5 bg-black/40 rounded-full overflow-hidden">
-                  <div className="h-full bg-brand-interactive glow-interactive w-[80%] rounded-full"></div>
-                </div>
-                <p className="text-sm text-brand-secondaryLabel">
-                  Você já gastou <span className="font-bold text-brand-interactive">80%</span> do seu orçamento mensal aqui. Recomendo cautela nos próximos 10 dias.
-                </p>
-              </div>
+              <p className="text-sm text-brand-secondaryLabel italic">
+                Aguardando seus primeiros registros para gerar análises personalizadas.
+              </p>
             </div>
           </div>
 
@@ -77,12 +67,12 @@ export default function AIAssistant() {
               <span className="text-[10px] font-bold text-brand-subtitle tracking-widest uppercase">Simulação de Economia</span>
             </div>
             <div className="bg-brand-card border border-white/5 rounded-2xl rounded-tl-none p-6 space-y-6 max-w-[95%]">
-              <p className="text-sm text-brand-secondaryLabel">Arraste para ver como reduzir gastos em <span className="text-brand-primaryText font-semibold">Lazer</span> impacta seu saldo futuro:</p>
+              <p className="text-sm text-brand-secondaryLabel">Ajuste o simulador para ver projeções baseadas no seu perfil:</p>
 
               <div className="space-y-4">
                 <div className="flex justify-between items-end">
                   <span className="text-[10px] font-bold text-brand-subtitle uppercase tracking-tighter">Redução</span>
-                  <span className="text-2xl font-display font-bold text-brand-interactive">-{savingsSimulation}%</span>
+                  <span className="text-2xl font-display font-bold text-brand-interactive">{savingsSimulation}%</span>
                 </div>
                 <input
                   className="w-full accent-brand-interactive form-range"
@@ -97,8 +87,7 @@ export default function AIAssistant() {
               <div className="pt-4 border-t border-white/5 flex justify-between items-center">
                 <span className="text-xs text-brand-subtitle">Saldo projetado (30 dias)</span>
                 <div className="text-right">
-                  <span className="text-xs text-brand-subtitle line-through block">R$ 2.400</span>
-                  <span className="text-lg font-bold text-brand-interactive">R$ {2400 + (savingsSimulation * 350 / 100)}</span>
+                  <span className="text-lg font-bold text-brand-interactive">R$ 0,00</span>
                 </div>
               </div>
             </div>
@@ -108,7 +97,7 @@ export default function AIAssistant() {
             <div className="bg-brand-card/40 border border-dashed border-white/10 rounded-2xl p-4 flex items-start space-x-3">
               <span className="material-symbols-outlined text-brand-action shrink-0">lightbulb</span>
               <p className="text-xs text-brand-subtitle leading-relaxed italic">
-                "Dica: Pagar faturas antes do vencimento este mês pode liberar R$ 45 em cashback adicional."
+                "Dica: Comece registrando seus gastos fixos para ter uma visão clara do seu patrimônio."
               </p>
             </div>
           </div>
@@ -117,7 +106,7 @@ export default function AIAssistant() {
         <footer className="flex flex-col items-center py-4 opacity-40">
           <div className="flex items-center space-x-2">
             <span className="material-symbols-outlined text-[12px] text-brand-subtitle">verified</span>
-            <p className="text-[8px] font-bold tracking-[0.3em] uppercase text-brand-subtitle"></p>
+            <p className="text-[8px] font-bold tracking-[0.3em] uppercase text-brand-subtitle">POUP AI VERIFIED</p>
           </div>
         </footer>
       </main>

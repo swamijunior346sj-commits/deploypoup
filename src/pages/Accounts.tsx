@@ -1,9 +1,19 @@
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Card from '../components/Card';
+import { useData } from '../contexts/DataContext';
 
 export default function Accounts() {
   const navigate = useNavigate();
+  const { assets, loading } = useData();
+
+  if (loading) {
+    return (
+      <div className="bg-background-black text-primary min-h-screen flex items-center justify-center font-display">
+        <div className="animate-pulse tracking-[0.3em] uppercase font-bold text-xs font-sans">Sincronizando Ativos...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-10">
@@ -16,42 +26,26 @@ export default function Accounts() {
         <section className="space-y-4">
           <h3 className="text-[10px] font-bold tracking-widest text-text-label uppercase">Minhas Contas</h3>
           <div className="flex space-x-4 overflow-x-auto no-scrollbar -mx-6 px-6">
-            <Card className="min-w-[160px] rounded-2xl p-4 flex flex-col space-y-4">
-              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                <span className="material-symbols-outlined text-primary text-xl">account_balance</span>
+            {assets && assets.length > 0 ? (
+              assets.map((asset) => (
+                <div key={asset.id} onClick={() => navigate(`/asset-details/${asset.id}`)}>
+                  <Card className="min-w-[160px] rounded-2xl p-4 flex flex-col space-y-4 cursor-pointer hover:border-primary/30 transition-all">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <span className="material-symbols-outlined text-primary text-xl">account_balance</span>
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-text-label font-bold uppercase truncate">{asset.name}</p>
+                      <p className="text-sm font-bold font-display">R$ {Number(asset.current_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                    </div>
+                  </Card>
+                </div>
+              ))
+            ) : (
+              <div className="w-full py-8 text-center border border-dashed border-white/5 rounded-2xl">
+                <p className="text-[10px] text-zinc-600 uppercase tracking-widest">Nenhuma conta vinculada</p>
+                <button onClick={() => navigate('/add-account')} className="mt-2 text-[10px] text-primary font-bold uppercase">Começar agora</button>
               </div>
-              <div>
-                <p className="text-[10px] text-text-label font-bold uppercase">Conta Corrente</p>
-                <p className="text-sm font-bold font-display">R$ 12.450,00</p>
-              </div>
-            </Card>
-            <Card className="min-w-[160px] rounded-2xl p-4 flex flex-col space-y-4">
-              <div className="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center">
-                <span className="material-symbols-outlined text-zinc-400 text-xl">savings</span>
-              </div>
-              <div>
-                <p className="text-[10px] text-text-label font-bold uppercase">Poupança</p>
-                <p className="text-sm font-bold font-display">R$ 45.300,00</p>
-              </div>
-            </Card>
-            <Card className="min-w-[160px] rounded-2xl p-4 flex flex-col space-y-4">
-              <div className="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center">
-                <span className="material-symbols-outlined text-zinc-400 text-xl">wallet</span>
-              </div>
-              <div>
-                <p className="text-[10px] text-text-label font-bold uppercase">Carteira</p>
-                <p className="text-sm font-bold font-display">R$ 840,00</p>
-              </div>
-            </Card>
-            <Card className="min-w-[160px] rounded-2xl p-4 flex flex-col space-y-4">
-              <div className="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center">
-                <span className="material-symbols-outlined text-zinc-400 text-xl">trending_up</span>
-              </div>
-              <div>
-                <p className="text-[10px] text-text-label font-bold uppercase">Investimentos</p>
-                <p className="text-sm font-bold font-display">R$ 84.260,20</p>
-              </div>
-            </Card>
+            )}
           </div>
         </section>
 
@@ -60,65 +54,15 @@ export default function Accounts() {
             <h3 className="text-[10px] font-bold tracking-widest text-text-label uppercase">Cartões de Crédito</h3>
             <span onClick={() => navigate('/add-card')} className="text-[10px] font-bold text-zinc-400 uppercase cursor-pointer">Adicionar</span>
           </div>
-          <div className="relative w-full aspect-[1.58/1] bg-gradient-to-br from-zinc-900 to-black border border-white/10 rounded-[20px] p-6 shadow-2xl flex flex-col justify-between overflow-hidden">
-            <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-zinc-800/10 rounded-full blur-3xl"></div>
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-[10px] font-bold tracking-[0.2em] text-text-label uppercase">Mastercard Black</p>
-                <div className="mt-4 flex space-x-1">
-                  <div className="w-8 h-6 bg-zinc-800/50 rounded-sm border border-zinc-700/50 flex items-center justify-center">
-                    <div className="w-4 h-3 bg-yellow-600/20 rounded-xs border border-yellow-600/30"></div>
-                  </div>
-                </div>
-              </div>
-              <div className="flex space-x-[-10px]">
-                <div className="w-8 h-8 rounded-full bg-zinc-800/80"></div>
-                <div className="w-8 h-8 rounded-full bg-zinc-700/60 backdrop-blur-sm"></div>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between items-end">
-                <div className="space-y-1">
-                  <p className="text-[8px] text-text-label font-bold uppercase">Limite Disponível</p>
-                  <p className="text-xl font-display font-bold text-primary">R$ 5.400,00</p>
-                </div>
-                <div className="text-right space-y-1">
-                  <p className="text-[8px] text-text-label font-bold uppercase text-right">Limite Total</p>
-                  <p className="text-sm font-display font-bold text-text-value">R$ 15.000,00</p>
-                </div>
-              </div>
-              <div className="w-full h-1 bg-zinc-900 rounded-full overflow-hidden">
-                <div className="h-full bg-primary" style={{ width: '36%' }}></div>
-              </div>
-              <p className="text-[8px] text-text-label font-bold uppercase">Fatura fecha em: 15/10</p>
-            </div>
+
+          <div className="py-8 text-center border border-dashed border-white/5 rounded-[20px]">
+            <p className="text-[10px] text-zinc-600 uppercase tracking-widest">Nenhum cartão registrado</p>
           </div>
 
           <Card className="rounded-[24px] p-5 space-y-4">
             <p className="text-[10px] font-bold tracking-widest text-text-label uppercase mb-2">Controle de Parcelas</p>
-            <div className="flex items-center justify-between py-2 border-b border-zinc-900/50">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-zinc-900 rounded-lg flex items-center justify-center">
-                  <span className="material-symbols-outlined text-zinc-400 text-lg">shopping_bag</span>
-                </div>
-                <div>
-                  <p className="text-xs font-bold">MacBook Pro M2</p>
-                  <p className="text-[9px] text-text-label">Parcela 08/12</p>
-                </div>
-              </div>
-              <p className="text-xs font-bold">R$ 1.250,00</p>
-            </div>
-            <div className="flex items-center justify-between py-2">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-zinc-900 rounded-lg flex items-center justify-center">
-                  <span className="material-symbols-outlined text-zinc-400 text-lg">flight</span>
-                </div>
-                <div>
-                  <p className="text-xs font-bold">Passagem Paris</p>
-                  <p className="text-[9px] text-text-label">Parcela 02/06</p>
-                </div>
-              </div>
-              <p className="text-xs font-bold">R$ 850,00</p>
+            <div className="py-4 text-center">
+              <p className="text-[10px] text-zinc-700 uppercase tracking-widest italic">Aguardando dados reais...</p>
             </div>
           </Card>
         </section>
@@ -136,12 +80,9 @@ export default function Accounts() {
             <div className="p-4 bg-transparent border border-white/10">
               <div className="flex justify-between items-center">
                 <span className="text-[9px] text-zinc-400 font-bold uppercase">Projeção de Disponível</span>
-                <span className="text-xs font-bold text-primary">R$ 5.400,00</span>
+                <span className="text-xs font-bold text-primary">R$ 0,00</span>
               </div>
-              <div className="w-full h-1 bg-zinc-800 rounded-full overflow-hidden">
-                <div className="h-full bg-primary/30" style={{ width: '100%' }}></div>
-              </div>
-              <p className="text-[9px] text-text-label leading-relaxed italic">Digite um valor para simular o impacto no seu limite disponível mensal.</p>
+              <p className="text-[9px] text-text-label leading-relaxed italic mt-2">Digite um valor para simular o impacto no seu limite disponível mensal.</p>
             </div>
           </Card>
         </section>

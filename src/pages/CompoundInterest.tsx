@@ -164,28 +164,13 @@ export default function CompoundInterest() {
           Simular Outro Cenário
         </button>
 
-        {/* Savings Simulator Link */}
-        <button
-          onClick={() => navigate('/savings-simulator')}
-          className="w-full bg-zinc-950 border border-zinc-900 rounded-2xl p-5 flex items-center justify-between active:scale-[0.98] transition-transform mt-4"
-        >
-          <div className="flex items-center gap-4">
-            <div className="bg-primary/10 p-3 rounded-xl">
-              <span className="material-symbols-outlined text-primary">savings</span>
-            </div>
-            <div className="text-left">
-              <p className="text-sm font-bold text-white">Simulador de Economia</p>
-              <p className="text-[10px] text-zinc-500 font-medium">Descubra quanto você pode poupar</p>
-            </div>
-          </div>
-          <span className="material-symbols-outlined text-zinc-600">chevron_right</span>
-        </button>
+
 
         <footer className="pt-4 pb-8">
           <div className="flex items-center justify-center space-x-2 text-zinc-700">
             <span className="material-symbols-outlined text-base">auto_awesome</span>
             <p className="text-[9px] font-bold tracking-[0.3em] uppercase">
-              
+
             </p>
           </div>
         </footer>

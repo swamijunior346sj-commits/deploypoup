@@ -31,10 +31,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-3">
             {/* Logo or Title could go here if needed */}
           </div>
-          <button onClick={() => navigate('/notifications')} className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:border-white/30 transition-all relative">
-            <span className="absolute top-2.5 right-3 w-1 h-1 bg-primary rounded-full animate-pulse shadow-[0_0_5px_theme('colors.primary'),_0_0_15px_rgba(15,182,127,0.3)]"></span>
-            <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 0, 'wght' 200" }}>notifications_active</span>
-          </button>
+          <div className="w-10"></div> {/* Spacer to maintain centering if needed */}
         </div>
       </header>
 
@@ -178,13 +175,13 @@ export default function Dashboard() {
           <div className="bg-transparent border border-primary rounded-sm p-5 relative overflow-hidden">
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h4 className="text-xs font-medium text-white mb-1 tracking-wide">Zero Supérfluos Hoje</h4>
-                <p className="text-[10px] text-zinc-500 font-light leading-relaxed">Complete o dia sem gastos não essenciais.</p>
+                <h4 className="text-xs font-medium text-white mb-1 tracking-wide">Desafio Ativo</h4>
+                <p className="text-[10px] text-zinc-500 font-light leading-relaxed">Comece seu primeiro desafio hoje.</p>
               </div>
               <div className="flex flex-col items-end">
                 <div className="flex items-center gap-1 mb-1">
-                  <span className="material-symbols-outlined text-primary text-lg drop-shadow-[0_0_8px_rgba(15,182,127,0.8)]">local_fire_department</span>
-                  <span className="text-sm font-semibold text-white">12</span>
+                  <span className="material-symbols-outlined text-primary text-lg opacity-30">local_fire_department</span>
+                  <span className="text-sm font-semibold text-white">0</span>
                 </div>
                 <span className="text-[9px] text-zinc-600 uppercase tracking-widest">Dias Streak</span>
               </div>
@@ -192,11 +189,10 @@ export default function Dashboard() {
             <div className="space-y-2">
               <div className="flex justify-between items-end text-[10px] text-zinc-400 font-light tracking-wide mb-1">
                 <span>Progresso</span>
-                <span>18h / 24h</span>
+                <span>0%</span>
               </div>
               <div className="thin-progress-bar bg-zinc-900 h-[1px]">
-                <div className="thin-progress-fill w-[75%] h-[1px] shadow-[0_0_8px_rgba(15,182,127,0.6)]">
-                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-1 bg-white rounded-full shadow-[0_0_6px_1px_rgba(15,182,127,0.9)]"></div>
+                <div className="thin-progress-fill w-[0%] h-[1px] shadow-[0_0_8px_rgba(15,182,127,0.6)]">
                 </div>
               </div>
             </div>
