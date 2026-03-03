@@ -108,14 +108,10 @@ export default function EditTransaction() {
                         >
                             Salvar Alterações
                         </button>
-                        <div className="text-center">
-                            <span className="text-[9px] font-display font-bold tracking-[0.4em] text-zinc-700 uppercase">Powered by POUP</span>
-                        </div>
                     </div>
                 </footer>
             </div>
 
-            {/* Success Popup */}
             {showSuccess && (
                 <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex flex-col items-center justify-center p-8 animate-in fade-in duration-300">
                     <div className="w-full max-w-[320px] neon-border rounded-[40px] bg-black/60 backdrop-blur-xl p-10 flex flex-col items-center text-center scale-up-center">
@@ -134,9 +130,6 @@ export default function EditTransaction() {
                             Concluir
                         </button>
                     </div>
-                    <footer className="fixed bottom-0 left-0 right-0 p-8 flex justify-center z-[110]">
-                        <span className="text-[9px] font-display font-bold tracking-[0.5em] text-zinc-600 uppercase">Powered by POUP</span>
-                    </footer>
                 </div>
             )}
         </div>

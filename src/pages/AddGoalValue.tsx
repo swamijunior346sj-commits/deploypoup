@@ -146,7 +146,7 @@ export default function AddGoalValue() {
                         </div>
 
                         <div className="mt-12 opacity-30 flex flex-col items-center gap-2">
-                            <span className="text-[9px] font-bold tracking-[0.4em] text-white">POWERED BY POUP INTELLIGENCE</span>
+                            <span className="text-[9px] font-bold tracking-[0.4em] text-white"></span>
                             <div className="h-[2px] w-8 bg-primary rounded-full"></div>
                         </div>
                     </div>

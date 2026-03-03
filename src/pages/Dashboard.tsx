@@ -209,7 +209,7 @@ export default function Dashboard() {
               goals.slice(0, 3).map((goal) => {
                 const progress = Math.min(100, Math.round((Number(goal.current_amount) / Number(goal.target_amount)) * 100)) || 0;
                 return (
-                  <div key={goal.id} className="space-y-2" onClick={() => navigate('/goals')}>
+                  <div key={goal.id} className="space-y-2 cursor-pointer transition-all active:scale-95" onClick={() => navigate(`/goal-details/${goal.id}`)}>
                     <div className="flex justify-between items-end text-xs">
                       <span className="text-white font-light tracking-wide">{goal.name}</span>
                       <span className="text-primary font-medium">{progress}%</span>

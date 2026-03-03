@@ -26,6 +26,7 @@ import NewTransaction from './pages/NewTransaction';
 import TransactionHistory from './pages/TransactionHistory';
 import TransactionDetails from './pages/TransactionDetails';
 import Goals from './pages/Goals';
+import GoalDetails from './pages/GoalDetails';
 import NewGoal from './pages/NewGoal';
 import AddGoalValue from './pages/AddGoalValue';
 import EditGoal from './pages/EditGoal';
@@ -72,6 +73,7 @@ export default function App() {
               <Route path="/transaction-details" element={<TransactionDetails />} />
               <Route path="/edit-transaction" element={<EditTransaction />} />
               <Route path="/goals" element={<Goals />} />
+              <Route path="/goal-details/:id" element={<GoalDetails />} />
               <Route path="/new-goal" element={<NewGoal />} />
               <Route path="/add-goal-value" element={<AddGoalValue />} />
               <Route path="/edit-goal" element={<EditGoal />} />

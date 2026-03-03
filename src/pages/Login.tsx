@@ -121,7 +121,7 @@ export default function Login() {
         <footer className="flex flex-col items-center justify-center space-y-2 text-zinc-800">
           <span className="material-symbols-outlined text-sm">auto_awesome</span>
           <p className="text-[8px] font-bold tracking-[0.4em] uppercase text-zinc-700">
-            POWERED BY POUP INTELLIGENCE
+            
           </p>
         </footer>
       </div>

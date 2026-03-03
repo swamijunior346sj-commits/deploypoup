@@ -170,7 +170,7 @@ export default function SavingsSimulator() {
                     <div className="flex items-center space-x-2 opacity-30">
                         <span className="material-symbols-outlined text-[10px]">auto_awesome</span>
                         <p className="text-[8px] font-bold tracking-[0.5em] uppercase text-[#FCFCFC]">
-                            POWERED BY POUP INTELLIGENCE
+                            
                         </p>
                     </div>
                 </footer>

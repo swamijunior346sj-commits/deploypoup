@@ -99,7 +99,7 @@ export default function ManageSubCategories() {
                     <div className="flex items-center justify-center space-x-2 text-zinc-800">
                         <span className="material-symbols-outlined text-base">auto_awesome</span>
                         <p className="text-[9px] font-semibold tracking-[0.2em] uppercase">
-                            POWERED BY POUP INTELLIGENCE
+                            
                         </p>
                     </div>
                 </footer>

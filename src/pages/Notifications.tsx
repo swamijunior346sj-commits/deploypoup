@@ -91,7 +91,7 @@ export default function Notifications() {
                 <div className="flex items-center space-x-2 opacity-30">
                     <span className="material-symbols-outlined !text-[10px] !fill-0">auto_awesome</span>
                     <p className="text-[8px] font-bold tracking-[0.4em] uppercase">
-                        POWERED BY POUP INTELLIGENCE
+                        
                     </p>
                 </div>
                 <div className="h-6 mt-4"></div>

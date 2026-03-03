@@ -117,7 +117,7 @@ export default function AIAssistant() {
         <footer className="flex flex-col items-center py-4 opacity-40">
           <div className="flex items-center space-x-2">
             <span className="material-symbols-outlined text-[12px] text-brand-subtitle">verified</span>
-            <p className="text-[8px] font-bold tracking-[0.3em] uppercase text-brand-subtitle">Powered by POUP Intelligence</p>
+            <p className="text-[8px] font-bold tracking-[0.3em] uppercase text-brand-subtitle"></p>
           </div>
         </footer>
       </main>

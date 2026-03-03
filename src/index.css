@@ -23,10 +23,11 @@
   --color-brand-subtitle: #A7A7A7;
   --color-brand-selection: #222426;
 
-  --font-display: "Montserrat", sans-serif;
+  --font-display: "Manrope", sans-serif;
   --font-sans: "Inter", sans-serif;
 
   --animate-pulse-glow: pulse-glow-v2 2s ease-in-out infinite;
+  --animate-progress: progress-animation 2s ease-out forwards;
   --animate-shimmer-path: shimmer-path 3s infinite linear;
   --animate-rotate-glow: rotate-glow 4s linear infinite;
   --animate-aura-breathe: aura-breathe 3s ease-in-out infinite;
@@ -197,6 +198,102 @@
 
   .animate-levitate {
     animation: levitate 3s ease-in-out infinite;
+  }
+
+  .glass {
+    background: transparent;
+    backdrop-filter: none;
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 255, 162, 0.03);
+  }
+
+  .glass-primary {
+    background: transparent;
+    backdrop-filter: none;
+    border: none;
+    box-shadow: 0 0 15px rgba(0, 255, 162, 0.1);
+  }
+
+  .glow-border {
+    border: 1px solid rgba(0, 255, 162, 0.1);
+    box-shadow: 0 0 8px rgba(0, 255, 162, 0.05);
+  }
+
+  .neon-glow {
+    border: 1px solid rgba(0, 255, 162, 0.15);
+    box-shadow: 0 0 10px rgba(0, 255, 162, 0.2);
+    animation: pulse-glow-neon 4s infinite;
+  }
+
+  .thin-line {
+    height: 3px;
+  }
+
+  .thin-line-goal {
+    height: 2px;
+  }
+
+  @keyframes progress-animation {
+    0% {
+      width: 0%;
+    }
+
+    100% {
+      width: var(--progress-width, 85%);
+    }
+  }
+
+  .progress-ring {
+    transition: stroke-dashoffset 0.35s;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+  }
+
+  .glow-sm:focus-within {
+    box-shadow: 0 0 15px rgba(15, 182, 127, 0.2);
+  }
+
+  .slider-thumb::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #0FB67F;
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(15, 182, 127, 0.4);
+  }
+
+  .slider-thumb::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: #0FB67F;
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(15, 182, 127, 0.4);
+    border: none;
+  }
+
+  .white-text-glow {
+    text-shadow: 0 0 15px rgba(252, 252, 252, 0.4);
+  }
+
+  .neon-text-glow {
+    text-shadow: 0 0 20px rgba(15, 182, 127, 0.6);
+  }
+
+  @keyframes pulse-glow-neon {
+    0% {
+      box-shadow: 0 0 10px rgba(0, 255, 162, 0.2);
+    }
+
+    50% {
+      box-shadow: 0 0 20px rgba(0, 255, 162, 0.4);
+    }
+
+    100% {
+      box-shadow: 0 0 10px rgba(0, 255, 162, 0.2);
+    }
   }
 
   @keyframes pulse-glow {
@@ -440,5 +537,78 @@
     border-radius: 50%;
     margin-top: -7px;
     box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+  }
+
+  /* Utility Classes for Goals Renovation */
+  .glass {
+    background: #0D0E10;
+    backdrop-filter: none;
+    border: none;
+    box-shadow: 0 0 10px rgba(15, 182, 127, 0.03);
+  }
+
+  .glass-primary {
+    background: #0D0E10;
+    backdrop-filter: none;
+    border: none;
+    box-shadow: 0 0 15px rgba(15, 182, 127, 0.1);
+  }
+
+  .glow-border {
+    background-color: #0D0E10;
+    border: 1px solid rgba(15, 182, 127, 0.1);
+    box-shadow: 0 0 8px rgba(15, 182, 127, 0.05);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  @keyframes progress-animation {
+    0% {
+      width: 0%;
+    }
+
+    100% {
+      width: 85%;
+    }
+  }
+
+  .animate-progress {
+    animation: progress-animation 2s ease-out forwards;
+  }
+
+  @keyframes pulse-glow-v3 {
+    0% {
+      box-shadow: 0 0 10px rgba(15, 182, 127, 0.2);
+    }
+
+    50% {
+      box-shadow: 0 0 20px rgba(15, 182, 127, 0.4);
+    }
+
+    100% {
+      box-shadow: 0 0 10px rgba(15, 182, 127, 0.2);
+    }
+  }
+
+  .neon-glow {
+    background-color: #0D0E10;
+    border: 1px solid rgba(15, 182, 127, 0.15);
+    box-shadow: 0 0 10px rgba(15, 182, 127, 0.2);
+    animation: pulse-glow-v3 4s infinite;
+  }
+
+  .thin-line {
+    height: 3px;
+  }
+
+  .thin-line-goal {
+    height: 2px;
   }
 }

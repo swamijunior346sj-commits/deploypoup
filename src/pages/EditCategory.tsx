@@ -105,7 +105,7 @@ export default function EditCategory() {
                 <footer className="mt-12 py-4 text-center">
                     <div className="flex items-center justify-center space-x-2 text-zinc-800">
                         <span className="material-symbols-outlined text-base">auto_awesome</span>
-                        <p className="text-[9px] font-semibold tracking-[0.2em] uppercase">POWERED BY POUP INTELLIGENCE</p>
+                        <p className="text-[9px] font-semibold tracking-[0.2em] uppercase"></p>
                     </div>
                 </footer>
             </main>
