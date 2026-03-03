@@ -1,8 +1,30 @@
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
+import { useData } from '../contexts/DataContext';
 
 export default function Analysis() {
   const navigate = useNavigate();
+  const { assets, loading } = useData();
+
+  const totalAssetsValue = assets.reduce((acc, asset) => acc + Number(asset.current_value), 0);
+
+  // Calculate distribution (example logic)
+  const total = assets.length || 1;
+  const fixedIncome = assets.filter(a => a.type?.toLowerCase().includes('fixa')).length;
+  const variableIncome = assets.filter(a => a.type?.toLowerCase().includes('variável') || a.type?.toLowerCase().includes('var')).length;
+  const crypto = assets.filter(a => a.type?.toLowerCase().includes('cripto')).length;
+
+  const distFixed = Math.round((fixedIncome / total) * 100);
+  const distVar = Math.round((variableIncome / total) * 100);
+  const distCripto = 100 - distFixed - distVar;
+
+  if (loading) {
+    return (
+      <div className="bg-black text-white min-h-screen flex items-center justify-center">
+        <div className="animate-pulse text-primary tracking-widest uppercase font-bold text-xs">Analisando Patrimônio...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-black text-[#FCFCFC] font-sans flex flex-col min-h-screen selection:bg-primary/30 overflow-x-hidden antialiased">
@@ -15,7 +37,7 @@ export default function Analysis() {
             <label className="absolute top-10 text-[10px] uppercase tracking-[0.5em] text-[#71717A] font-bold">PATRIMÔNIO TOTAL</label>
             <div className="flex flex-col items-center justify-center w-full px-2 mt-4">
               <span className="text-white text-[12vw] xs:text-6xl font-display font-light tracking-tighter premium-text-glow leading-none text-center whitespace-nowrap">
-                R$ 45.320,00
+                R$ {totalAssetsValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </span>
               <div className="flex items-center space-x-2 mt-10">
                 <span className="text-primary text-[11px] font-bold tracking-[0.3em] uppercase neon-text-glow">+2.4% PERFORMANCE</span>
@@ -39,7 +61,7 @@ export default function Analysis() {
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
               <span className="text-[10px] text-[#71717A] uppercase font-bold tracking-[0.3em]">Ativos</span>
-              <span className="text-3xl font-display font-light text-white">12</span>
+              <span className="text-3xl font-display font-light text-white">{assets.length}</span>
             </div>
           </div>
           <div className="flex-1 ml-8 space-y-6">
@@ -47,15 +69,15 @@ export default function Analysis() {
             <div className="space-y-5">
               <div className="flex items-center justify-between text-[13px] tracking-[0.1em] font-medium">
                 <span className="text-[#71717A]">RENDA FIXA</span>
-                <span className="font-bold text-white">33%</span>
+                <span className="font-bold text-white">{distFixed}%</span>
               </div>
               <div className="flex items-center justify-between text-[13px] tracking-[0.1em] font-medium">
                 <span className="text-[#71717A]">RENDA VAR.</span>
-                <span className="font-bold text-white">28%</span>
+                <span className="font-bold text-white">{distVar}%</span>
               </div>
               <div className="flex items-center justify-between text-[13px] tracking-[0.1em] font-medium">
                 <span className="text-[#71717A]">CRIPTO</span>
-                <span className="font-bold text-white">39%</span>
+                <span className="font-bold text-white">{distCripto}%</span>
               </div>
             </div>
           </div>
@@ -68,38 +90,46 @@ export default function Analysis() {
             <button className="text-[10px] text-[#71717A] font-bold uppercase tracking-[0.3em] hover:text-primary transition-colors">VER TUDO</button>
           </div>
           <div className="space-y-5">
-            {[
-              { ticker: 'BTC', name: 'BITCOIN NETWORK', value: 'R$ 9.120,00', change: '+12.4%', icon: 'currency_bitcoin' },
-              { ticker: 'ITUB4', name: 'ITAÚ UNIBANCO', value: 'R$ 5.430,20', change: '+3.2%', icon: 'account_balance' },
-              { ticker: 'SELIC 2029', name: 'TESOURO DIRETO', value: 'R$ 15.200,00', change: '0.0%', icon: 'receipt_long' }
-            ].map((asset, i) => (
-              <div
-                key={i}
-                onClick={() => navigate('/asset-details', { state: { asset } })}
-                className="relative group cursor-pointer"
-              >
-                {/* Brilho atrás de cada card da lista */}
-                <div className="absolute inset-0 bg-primary/5 blur-2xl rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            {assets.length > 0 ? (
+              assets.map((asset) => (
+                <div
+                  key={asset.id}
+                  onClick={() => navigate('/asset-details', { state: { asset } })}
+                  className="relative group cursor-pointer"
+                >
+                  {/* Brilho atrás de cada card da lista */}
+                  <div className="absolute inset-0 bg-primary/5 blur-2xl rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
-                <div className="neon-border rounded-2xl p-7 flex items-center justify-between bg-black/40 backdrop-blur-sm relative active:scale-[0.98] transition-all">
-                  <div className="flex items-center space-x-6">
-                    <div className="w-12 h-12 border border-zinc-800 rounded-full flex items-center justify-center bg-black">
-                      <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">{asset.icon}</span>
+                  <div className="neon-border rounded-2xl p-7 flex items-center justify-between bg-black/40 backdrop-blur-sm relative active:scale-[0.98] transition-all">
+                    <div className="flex items-center space-x-6">
+                      <div className="w-12 h-12 border border-zinc-800 rounded-full flex items-center justify-center bg-black">
+                        <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">{asset.icon || 'monetization_on'}</span>
+                      </div>
+                      <div>
+                        <p className="text-[15px] font-bold font-display tracking-[0.1em] text-white">{asset.ticker || 'ATIVO'}</p>
+                        <p className="text-[10px] text-[#71717A] font-bold uppercase tracking-[0.2em] mt-1">{asset.name}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-[15px] font-bold font-display tracking-[0.1em] text-white">{asset.ticker}</p>
-                      <p className="text-[10px] text-[#71717A] font-bold uppercase tracking-[0.2em] mt-1">{asset.name}</p>
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-white tracking-wide">R$ {Number(asset.current_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                      <p className={`text-[11px] font-black tracking-widest mt-1.5 ${asset.change_percentage >= 0 ? 'text-primary neon-text-glow' : 'text-red-500'}`}>
+                        {asset.change_percentage >= 0 ? '+' : ''}{asset.change_percentage}%
+                      </p>
                     </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-semibold text-white tracking-wide">{asset.value}</p>
-                    <p className={`text-[11px] font-black tracking-widest mt-1.5 ${asset.change.includes('+') ? 'text-primary neon-text-glow' : 'text-[#71717A]'}`}>
-                      {asset.change}
-                    </p>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="py-12 text-center neon-border rounded-3xl p-8 bg-black/20">
+                <p className="text-[10px] text-zinc-600 uppercase tracking-widest mb-4">Seu portfólio está vazio</p>
+                <button
+                  onClick={() => navigate('/new-investment')}
+                  className="bg-primary text-black px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest"
+                >
+                  Adicionar Investimento
+                </button>
               </div>
-            ))}
+            )}
           </div>
         </section>
       </main>

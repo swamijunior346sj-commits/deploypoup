@@ -5,6 +5,7 @@
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { DataProvider } from './contexts/DataContext';
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -44,47 +45,49 @@ import EditTransaction from './pages/EditTransaction';
 export default function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/onboarding" element={<Onboarding />} />
-          <Route path="/consent" element={<Consent />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/" element={<Login />} />
-          <Route element={<Layout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/accounts" element={<Accounts />} />
-            <Route path="/analysis" element={<Analysis />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="/add-account" element={<AddAccount />} />
-            <Route path="/add-card" element={<AddCard />} />
-            <Route path="/planning" element={<Planning />} />
-            <Route path="/compound-interest" element={<CompoundInterest />} />
-            <Route path="/investments" element={<Investments />} />
-            <Route path="/ai-assistant" element={<AIAssistant />} />
-            <Route path="/security" element={<Security />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/new-transaction" element={<NewTransaction />} />
-            <Route path="/transactions" element={<TransactionHistory />} />
-            <Route path="/transaction-details" element={<TransactionDetails />} />
-            <Route path="/edit-transaction" element={<EditTransaction />} />
-            <Route path="/goals" element={<Goals />} />
-            <Route path="/new-goal" element={<NewGoal />} />
-            <Route path="/add-goal-value" element={<AddGoalValue />} />
-            <Route path="/edit-goal" element={<EditGoal />} />
-            <Route path="/personal-data" element={<PersonalData />} />
-            <Route path="/financial-performance" element={<FinancialPerformance />} />
-            <Route path="/new-investment" element={<NewInvestment />} />
-            <Route path="/asset-details" element={<AssetDetails />} />
-            <Route path="/budgets" element={<Budgets />} />
-            <Route path="/new-budget" element={<NewBudget />} />
-            <Route path="/budget-details" element={<BudgetDetails />} />
-            <Route path="/savings-simulator" element={<SavingsSimulator />} />
-            <Route path="/spending-analysis" element={<SpendingAnalysis />} />
-          </Route>
-        </Routes>
-      </Router>
+      <DataProvider>
+        <Router>
+          <Routes>
+            <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/consent" element={<Consent />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/" element={<Login />} />
+            <Route element={<Layout />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/accounts" element={<Accounts />} />
+              <Route path="/analysis" element={<Analysis />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/reports" element={<Reports />} />
+              <Route path="/add-account" element={<AddAccount />} />
+              <Route path="/add-card" element={<AddCard />} />
+              <Route path="/planning" element={<Planning />} />
+              <Route path="/compound-interest" element={<CompoundInterest />} />
+              <Route path="/investments" element={<Investments />} />
+              <Route path="/ai-assistant" element={<AIAssistant />} />
+              <Route path="/security" element={<Security />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route path="/new-transaction" element={<NewTransaction />} />
+              <Route path="/transactions" element={<TransactionHistory />} />
+              <Route path="/transaction-details" element={<TransactionDetails />} />
+              <Route path="/edit-transaction" element={<EditTransaction />} />
+              <Route path="/goals" element={<Goals />} />
+              <Route path="/new-goal" element={<NewGoal />} />
+              <Route path="/add-goal-value" element={<AddGoalValue />} />
+              <Route path="/edit-goal" element={<EditGoal />} />
+              <Route path="/personal-data" element={<PersonalData />} />
+              <Route path="/financial-performance" element={<FinancialPerformance />} />
+              <Route path="/new-investment" element={<NewInvestment />} />
+              <Route path="/asset-details" element={<AssetDetails />} />
+              <Route path="/budgets" element={<Budgets />} />
+              <Route path="/new-budget" element={<NewBudget />} />
+              <Route path="/budget-details" element={<BudgetDetails />} />
+              <Route path="/savings-simulator" element={<SavingsSimulator />} />
+              <Route path="/spending-analysis" element={<SpendingAnalysis />} />
+            </Route>
+          </Routes>
+        </Router>
+      </DataProvider>
     </AuthProvider>
   );
 }

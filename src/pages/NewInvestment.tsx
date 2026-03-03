@@ -1,17 +1,44 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function NewInvestment() {
     const navigate = useNavigate();
+    const { user } = useAuth();
+    const [loading, setLoading] = useState(false);
+
     const [amount, setAmount] = useState('0,00');
     const [name, setName] = useState('');
     const [type, setType] = useState('Renda Fixa');
-    const [date, setDate] = useState('');
+    const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [rate, setRate] = useState('');
 
-    const handleSave = () => {
-        // TODO: Save investment to Supabase
-        navigate('/analysis');
+    const handleSave = async () => {
+        if (!user || !amount || !name) return;
+
+        setLoading(true);
+        try {
+            const { error } = await supabase.from('assets').insert([
+                {
+                    user_id: user.id,
+                    name,
+                    type,
+                    value: parseFloat(amount.replace(',', '.')),
+                    purchase_date: date,
+                    estimated_yield: parseFloat(rate) || 0,
+                    change_24h: 0, // Default for new assets
+                }
+            ]);
+
+            if (error) throw error;
+            navigate('/analysis');
+        } catch (error) {
+            console.error('Error saving investment:', error);
+            alert('Erro ao salvar investimento');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -93,34 +120,19 @@ export default function NewInvestment() {
                             />
                         </div>
                     </div>
-
-                    {/* Attach Receipt */}
-                    <button className="w-full bg-zinc-900/30 border border-dashed border-zinc-700 rounded-3xl p-8 flex flex-col items-center justify-center space-y-3 hover:bg-zinc-900/50 transition-colors">
-                        <span className="material-symbols-outlined text-3xl text-zinc-500">photo_camera</span>
-                        <span className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">Anexar Comprovante</span>
-                    </button>
                 </div>
 
                 {/* Save Button */}
                 <div className="mt-10">
                     <button
                         onClick={handleSave}
-                        className="w-full bg-primary text-black font-display font-bold py-5 rounded-2xl hover:brightness-110 active:scale-[0.98] transition-all tracking-widest uppercase text-sm"
+                        disabled={loading}
+                        className="w-full bg-primary text-black font-display font-bold py-5 rounded-2xl hover:brightness-110 active:scale-[0.98] transition-all tracking-widest uppercase text-sm disabled:opacity-50"
                         style={{ boxShadow: '0 0 25px rgba(16, 185, 129, 0.4)' }}
                     >
-                        SALVAR INVESTIMENTO
+                        {loading ? 'SALVANDO...' : 'SALVAR INVESTIMENTO'}
                     </button>
                 </div>
-
-                {/* Footer */}
-                <footer className="mt-12 mb-8 flex flex-col items-center">
-                    <div className="flex items-center space-x-2 opacity-30">
-                        <span className="material-symbols-outlined text-[10px]">auto_awesome</span>
-                        <p className="text-[8px] font-bold tracking-[0.4em] uppercase">
-                            POWERED BY POUP INTELLIGENCE
-                        </p>
-                    </div>
-                </footer>
             </main>
         </div>
     );

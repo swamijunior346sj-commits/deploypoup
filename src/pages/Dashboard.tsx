@@ -1,7 +1,24 @@
 import { useNavigate } from 'react-router-dom';
+import { useData } from '../contexts/DataContext';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { transactions, assets, goals, loading } = useData();
+
+  const totalAssets = assets.reduce((acc, asset) => acc + Number(asset.current_value), 0);
+  const totalExpenses = transactions
+    .filter(t => t.type === 'expense')
+    .reduce((acc, t) => acc + Number(t.amount), 0);
+
+  const totalBalance = totalAssets - totalExpenses; // Just a simple calculation example
+
+  if (loading) {
+    return (
+      <div className="bg-background-black text-white min-h-screen flex items-center justify-center">
+        <div className="animate-pulse text-primary tracking-widest uppercase font-bold text-xs">Carregando Realidade...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-background-black text-white font-sans min-h-screen flex flex-col overflow-x-hidden selection:bg-primary selection:text-black">
@@ -24,17 +41,23 @@ export default function Dashboard() {
             <div className="flex flex-col items-start py-2">
               <div className="flex items-baseline gap-1">
                 <span className="text-xs font-light text-zinc-500">R$</span>
-                <span className="text-4xl font-display font-thin text-white tracking-tighter">124.450,00</span>
+                <span className="text-4xl font-display font-thin text-white tracking-tighter">
+                  {totalBalance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </span>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div onClick={() => navigate('/analysis')} className="border border-primary/40 bg-transparent rounded-sm p-4 flex flex-col gap-1 transition-all hover:border-primary cursor-pointer">
                 <span className="text-[9px] font-medium tracking-widest text-primary uppercase">Ativos</span>
-                <span className="text-lg font-display font-light text-white">R$ 138.200</span>
+                <span className="text-lg font-display font-light text-white">
+                  R$ {totalAssets.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}
+                </span>
               </div>
               <div onClick={() => navigate('/analysis')} className="border border-primary/40 bg-transparent rounded-sm p-4 flex flex-col gap-1 transition-all hover:border-primary cursor-pointer">
-                <span className="text-[9px] font-medium tracking-widest text-primary uppercase">Despesas Futuras</span>
-                <span className="text-lg font-display font-light text-white">R$ 13.750</span>
+                <span className="text-[9px] font-medium tracking-widest text-primary uppercase">Despesas Totais</span>
+                <span className="text-lg font-display font-light text-white">
+                  R$ {totalExpenses.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}
+                </span>
               </div>
             </div>
           </div>
@@ -182,28 +205,37 @@ export default function Dashboard() {
             <button onClick={() => navigate('/goals')} className="text-[10px] text-zinc-500 hover:text-white transition-colors tracking-widest uppercase">Ver Tudo</button>
           </div>
           <div className="space-y-6 pt-2">
-            <div className="space-y-2" onClick={() => navigate('/goals')}>
-              <div className="flex justify-between items-end text-xs">
-                <span className="text-white font-light tracking-wide">Carro Novo</span>
-                <span className="text-primary font-medium">80%</span>
+            {goals.length > 0 ? (
+              goals.slice(0, 3).map((goal) => {
+                const progress = Math.min(100, Math.round((Number(goal.current_amount) / Number(goal.target_amount)) * 100)) || 0;
+                return (
+                  <div key={goal.id} className="space-y-2" onClick={() => navigate('/goals')}>
+                    <div className="flex justify-between items-end text-xs">
+                      <span className="text-white font-light tracking-wide">{goal.name}</span>
+                      <span className="text-primary font-medium">{progress}%</span>
+                    </div>
+                    <div className="thin-progress-bar">
+                      <div
+                        className="thin-progress-fill shadow-[0_0_8px_rgba(15,182,127,0.4)]"
+                        style={{ width: `${progress}%`, backgroundColor: goal.color || '#0FB67F' }}
+                      >
+                        <div className="progress-tip-glow"></div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="py-4 text-center">
+                <p className="text-[10px] text-zinc-600 uppercase tracking-widest">Nenhuma meta definida</p>
+                <button
+                  onClick={() => navigate('/new-goal')}
+                  className="mt-2 text-[10px] text-primary font-bold uppercase tracking-widest"
+                >
+                  Criar minha primeira meta
+                </button>
               </div>
-              <div className="thin-progress-bar">
-                <div className="thin-progress-fill w-[80%] shadow-[0_0_8px_rgba(15,182,127,0.4)]">
-                  <div className="progress-tip-glow"></div>
-                </div>
-              </div>
-            </div>
-            <div className="space-y-2" onClick={() => navigate('/goals')}>
-              <div className="flex justify-between items-end text-xs">
-                <span className="text-white font-light tracking-wide">Viagem Europa</span>
-                <span className="text-accent-purple font-medium">45%</span>
-              </div>
-              <div className="thin-progress-bar">
-                <div className="thin-progress-fill w-[45%] bg-accent-purple shadow-[0_0_8px_rgba(168,85,247,0.4)]">
-                  <div className="progress-tip-glow bg-white shadow-[0_0_10px_2px_rgba(168,85,247,0.8)]"></div>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         </section>
         <div className="h-24"></div>
