@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../contexts/DataContext';
 
 export default function SpendingAnalysis() {
     const navigate = useNavigate();
     const { budgets, transactions } = useData();
+    const [isAnalyzing, setIsAnalyzing] = useState(false);
 
     // Mock/Calc data points
     const totalSpent = transactions
@@ -26,21 +27,71 @@ export default function SpendingAnalysis() {
             remaining: Math.max(Number(b.amount) - spent, 0),
             percent: Math.min(Math.round((spent / Number(b.amount)) * 100), 100)
         };
-    }).slice(0, 3); // Showing top 3 for the premium preview
+    }).slice(0, 3);
+
+    const handleAIAnalysis = () => {
+        setIsAnalyzing(true);
+        setTimeout(() => {
+            setIsAnalyzing(false);
+            navigate('/ai-analysis');
+        }, 3000);
+    };
+
+    if (isAnalyzing) {
+        return (
+            <div className="bg-black text-white min-h-screen flex flex-col items-center justify-center p-8 text-center space-y-12">
+                <style>{`
+                    @keyframes spin-slow {
+                        from { transform: rotate(0deg); }
+                        to { transform: rotate(360deg); }
+                    }
+                    @keyframes pulse-ring {
+                        0% { transform: scale(0.8); opacity: 0.5; }
+                        50% { transform: scale(1.2); opacity: 0.3; }
+                        100% { transform: scale(0.8); opacity: 0.5; }
+                    }
+                    .animate-spin-slow {
+                        animation: spin-slow 8s linear infinite;
+                    }
+                    .animate-pulse-ring {
+                        animation: pulse-ring 3s ease-in-out infinite;
+                    }
+                `}</style>
+                <div className="relative">
+                    <div className="absolute inset-0 bg-primary/20 blur-[60px] animate-pulse-ring rounded-full"></div>
+                    <div className="relative w-32 h-32 rounded-full border border-primary/20 flex items-center justify-center overflow-hidden">
+                        <div className="absolute inset-0 border-t-2 border-primary animate-spin-slow rounded-full"></div>
+                        <span className="material-symbols-outlined text-5xl text-primary animate-pulse">auto_awesome</span>
+                    </div>
+                </div>
+                <div className="space-y-4">
+                    <h2 className="text-xl font-bold tracking-tighter uppercase">Processando Realidade...</h2>
+                    <p className="text-xs text-zinc-500 font-medium tracking-widest uppercase animate-pulse">
+                        A IA está realizando uma análise detalhada<br />dos seus padrões de consumo
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="bg-black text-[#A1A1AA] font-sans flex flex-col min-h-screen overflow-x-hidden selection:bg-primary/30">
             <header className="pt-14 pb-2 px-6 sticky top-0 bg-black/80 backdrop-blur-xl z-50">
                 <div className="flex items-center justify-between mb-8">
-                    <div className="w-6"></div> {/* Spacer for symmetry */}
+                    <button onClick={() => navigate(-1)} className="w-6 h-6 flex items-center justify-center">
+                        <span className="material-symbols-outlined text-zinc-400">arrow_back_ios_new</span>
+                    </button>
                     <h1 className="text-[10px] font-display font-semibold tracking-[0.5em] text-text-value uppercase opacity-80">ANÁLISE DE GASTOS</h1>
-                    <div className="w-6"></div> {/* Spacer for symmetry */}
+                    <div className="w-6"></div>
                 </div>
             </header>
 
             <main className="flex-1 overflow-y-auto pb-12">
                 <section className="p-6">
-                    <div className="glow-border rounded-[40px] bg-transparent p-10 flex flex-col items-center relative overflow-hidden group">
+                    <div
+                        onClick={() => navigate('/budgets')}
+                        className="glow-border rounded-[40px] bg-transparent p-10 flex flex-col items-center relative overflow-hidden group cursor-pointer active:scale-[0.98] transition-all"
+                    >
                         <div className="absolute inset-0 bg-primary/5 blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity"></div>
 
                         <h2 className="text-[9px] font-bold tracking-[0.3em] text-zinc-500 uppercase mb-8 relative z-10">ORÇAMENTO TOTAL</h2>
@@ -82,7 +133,7 @@ export default function SpendingAnalysis() {
                 <section className="px-6 space-y-4">
                     <h3 className="text-[9px] font-bold tracking-[0.3em] text-zinc-500 uppercase px-2 mb-4">Detalhamento</h3>
                     {categories.map((cat, i) => (
-                        <div key={i} className="glow-border rounded-3xl bg-transparent p-6 group hover:border-primary/30 transition-all">
+                        <div key={i} className="glow-border rounded-3xl bg-transparent p-6 group hover:border-primary/30 transition-all cursor-pointer" onClick={() => navigate('/budgets')}>
                             <div className="flex items-center gap-5 mb-5">
                                 <div className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/5 group-hover:bg-primary/10 transition-colors">
                                     <span className="material-symbols-outlined text-primary font-extralight !text-[24px]">{cat.icon}</span>
@@ -105,7 +156,10 @@ export default function SpendingAnalysis() {
                 </section>
 
                 <section className="p-6">
-                    <div className="glow-border rounded-3xl bg-transparent p-6 relative overflow-hidden">
+                    <div
+                        onClick={handleAIAnalysis}
+                        className="glow-border rounded-3xl bg-transparent p-6 relative overflow-hidden cursor-pointer hover:border-primary/30 active:scale-[0.98] transition-all"
+                    >
                         <div className="flex items-start gap-5">
                             <div className="mt-1">
                                 <span className="material-symbols-outlined text-primary font-light !text-[20px] glow-text animate-pulse">auto_awesome</span>

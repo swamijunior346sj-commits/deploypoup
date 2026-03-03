@@ -50,6 +50,9 @@ import EditBudget from './pages/EditBudget';
 import Cart from './pages/Cart';
 import Tools from './pages/Tools';
 import Networking from './pages/Networking';
+import Missions from './pages/Missions';
+import ManageCategories from './pages/ManageCategories';
+import AIAnalysis from './pages/AIAnalysis';
 
 export default function App() {
   return (
@@ -102,6 +105,9 @@ export default function App() {
               <Route path="/course/:id" element={<CourseDetails />} />
               <Route path="/mentorships" element={<Mentorships />} />
               <Route path="/mentorship/:id" element={<MentorshipDetails />} />
+              <Route path="/missions" element={<Missions />} />
+              <Route path="/categories" element={<ManageCategories />} />
+              <Route path="/ai-analysis" element={<AIAnalysis />} />
             </Route>
           </Routes>
         </Router>

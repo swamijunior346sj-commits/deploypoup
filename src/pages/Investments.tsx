@@ -7,10 +7,10 @@ export default function Investments() {
   const navigate = useNavigate();
   const { assets, loading } = useData();
 
-  const totalAssets = assets.reduce((acc, asset) => acc + Number(asset.value), 0);
+  const totalAssets = assets.reduce((acc, asset) => acc + Number(asset.amount || asset.value), 0);
 
   const getCategoryTotal = (type: string) =>
-    assets.filter(a => a.type === type).reduce((acc, a) => acc + Number(a.value), 0);
+    assets.filter(a => a.type === type).reduce((acc, a) => acc + Number(a.amount || a.value), 0);
 
   const rendaFixa = getCategoryTotal('Renda Fixa');
   const rendaVariavel = getCategoryTotal('Renda Variável');
@@ -29,9 +29,9 @@ export default function Investments() {
     <div className="space-y-6">
       <style>{`
         @keyframes levitate {
-          0% { transform: translateY(0px) translateX(-50%); }
-          50% { transform: translateY(-10px) translateX(-50%); }
-          100% { transform: translateY(0px) translateX(-50%); }
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+          100% { transform: translateY(0px); }
         }
         .levitate-btn {
           animation: levitate 3s ease-in-out infinite;
@@ -112,7 +112,7 @@ export default function Investments() {
         </main>
       </div>
 
-      <div className="fixed bottom-32 left-1/2 -translate-x-1/2 z-[150] levitate-btn">
+      <div className="fixed bottom-32 right-6 z-[150] levitate-btn">
         <button
           onClick={() => navigate('/new-investment')}
           className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-[0_20px_40px_rgba(15,182,127,0.4)] active:scale-90 transition-all group"

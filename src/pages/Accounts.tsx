@@ -17,6 +17,16 @@ export default function Accounts() {
 
   return (
     <div className="space-y-10">
+      <style>{`
+        @keyframes levitate {
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+          100% { transform: translateY(0px); }
+        }
+        .levitate-btn {
+          animation: levitate 3s ease-in-out infinite;
+        }
+      `}</style>
       <Header
         showBack
         title="Contas e Cartões"
@@ -24,7 +34,7 @@ export default function Accounts() {
 
       <div className="px-6 space-y-10">
         <section className="space-y-4">
-          <h3 className="text-[10px] font-bold tracking-widest text-text-label uppercase">Minhas Contas</h3>
+          <h3 className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Minhas Contas</h3>
           <div className="flex space-x-4 overflow-x-auto no-scrollbar -mx-6 px-6">
             {assets && assets.length > 0 ? (
               assets.map((asset) => (
@@ -34,8 +44,8 @@ export default function Accounts() {
                       <span className="material-symbols-outlined text-primary text-xl">account_balance</span>
                     </div>
                     <div>
-                      <p className="text-[10px] text-text-label font-bold uppercase truncate">{asset.name}</p>
-                      <p className="text-sm font-bold font-display">R$ {Number(asset.current_value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                      <p className="text-[10px] text-zinc-500 font-bold uppercase truncate">{asset.name}</p>
+                      <p className="text-sm font-bold font-display">R$ {Number(asset.current_value || asset.value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
                     </div>
                   </Card>
                 </div>
@@ -51,7 +61,7 @@ export default function Accounts() {
 
         <section className="space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-[10px] font-bold tracking-widest text-text-label uppercase">Cartões de Crédito</h3>
+            <h3 className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Cartões de Crédito</h3>
             <span onClick={() => navigate('/add-card')} className="text-[10px] font-bold text-zinc-400 uppercase cursor-pointer">Adicionar</span>
           </div>
 
@@ -60,7 +70,7 @@ export default function Accounts() {
           </div>
 
           <Card className="rounded-[24px] p-5 space-y-4">
-            <p className="text-[10px] font-bold tracking-widest text-text-label uppercase mb-2">Controle de Parcelas</p>
+            <p className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Controle de Parcelas</p>
             <div className="py-4 text-center">
               <p className="text-[10px] text-zinc-700 uppercase tracking-widest italic">Aguardando dados reais...</p>
             </div>
@@ -68,13 +78,13 @@ export default function Accounts() {
         </section>
 
         <section className="space-y-4">
-          <h3 className="text-[10px] font-bold tracking-widest text-text-label uppercase">Simulador de Limite</h3>
+          <h3 className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Simulador de Limite</h3>
           <Card className="rounded-[24px] p-6 space-y-6">
             <div className="space-y-3">
-              <label className="text-[10px] text-text-label font-bold uppercase">Quanto você deseja gastar?</label>
+              <label className="text-[10px] text-zinc-500 font-bold uppercase">Quanto você deseja gastar?</label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text-label font-bold">R$</span>
-                <input className="w-full bg-zinc-900 border-none rounded-xl py-4 pl-12 pr-4 text-text-value font-display font-bold focus:ring-1 focus:ring-primary/50 transition-all" placeholder="0,00" type="number" />
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 font-bold">R$</span>
+                <input className="w-full bg-zinc-900 border-none rounded-xl py-4 pl-12 pr-4 text-white font-display font-bold focus:ring-1 focus:ring-primary/50 transition-all" placeholder="0,00" type="number" />
               </div>
             </div>
             <div className="p-4 bg-transparent border border-white/10">
@@ -82,7 +92,7 @@ export default function Accounts() {
                 <span className="text-[9px] text-zinc-400 font-bold uppercase">Projeção de Disponível</span>
                 <span className="text-xs font-bold text-primary">R$ 0,00</span>
               </div>
-              <p className="text-[9px] text-text-label leading-relaxed italic mt-2">Digite um valor para simular o impacto no seu limite disponível mensal.</p>
+              <p className="text-[9px] text-zinc-500 leading-relaxed italic mt-2">Digite um valor para simular o impacto no seu limite disponível mensal.</p>
             </div>
           </Card>
         </section>
@@ -91,7 +101,7 @@ export default function Accounts() {
 
       <button
         onClick={() => navigate('/add-account')}
-        className="fixed right-6 bottom-24 w-14 h-14 bg-primary text-black rounded-full shadow-[0_0_20px_rgba(16,185,129,0.5)] flex items-center justify-center z-[60] animate-levitate transition-transform active:scale-95"
+        className="fixed right-6 bottom-32 w-14 h-14 bg-primary text-black rounded-full shadow-[0_0_20px_rgba(16,185,129,0.5)] flex items-center justify-center z-[150] levitate-btn transition-transform active:scale-95"
       >
         <span className="material-symbols-outlined text-2xl">add</span>
       </button>

@@ -4,10 +4,43 @@ import { useNavigate } from 'react-router-dom';
 export default function NewBudget() {
     const navigate = useNavigate();
     const [amount, setAmount] = useState(2500);
+    const [showSuccess, setShowSuccess] = useState(false);
 
     const handleAmountChange = (val: number) => {
         setAmount(Math.max(0, Math.min(10000, val)));
     };
+
+    const handleSave = () => {
+        setShowSuccess(true);
+        setTimeout(() => {
+            setShowSuccess(false);
+            navigate('/budgets');
+        }, 2000);
+    };
+
+    if (showSuccess) {
+        return (
+            <div className="bg-black min-h-screen flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
+                <style>{`
+                    @keyframes check-bounce {
+                        0%, 100% { transform: scale(1); }
+                        50% { transform: scale(1.2); }
+                    }
+                    .animate-check { animation: check-bounce 0.5s ease-in-out; }
+                `}</style>
+                <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mb-6">
+                    <span className="material-symbols-outlined text-4xl text-primary font-bold animate-check">check_circle</span>
+                </div>
+                <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">Orçamento Criado!</h2>
+                <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest leading-relaxed">
+                    Sua nova diretriz financeira<br />foi estabelecida com sucesso
+                </p>
+                <div className="mt-8 flex items-center gap-2 text-primary font-bold">
+                    <span className="text-[10px] uppercase tracking-tighter">+5 XP POR PLANEJAMENTO</span>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="bg-black font-display antialiased min-h-screen flex flex-col relative overflow-x-hidden">
@@ -142,10 +175,7 @@ export default function NewBudget() {
             {/* Footer with Fixed Action Button */}
             <footer className="relative z-10 p-6 mt-auto bg-black/80 backdrop-blur-md sticky bottom-0 border-t border-white/5">
                 <button
-                    onClick={() => {
-                        // TODO: Implement save logic
-                        navigate('/budgets');
-                    }}
+                    onClick={handleSave}
                     className="w-full py-4 rounded-full border border-primary text-white font-bold text-sm tracking-[0.2em] uppercase hover:bg-primary/10 transition-all active:scale-[0.98] shadow-[0_0_20px_rgba(15,182,127,0.1)]"
                 >
                     Criar Orçamento
