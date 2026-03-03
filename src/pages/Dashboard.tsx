@@ -25,8 +25,11 @@ export default function Dashboard() {
       {/* Header specifically for dashboard matching the requested design */}
       <header className="px-6 pt-10 pb-6 flex items-center justify-between sticky top-0 bg-background-black/90 backdrop-blur-md z-40 border-b border-white/5">
         <div className="flex items-center justify-between w-full">
+          <button onClick={() => navigate('/profile')} className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition-all overflow-hidden group">
+            <span className="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">person</span>
+          </button>
           <div className="flex items-center gap-3">
-            {/* Score POUP removido a pedido do usuário */}
+            {/* Logo or Title could go here if needed */}
           </div>
           <button onClick={() => navigate('/notifications')} className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:border-white/30 transition-all relative">
             <span className="absolute top-2.5 right-3 w-1 h-1 bg-primary rounded-full animate-pulse shadow-[0_0_5px_theme('colors.primary'),_0_0_15px_rgba(15,182,127,0.3)]"></span>
@@ -38,10 +41,11 @@ export default function Dashboard() {
       <main className="flex-grow px-6 space-y-10 pb-16 pt-8">
         <section className="relative">
           <div className="flex flex-col space-y-8">
-            <div className="flex flex-col items-start py-2">
+            <div className="flex flex-col items-center py-2">
+              <span className="text-[10px] font-bold tracking-[0.4em] text-text-label uppercase mb-3">PATRIMÔNIO TOTAL</span>
               <div className="flex items-baseline gap-1">
                 <span className="text-xs font-light text-text-label">R$</span>
-                <span className="text-4xl font-extralight text-text-value tracking-tighter">
+                <span className="text-5xl font-extralight text-text-value tracking-tighter premium-text-glow">
                   {totalBalance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                 </span>
               </div>

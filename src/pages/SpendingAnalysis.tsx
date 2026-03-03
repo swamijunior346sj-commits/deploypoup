@@ -1,149 +1,129 @@
-import { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useData } from '../contexts/DataContext';
 
 export default function SpendingAnalysis() {
     const navigate = useNavigate();
-    const [activePeriod, setActivePeriod] = useState('1M');
-    const periods = ['1M', '3M', '6M', '1Y'];
+    const { budgets, transactions } = useData();
 
-    const categories = [
-        { name: 'Alimentação', sub: 'Restaurantes e Delivery', amount: 'R$ 1.250,00', percent: '36.2%', color: 'bg-primary', textColor: 'text-primary' },
-        { name: 'Moradia', sub: 'Aluguel e Contas', amount: 'R$ 1.800,00', percent: '52.1%', color: 'bg-blue-500', textColor: 'text-blue-500' },
-        { name: 'Lazer', sub: 'Eventos e Hobbies', amount: 'R$ 400,00', percent: '11.7%', color: 'bg-purple-500', textColor: 'text-purple-500' },
-    ];
+    // Mock/Calc data points
+    const totalSpent = transactions
+        .filter(t => t.type === 'expense')
+        .reduce((acc, t) => acc + Number(t.amount), 0);
 
-    const monthlyFlow = [
-        { month: 'SET', height: 60, active: false },
-        { month: 'OUT', height: 85, active: false },
-        { month: 'NOV', height: 70, active: false },
-        { month: 'DEZ', height: 100, active: true },
-    ];
+    const totalLimit = budgets.reduce((acc, b) => acc + Number(b.amount), 0) || 12000;
+    const consumptionPercent = Math.min(Math.round((totalSpent / totalLimit) * 100), 100);
 
-    const topExpenses = [
-        { name: 'Supermercado Premium', date: '12 DEZ, 2023', amount: 'R$ 890,50', icon: 'shopping_bag' },
-        { name: 'Aluguel Apartamento', date: '05 DEZ, 2023', amount: 'R$ 1.200,00', icon: 'home' },
-    ];
+    const categories = budgets.map(b => {
+        const spent = transactions
+            .filter(t => t.category === b.name && t.type === 'expense')
+            .reduce((acc, t) => acc + Number(t.amount), 0);
+        return {
+            name: b.name,
+            icon: b.icon || 'category',
+            spent: spent,
+            limit: b.amount,
+            remaining: Math.max(Number(b.amount) - spent, 0),
+            percent: Math.min(Math.round((spent / Number(b.amount)) * 100), 100)
+        };
+    }).slice(0, 3); // Showing top 3 for the premium preview
 
     return (
-        <div className="bg-black text-white font-sans flex flex-col min-h-screen overflow-x-hidden">
-            <header className="pt-14 pb-4 px-6 flex items-center justify-between sticky top-0 bg-black/80 backdrop-blur-md z-20">
-                <button onClick={() => navigate(-1)} className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95">
-                    <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">arrow_back_ios_new</span>
-                </button>
-                <h1 className="text-sm font-display font-bold tracking-[0.25em] text-white uppercase flex-1 text-center pr-8">
-                    ANÁLISE DE GASTOS
-                </h1>
+        <div className="bg-black text-[#A1A1AA] font-sans flex flex-col min-h-screen overflow-x-hidden selection:bg-primary/30">
+            <header className="pt-14 pb-2 px-6 sticky top-0 bg-black/80 backdrop-blur-xl z-50">
+                <div className="flex items-center justify-between mb-8">
+                    <button onClick={() => navigate(-1)} className="material-symbols-outlined text-text-value font-light cursor-pointer active:scale-90 transition-transform">menu</button>
+                    <h1 className="text-[10px] font-display font-semibold tracking-[0.5em] text-text-value uppercase opacity-80">ANÁLISE DE GASTOS</h1>
+                    <span className="material-symbols-outlined text-text-value font-light">notifications</span>
+                </div>
+                <div className="flex justify-between items-center text-[10px] font-bold tracking-[0.2em]">
+                    <button className="pb-3 px-2 text-zinc-600">GERAL</button>
+                    <button className="pb-3 px-2 text-zinc-600">INVESTIMENTOS</button>
+                    <button className="pb-3 px-2 text-primary border-b-[1px] border-primary glow-text">ORÇAMENTOS</button>
+                </div>
             </header>
 
-            <main className="flex-1 px-6 pb-32">
-                {/* Period Selector */}
-                <div className="flex justify-between items-center bg-zinc-900/40 p-1 rounded-2xl mb-8 border border-zinc-800/50">
-                    {periods.map((p) => (
-                        <button
-                            key={p}
-                            onClick={() => setActivePeriod(p)}
-                            className={`flex-1 py-2 text-[10px] font-bold tracking-widest transition-all ${activePeriod === p
-                                ? 'bg-primary text-black rounded-xl'
-                                : 'text-zinc-500 hover:text-white'
-                                }`}
-                            style={activePeriod === p ? { boxShadow: '0 0 25px rgba(16,185,129,0.4)' } : {}}
-                        >
-                            {p}
-                        </button>
+            <main className="flex-1 overflow-y-auto pb-12">
+                <section className="p-6">
+                    <div className="glow-border rounded-[40px] bg-transparent p-10 flex flex-col items-center relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-primary/5 blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity"></div>
+
+                        <h2 className="text-[9px] font-bold tracking-[0.3em] text-zinc-500 uppercase mb-8 relative z-10">ORÇAMENTO TOTAL</h2>
+
+                        <div className="relative w-56 h-56 flex items-center justify-center z-10">
+                            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" fill="transparent" r="48" stroke="#1A1A1A" strokeWidth="0.5"></circle>
+                                <circle
+                                    className="glow-line transition-all duration-1000"
+                                    cx="50" cy="50" fill="transparent" r="48"
+                                    stroke="#0FB67F"
+                                    strokeDasharray="301.59"
+                                    strokeDashoffset={301.59 - (301.59 * consumptionPercent / 100)}
+                                    strokeLinecap="round"
+                                    strokeWidth="1.5"
+                                ></circle>
+                            </svg>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                                <span className="text-5xl font-display font-extralight text-text-value tracking-tight">
+                                    {consumptionPercent}<span className="text-xl font-light opacity-60">%</span>
+                                </span>
+                                <span className="text-[8px] font-bold text-primary tracking-[0.3em] uppercase mt-2 glow-text">Consumido</span>
+                            </div>
+                        </div>
+
+                        <div className="mt-10 grid grid-cols-2 gap-12 w-full relative z-10">
+                            <div className="text-center">
+                                <p className="text-[8px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-1">Gasto</p>
+                                <p className="text-xl font-light text-text-value tracking-tight">R$ {Math.round(totalSpent).toLocaleString('pt-BR')}</p>
+                            </div>
+                            <div className="text-center">
+                                <p className="text-[8px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-1">Limite</p>
+                                <p className="text-xl font-light text-zinc-400 tracking-tight">R$ {totalLimit.toLocaleString('pt-BR')}</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="px-6 space-y-4">
+                    <h3 className="text-[9px] font-bold tracking-[0.3em] text-zinc-500 uppercase px-2 mb-4">Detalhamento</h3>
+                    {categories.map((cat, i) => (
+                        <div key={i} className="glow-border rounded-3xl bg-transparent p-6 group hover:border-primary/30 transition-all">
+                            <div className="flex items-center gap-5 mb-5">
+                                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/5 group-hover:bg-primary/10 transition-colors">
+                                    <span className="material-symbols-outlined text-primary font-extralight !text-[24px]">{cat.icon}</span>
+                                </div>
+                                <div className="flex-1">
+                                    <div className="flex justify-between items-end">
+                                        <h4 className="text-xs font-medium tracking-wide text-zinc-400">{cat.name}</h4>
+                                        <span className="text-[10px] text-zinc-600 font-medium tracking-wider uppercase">RESTAM R$ {Math.round(cat.remaining)}</span>
+                                    </div>
+                                    <div className="mt-1">
+                                        <span className="text-lg font-light text-text-value">R$ {cat.spent.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="w-full h-[1px] bg-zinc-900 overflow-hidden rounded-full">
+                                <div className="h-full bg-primary glow-line transition-all duration-1000" style={{ width: `${cat.percent}%` }}></div>
+                            </div>
+                        </div>
                     ))}
-                </div>
+                </section>
 
-                {/* Donut Chart */}
-                <div className="relative flex flex-col items-center justify-center py-4 mb-10">
-                    <div className="relative w-64 h-64">
-                        <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                            <circle cx="50" cy="50" fill="transparent" r="40" stroke="#18181b" strokeWidth="8" />
-                            <circle cx="50" cy="50" fill="transparent" r="40" stroke="#3B82F6" strokeDasharray="251.2" strokeDashoffset="62.8" strokeWidth="8" className="transition-all duration-300" />
-                            <circle cx="50" cy="50" fill="transparent" r="40" stroke="#10B981" strokeDasharray="251.2" strokeDashoffset="188.4" strokeWidth="8" className="transition-all duration-300" />
-                            <circle cx="50" cy="50" fill="transparent" r="40" stroke="#A855F7" strokeDasharray="251.2" strokeDashoffset="230" strokeWidth="8" className="transition-all duration-300" />
-                        </svg>
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                            <span className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 uppercase">Total Gasto</span>
-                            <span className="text-2xl font-display font-bold text-white mt-1">R$ 3.450,00</span>
-                            <span className="text-[10px] font-medium text-primary mt-1">+12% vs mês ant.</span>
+                <section className="p-6">
+                    <div className="glow-border rounded-3xl bg-transparent p-6 relative overflow-hidden">
+                        <div className="flex items-start gap-5">
+                            <div className="mt-1">
+                                <span className="material-symbols-outlined text-primary font-light !text-[20px] glow-text animate-pulse">auto_awesome</span>
+                            </div>
+                            <div>
+                                <h3 className="text-[9px] font-bold tracking-[0.3em] text-primary uppercase mb-3 glow-text">IA INSIGHT</h3>
+                                <p className="text-xs text-zinc-400 leading-relaxed font-light">
+                                    <span className="text-text-value font-medium">Análise preditiva:</span> O consumo em <span className="text-text-value">Alimentação</span> está acelerado. Projeção de excedente em 8% caso o padrão se mantenha.
+                                </p>
+                            </div>
                         </div>
                     </div>
-                    <div className="absolute w-40 h-40 bg-primary/10 rounded-full blur-[60px] -z-10"></div>
-                </div>
-
-                {/* Categories */}
-                <div className="mb-10">
-                    <h2 className="text-[10px] uppercase tracking-[0.3em] text-zinc-500 font-bold mb-4 px-2">CATEGORIAS</h2>
-                    <div className="space-y-3">
-                        {categories.map((cat) => (
-                            <div key={cat.name} className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-4 flex items-center justify-between">
-                                <div className="flex items-center space-x-4">
-                                    <div className={`w-2 h-8 ${cat.color} rounded-full`}></div>
-                                    <div>
-                                        <p className="text-sm font-bold text-white">{cat.name}</p>
-                                        <p className="text-[10px] text-zinc-500 font-medium">{cat.sub}</p>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-sm font-bold text-white">{cat.amount}</p>
-                                    <p className={`text-[10px] ${cat.textColor} font-bold`}>{cat.percent}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Monthly Flow */}
-                <div className="mb-10">
-                    <h2 className="text-[10px] uppercase tracking-[0.3em] text-zinc-500 font-bold mb-4 px-2">FLUXO MENSAL</h2>
-                    <div className="bg-zinc-900/60 border border-zinc-800 rounded-3xl p-6">
-                        <div className="flex items-end justify-between h-32 space-x-2">
-                            {monthlyFlow.map((bar) => (
-                                <div key={bar.month} className="flex flex-col items-center flex-1 space-y-2">
-                                    <div
-                                        className={`w-full rounded-t-lg ${bar.active ? 'bg-primary/80' : 'bg-zinc-800'}`}
-                                        style={{
-                                            height: `${bar.height}%`,
-                                            ...(bar.active ? { boxShadow: '0 0 25px rgba(16,185,129,0.4)' } : {}),
-                                        }}
-                                    ></div>
-                                    <span className={`text-[8px] font-bold ${bar.active ? 'text-primary' : 'text-zinc-500'}`}>{bar.month}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Top Expenses */}
-                <div className="mb-12">
-                    <h2 className="text-[10px] uppercase tracking-[0.3em] text-zinc-500 font-bold mb-4 px-2">MAIORES DESPESAS</h2>
-                    <div className="bg-zinc-900/60 border border-zinc-800 rounded-3xl divide-y divide-zinc-800 overflow-hidden">
-                        {topExpenses.map((exp) => (
-                            <div key={exp.name} className="p-4 flex items-center justify-between">
-                                <div className="flex items-center space-x-4">
-                                    <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center">
-                                        <span className="material-symbols-outlined text-white text-lg">{exp.icon}</span>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs font-bold text-white uppercase">{exp.name}</p>
-                                        <p className="text-[10px] text-zinc-500 font-medium">{exp.date}</p>
-                                    </div>
-                                </div>
-                                <span className="text-sm font-bold text-white">{exp.amount}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Footer */}
-                <footer className="mt-8 mb-4 flex flex-col items-center">
-                    <div className="flex items-center space-x-2 opacity-30">
-                        <span className="material-symbols-outlined text-[10px]">auto_awesome</span>
-                        <p className="text-[8px] font-bold tracking-[0.4em] uppercase">
-                            
-                        </p>
-                    </div>
-                </footer>
+                </section>
             </main>
         </div>
     );
