@@ -44,47 +44,50 @@ export default function Login() {
         <div className="w-20 h-20 rounded-full border-2 border-primary flex items-center justify-center mb-6">
           <span className="text-4xl font-bold text-primary font-display">$</span>
         </div>
-        <h1 className="text-center text-xs font-display font-bold tracking-[0.3em] uppercase leading-relaxed max-w-[200px]">
+        <h2 className="text-3xl font-display font-extrabold text-white mb-2 tracking-wide">POUP</h2>
+        <h1 className="text-center text-xs font-display font-bold tracking-[0.3em] uppercase leading-relaxed max-w-[200px] text-zinc-400">
           Gestão Financeira Inteligente
         </h1>
       </div>
+
       <div className="w-full max-w-sm space-y-10">
         <form onSubmit={handleLogin} className="space-y-8">
-          <div className="relative">
-            <label className="block text-[10px] font-bold text-zinc-500 tracking-widest uppercase mb-1">E-mail</label>
-            <input
-              className="w-full bg-transparent border-t-0 border-l-0 border-r-0 border-b border-zinc-800 px-0 py-2 text-sm placeholder:text-zinc-700 focus:border-white transition-colors duration-300 outline-none"
-              placeholder="seu@email.com"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="relative">
-            <label className="block text-[10px] font-bold text-zinc-500 tracking-widest uppercase mb-1">Senha</label>
-            <input
-              className="w-full bg-transparent border-t-0 border-l-0 border-r-0 border-b border-zinc-800 px-0 py-2 text-sm placeholder:text-zinc-700 focus:border-white transition-colors duration-300 outline-none"
-              placeholder="••••••••"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+          <div className="space-y-8">
+            <div className="relative">
+              <label className="block text-[10px] font-bold text-zinc-500 tracking-widest uppercase mb-1">E-mail</label>
+              <input
+                className="w-full bg-transparent border-t-0 border-l-0 border-r-0 border-b border-zinc-800 px-0 py-2 text-sm placeholder:text-zinc-700 focus:border-primary focus:outline-none focus:ring-0 transition-colors duration-300"
+                placeholder="seu@email.com"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="relative">
+              <label className="block text-[10px] font-bold text-zinc-500 tracking-widest uppercase mb-1">Senha</label>
+              <input
+                className="w-full bg-transparent border-t-0 border-l-0 border-r-0 border-b border-zinc-800 px-0 py-2 text-sm placeholder:text-zinc-700 focus:border-primary focus:outline-none focus:ring-0 transition-colors duration-300"
+                placeholder="••••••••"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
           </div>
 
-          {error && <p className="text-red-500 text-[10px] font-bold uppercase tracking-wider">{error}</p>}
+          {error && <p className="text-red-500 text-[10px] font-bold uppercase tracking-wider text-center">{error}</p>}
 
           <div className="space-y-4">
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-white text-black h-14 rounded-full flex items-center justify-center space-x-3 hover:bg-zinc-100 transition-all active:scale-[0.98] duration-300 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] group disabled:opacity-50"
+              className="w-full bg-[#0FB67F] text-black h-14 rounded-full flex items-center justify-center px-8 hover:bg-[#0da06f] transition-colors active:scale-[0.98] duration-200 disabled:opacity-50"
             >
-              <span className="font-display font-bold text-xs tracking-[0.2em] uppercase ml-4">
+              <span className="font-display font-bold text-xs tracking-widest uppercase">
                 {loading ? 'Entrando...' : 'Entrar'}
               </span>
-              <span className="material-symbols-outlined transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
             </button>
             <button
               type="button"
@@ -102,6 +105,7 @@ export default function Login() {
           </div>
         </form>
       </div>
+
       <div className="w-full space-y-12">
         <div className="flex flex-col items-center space-y-4">
           <button className="text-[10px] font-bold text-zinc-500 tracking-widest uppercase hover:text-white transition-colors">
@@ -114,9 +118,9 @@ export default function Login() {
             Criar conta
           </button>
         </div>
-        <footer className="flex items-center justify-center space-x-2 text-zinc-800">
+        <footer className="flex flex-col items-center justify-center space-y-2 text-zinc-800">
           <span className="material-symbols-outlined text-sm">auto_awesome</span>
-          <p className="text-[8px] font-bold tracking-[0.4em] uppercase">
+          <p className="text-[8px] font-bold tracking-[0.4em] uppercase text-zinc-700">
             POWERED BY POUP INTELLIGENCE
           </p>
         </footer>

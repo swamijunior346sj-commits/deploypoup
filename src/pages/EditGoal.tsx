@@ -11,6 +11,7 @@ export default function EditGoal() {
     const [date, setDate] = useState(goal.date);
     const [selectedIcon, setSelectedIcon] = useState('flight_takeoff');
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
 
     const icons = [
         'directions_car',
@@ -137,7 +138,12 @@ export default function EditGoal() {
                         <h2 className="text-sm font-display font-bold text-white tracking-[0.25em] mb-12 text-center uppercase">CONFIRMAR EXCLUSÃO?</h2>
                         <div className="flex justify-center gap-8 mb-4">
                             <button
-                                onClick={() => { setShowDeleteConfirm(false); navigate('/goals'); }}
+                                onClick={() => {
+                                    setShowDeleteConfirm(false);
+                                    setShowDeleteSuccess(true);
+                                    // Navigate away after showing success for a while
+                                    setTimeout(() => navigate('/goals'), 2000);
+                                }}
                                 className="w-16 h-16 rounded-full border border-primary flex items-center justify-center transition-transform active:scale-95 hover:bg-primary/10"
                             >
                                 <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'wght' 500" }}>check</span>
@@ -149,6 +155,21 @@ export default function EditGoal() {
                                 <span className="material-symbols-outlined text-red-500 text-3xl" style={{ fontVariationSettings: "'wght' 500" }}>close</span>
                             </button>
                         </div>
+                    </div>
+                    <div className="mt-12 flex items-center justify-center space-x-2 text-zinc-600">
+                        <span className="material-symbols-outlined text-xs">auto_awesome</span>
+                        <p className="text-[9px] font-semibold tracking-[0.2em] uppercase">POWERED BY POUP INTELLIGENCE</p>
+                    </div>
+                </div>
+            )}
+
+            {/* Success Delete Modal */}
+            {showDeleteSuccess && (
+                <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-[60] flex flex-col items-center justify-center p-8">
+                    <div className="w-full max-w-[320px] bg-[#0A0A0A] border border-primary rounded-[40px] p-10 flex flex-col items-center shadow-[0_0_20px_rgba(15,182,127,0.4),inset_0_0_5px_rgba(15,182,127,0.1)] relative overflow-hidden">
+                        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-primary/20 blur-3xl rounded-full pointer-events-none"></div>
+                        <span className="material-symbols-outlined text-primary text-7xl mb-8 drop-shadow-[0_0_10px_rgba(15,182,127,0.5)]" style={{ fontVariationSettings: '"wght" 400, "FILL" 1' }}>check_circle</span>
+                        <h2 className="text-lg font-display font-bold text-white tracking-[0.1em] mb-2 text-center uppercase leading-snug">EXCLUÍDO COM<br />SUCESSO!</h2>
                     </div>
                     <div className="mt-12 flex items-center justify-center space-x-2 text-zinc-600">
                         <span className="material-symbols-outlined text-xs">auto_awesome</span>

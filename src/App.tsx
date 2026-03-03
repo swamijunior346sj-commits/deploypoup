@@ -25,15 +25,9 @@ import NewTransaction from './pages/NewTransaction';
 import TransactionHistory from './pages/TransactionHistory';
 import TransactionDetails from './pages/TransactionDetails';
 import Goals from './pages/Goals';
+import NewGoal from './pages/NewGoal';
 import AddGoalValue from './pages/AddGoalValue';
 import EditGoal from './pages/EditGoal';
-import Categories from './pages/Categories';
-import EditCategory from './pages/EditCategory';
-import ManageCategories from './pages/ManageCategories';
-import ManageSubCategories from './pages/ManageSubCategories';
-import EditSubCategory from './pages/EditSubCategory';
-import NewCategory from './pages/NewCategory';
-import NewSubCategory from './pages/NewSubCategory';
 import PersonalData from './pages/PersonalData';
 import Onboarding from './pages/Onboarding';
 import Consent from './pages/Consent';
@@ -75,15 +69,9 @@ export default function App() {
             <Route path="/transactions" element={<TransactionHistory />} />
             <Route path="/transaction-details" element={<TransactionDetails />} />
             <Route path="/goals" element={<Goals />} />
+            <Route path="/new-goal" element={<NewGoal />} />
             <Route path="/add-goal-value" element={<AddGoalValue />} />
             <Route path="/edit-goal" element={<EditGoal />} />
-            <Route path="/categories" element={<Categories />} />
-            <Route path="/edit-category" element={<EditCategory />} />
-            <Route path="/manage-categories" element={<ManageCategories />} />
-            <Route path="/manage-subcategories" element={<ManageSubCategories />} />
-            <Route path="/edit-subcategory" element={<EditSubCategory />} />
-            <Route path="/new-category" element={<NewCategory />} />
-            <Route path="/new-subcategory" element={<NewSubCategory />} />
             <Route path="/personal-data" element={<PersonalData />} />
             <Route path="/financial-performance" element={<FinancialPerformance />} />
             <Route path="/investment-portfolio" element={<InvestmentPortfolio />} />

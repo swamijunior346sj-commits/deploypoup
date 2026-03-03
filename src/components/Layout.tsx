@@ -15,6 +15,7 @@ export default function Layout() {
   const navigate = useNavigate();
 
   const isLogin = location.pathname === '/' || location.pathname === '/signup';
+  const isDashboard = location.pathname === '/dashboard';
 
   if (isLogin) {
     return <Outlet />;
@@ -33,29 +34,31 @@ export default function Layout() {
   return (
     <div className="flex flex-col min-h-screen bg-background-dark text-white font-sans overflow-x-hidden">
       {/* Mini Header (fixed at top) */}
-      <header className="fixed top-0 left-0 right-0 z-[55] bg-background-dark/80 backdrop-blur-xl px-6 pt-12 pb-4 flex items-center justify-between">
-        <button
-          onClick={() => navigate('/profile')}
-          className="w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-all bg-white/5 hover:bg-white/10"
-        >
-          <span className="material-symbols-outlined text-white text-xl">person</span>
-        </button>
+      {!isDashboard && (
+        <header className="fixed top-0 left-0 right-0 z-[55] bg-background-dark/80 backdrop-blur-xl px-6 pt-12 pb-4 flex items-center justify-between">
+          <button
+            onClick={() => navigate('/profile')}
+            className="w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-all bg-white/5 hover:bg-white/10"
+          >
+            <span className="material-symbols-outlined text-white text-xl">person</span>
+          </button>
 
-        <h1 className="text-[10px] font-display font-bold tracking-[0.4em] text-white uppercase ml-4">
-          POUP
-        </h1>
+          <h1 className="text-[10px] font-display font-bold tracking-[0.4em] text-white uppercase ml-4">
+            POUP
+          </h1>
 
-        <button
-          onClick={() => navigate('/notifications')}
-          className="w-10 h-10 rounded-full flex items-center justify-center relative active:scale-90 transition-all bg-white/5 hover:bg-white/10"
-        >
-          <div className="absolute top-2.5 right-2.5 w-1.5 h-1.5 rounded-full bg-primary ring-4 ring-background-dark/40"></div>
-          <span className="material-symbols-outlined text-white text-xl">notifications</span>
-        </button>
-      </header>
+          <button
+            onClick={() => navigate('/notifications')}
+            className="w-10 h-10 rounded-full flex items-center justify-center relative active:scale-90 transition-all bg-white/5 hover:bg-white/10"
+          >
+            <div className="absolute top-2.5 right-2.5 w-1.5 h-1.5 rounded-full bg-primary ring-4 ring-background-dark/40"></div>
+            <span className="material-symbols-outlined text-white text-xl">notifications</span>
+          </button>
+        </header>
+      )}
 
       {/* Main Content Area */}
-      <main className="flex-grow pt-[100px] pb-[120px]">
+      <main className={`flex-grow ${isDashboard ? 'pb-[120px]' : 'pt-[100px] pb-[120px]'}`}>
         <Outlet />
         <div className="px-6 mb-8">
           <Footer />
@@ -71,19 +74,18 @@ export default function Layout() {
               <button
                 key={tab.path}
                 onClick={() => navigate(tab.path)}
-                className={`flex flex-col items-center justify-center min-w-[64px] h-12 rounded-[24px] transition-all duration-300 relative group
+                className={`flex flex-col items-center justify-center min-w-[64px] h-14 rounded-[24px] transition-all duration-300 relative group
                   ${active ? 'bg-primary/20 text-primary' : 'text-zinc-500 hover:text-zinc-300'}`}
               >
-                <span className={`material-symbols-outlined transition-all duration-300 ${active ? 'text-2xl filled scale-110' : 'text-xl group-hover:scale-110'}`}>
+                <span className={`material-symbols-outlined transition-all duration-300 ${active ? 'text-xl filled scale-110 mb-0.5' : 'text-lg group-hover:scale-110'}`}>
                   {tab.icon}
+                </span>
+                <span className={`text-[8px] font-black uppercase tracking-widest mt-0.5 transition-all ${active ? 'opacity-100 text-primary' : 'opacity-70 text-zinc-500 group-hover:opacity-100'}`}>
+                  {tab.label}
                 </span>
                 {active && (
                   <div className="absolute -bottom-1 w-1 h-1 bg-primary rounded-full animate-pulse-glow"></div>
                 )}
-                {/* Optional mini label for better accessibility */}
-                {/* <span className={`text-[8px] font-black uppercase tracking-widest mt-0.5 transition-all ${active ? 'opacity-100' : 'opacity-0 scale-50'}`}>
-                  {tab.label}
-                </span> */}
               </button>
             );
           })}
