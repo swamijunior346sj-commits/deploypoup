@@ -171,10 +171,9 @@ export default function NewGoal() {
                     <div className="pt-8">
                         <button
                             type="submit"
-                            disabled={loading}
-                            className={`w-full h-20 rounded-[2.5rem] bg-transparent border-2 border-primary/30 text-primary font-black tracking-[0.5em] text-[11px] uppercase transition-all duration-500 active:scale-95 active:bg-primary/10 shadow-[0_0_50px_rgba(15,182,127,0.1)] group relative overflow-hidden ${loading ? 'opacity-50' : 'hover:border-primary/80'}`}
+                            disabled={loading || !title || !targetAmount}
+                            className={`w-full h-18 rounded-[2.5rem] bg-white text-black font-black tracking-[0.5em] text-[11px] uppercase transition-all duration-500 active:scale-95 shadow-[0_20px_50px_rgba(255,255,255,0.1)] relative overflow-hidden group ${loading || !title || !targetAmount ? 'opacity-50' : 'hover:bg-primary hover:text-black hover:shadow-[0_20px_50px_rgba(15,182,127,0.2)]'}`}
                         >
-                            <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                             {loading ? 'Delineando...' : 'Formalizar Meta'}
                         </button>
                         <p className="text-[9px] text-zinc-700 font-bold uppercase tracking-[0.2em] text-center mt-6 italic opacity-60">"O primeiro passo para o sucesso é a visualização."</p>

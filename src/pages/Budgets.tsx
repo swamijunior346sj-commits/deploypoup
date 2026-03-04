@@ -117,22 +117,12 @@ export default function Budgets() {
                     })}
                 </div>
 
-                <style>{`
-                    @keyframes levitate {
-                        0% { transform: translateY(0px); }
-                        50% { transform: translateY(-10px); }
-                        100% { transform: translateY(0px); }
-                    }
-                    .levitate-btn {
-                        animation: levitate 3s ease-in-out infinite;
-                    }
-                `}</style>
-                <div className="fixed bottom-24 right-6 z-[150] levitate-btn">
+                <div className="fixed bottom-10 right-10 z-[150]">
                     <button
                         onClick={() => navigate('/new-budget')}
-                        className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-[0_20px_40px_rgba(15,182,127,0.4)] active:scale-90 transition-all group"
+                        className="w-16 h-16 rounded-[2rem] bg-primary flex items-center justify-center shadow-[0_15px_30px_rgba(15,182,127,0.3)] active:scale-90 transition-all group"
                     >
-                        <span className="material-symbols-outlined text-black font-black text-3xl group-hover:scale-110 transition-transform">add</span>
+                        <span className="material-symbols-outlined text-black font-black text-3xl group-hover:rotate-90 transition-transform">add</span>
                     </button>
                 </div>
 
@@ -175,16 +165,16 @@ export default function Budgets() {
                             </div>
                         </div>
 
-                        <div className="flex flex-col gap-3">
+                        <div className="flex flex-col gap-4">
                             <button
                                 onClick={() => { setAlertBudget(null); navigate('/edit-budget', { state: { budget: budgets.find(b => b.name === alertBudget.name) } }); }}
-                                className="w-full bg-primary hover:bg-primary/90 text-black font-display font-bold text-xs py-5 rounded-2xl transition-all active:scale-95 tracking-[0.1em]"
+                                className="w-full h-16 rounded-2xl bg-white text-black font-black text-[11px] tracking-[0.3em] uppercase transition-all duration-500 active:scale-95 shadow-[0_20px_50px_rgba(255,255,255,0.1)] hover:bg-primary hover:text-black hover:shadow-[0_20px_50px_rgba(15,182,127,0.2)]"
                             >
                                 AJUSTAR PLANEJAMENTO
                             </button>
                             <button
                                 onClick={() => setAlertBudget(null)}
-                                className="w-full bg-transparent border border-zinc-800 hover:bg-zinc-800/30 text-[#D6D6D6] font-display font-bold text-[10px] py-4 rounded-2xl transition-all active:scale-95 tracking-[0.2em]"
+                                className="w-full h-16 rounded-2xl bg-zinc-950/50 border border-white/5 text-zinc-500 font-bold text-[10px] tracking-[0.2em] uppercase transition-all hover:text-white"
                             >
                                 FECHAR
                             </button>

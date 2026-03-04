@@ -49,108 +49,116 @@ export default function Signup() {
     };
 
     return (
-        <div className={`bg-background-dark font-display antialiased text-text-value-pure min-h-screen ${showSuccess ? 'overflow-hidden' : ''}`}>
-            <div className={`relative flex h-auto min-h-screen w-full max-w-[430px] mx-auto flex-col bg-background-dark p-6 ${showSuccess ? 'blur-sm pointer-events-none' : ''}`}>
+        <div className={`bg-black font-sans antialiased text-white min-h-screen relative overflow-hidden selection:bg-primary/30 ${showSuccess ? 'overflow-hidden' : ''}`}>
+            {/* ── Background Aura ── */}
+            <div className="fixed top-[-10%] right-[-10%] w-[60%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none z-0 rotate-12"></div>
+            <div className="fixed bottom-[-10%] left-[-10%] w-[50%] h-[30%] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none z-0 -rotate-12"></div>
+
+            <div className={`relative flex h-auto min-h-screen w-full max-w-[430px] mx-auto flex-col p-6 z-10 ${showSuccess ? 'blur-sm pointer-events-none' : ''}`}>
 
                 {/* Header Section */}
                 <div className="flex items-center justify-between mb-8">
                     <button
                         onClick={() => navigate(-1)}
-                        className="text-text-value-pure hover:opacity-80 transition-opacity p-2 -ml-2"
+                        className="text-white hover:text-primary transition-colors p-2 -ml-2"
                     >
                         <span className="material-symbols-outlined text-2xl">arrow_back</span>
                     </button>
-                    <h1 className="text-xl font-bold flex-1 text-center pr-6">Crie sua Conta</h1>
+                    <h1 className="text-[10px] font-black tracking-[0.5em] uppercase text-zinc-600 flex-1 text-center pr-6">Integração Inicial</h1>
                 </div>
 
                 {/* Hero Section */}
-                <div className="mb-10">
-                    <h2 className="text-3xl font-extrabold leading-tight mb-3">Comece sua jornada para a liberdade financeira.</h2>
-                    <p className="text-text-label text-sm font-medium">Cadastre-se para acessar recursos premium do Gestão Financeira Inteligente.</p>
+                <div className="mb-10 pt-4">
+                    <h2 className="text-4xl font-display font-black leading-tight mb-4 tracking-tighter uppercase italic premium-text-glow">Inicie seu<br /><span className="text-primary italic">Legado.</span></h2>
+                    <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-[0.3em] leading-relaxed max-w-[280px]">Conecte-se ao ecossistema financeiro de elite e assuma o controle.</p>
                 </div>
 
                 {/* Form Section */}
-                <form onSubmit={handleSignup} className="flex flex-col gap-8">
-                    {/* Nome Input */}
-                    <div className="custom-input flex flex-col gap-1 border-b border-neutral-border transition-colors duration-300 focus-within:border-primary">
-                        <label className="text-xs font-semibold tracking-wider text-text-label uppercase">Nome Completo</label>
-                        <input
-                            className="bg-transparent border-none px-0 py-3 text-text-value-pure placeholder:text-text-label/40 focus:ring-0 text-base"
-                            placeholder="Como deseja ser chamado?"
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    {/* E-mail Input */}
-                    <div className="custom-input flex flex-col gap-1 border-b border-neutral-border transition-colors duration-300 focus-within:border-primary">
-                        <label className="text-xs font-semibold tracking-wider text-text-label uppercase">E-mail</label>
-                        <input
-                            className="bg-transparent border-none px-0 py-3 text-text-value-pure placeholder:text-text-label/40 focus:ring-0 text-base"
-                            placeholder="seu@email.com"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    {/* Senha Input */}
-                    <div className="custom-input flex flex-col gap-1 border-b border-neutral-border transition-colors duration-300 relative focus-within:border-primary">
-                        <label className="text-xs font-semibold tracking-wider text-text-label uppercase">Senha</label>
-                        <input
-                            className="bg-transparent border-none px-0 py-3 text-text-value-pure placeholder:text-text-label/40 focus:ring-0 text-base pr-10"
-                            placeholder="Mínimo 8 caracteres"
-                            type={showPassword ? 'text' : 'password'}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                        <span
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="material-symbols-outlined absolute right-0 bottom-3 text-text-label/60 cursor-pointer hover:text-text-value-pure transition-colors"
-                        >
-                            {showPassword ? 'visibility_off' : 'visibility'}
-                        </span>
-                    </div>
-
-                    {/* Terms Checkbox */}
-                    <div className="flex items-center gap-3 mt-2">
-                        <label className="relative flex items-center cursor-pointer">
+                <form onSubmit={handleSignup} className="flex flex-col gap-10">
+                    <div className="transparent-card-border bg-zinc-950/20 p-8 rounded-[2.5rem] border border-white/5 space-y-10">
+                        {/* Nome Input */}
+                        <div className="flex flex-col gap-4">
+                            <label className="text-[9px] font-black tracking-[0.4em] text-zinc-600 uppercase px-1">Designação</label>
                             <input
-                                className="peer h-5 w-5 cursor-pointer appearance-none rounded border-2 border-neutral-border bg-transparent checked:bg-primary checked:border-primary transition-all"
-                                type="checkbox"
-                                checked={termsAccepted}
-                                onChange={(e) => setTermsAccepted(e.target.checked)}
+                                className="bg-transparent border-none border-b border-white/5 px-1 pb-4 text-[15px] font-bold placeholder:text-zinc-900 focus:ring-0 text-white focus:border-primary transition-colors"
+                                placeholder="Seu Nome Completo"
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                required
                             />
-                            <span className="material-symbols-outlined absolute text-black font-bold scale-0 peer-checked:scale-100 transition-transform left-1/2 -ml-[8px] text-base">check</span>
-                        </label>
-                        <p className="text-sm text-text-label">Aceito os <span className="text-primary hover:underline cursor-pointer">Termos de Uso</span> e Política de Privacidade</p>
+                        </div>
+
+                        {/* E-mail Input */}
+                        <div className="flex flex-col gap-4">
+                            <label className="text-[9px] font-black tracking-[0.4em] text-zinc-600 uppercase px-1">Criptografia de E-mail</label>
+                            <input
+                                className="bg-transparent border-none border-b border-white/5 px-1 pb-4 text-[15px] font-bold placeholder:text-zinc-900 focus:ring-0 text-white focus:border-primary transition-colors"
+                                placeholder="seu@ecossistema.com"
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        {/* Senha Input */}
+                        <div className="flex flex-col gap-4 relative">
+                            <label className="text-[9px] font-black tracking-[0.4em] text-zinc-600 uppercase px-1">Chave de Segurança</label>
+                            <div className="relative">
+                                <input
+                                    className="w-full bg-transparent border-none border-b border-white/5 px-1 pb-4 text-[15px] font-bold placeholder:text-zinc-900 focus:ring-0 text-white focus:border-primary transition-colors pr-10"
+                                    placeholder="••••••••"
+                                    type={showPassword ? 'text' : 'password'}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                                <span
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="material-symbols-outlined absolute right-0 bottom-4 text-zinc-700 cursor-pointer hover:text-white transition-colors"
+                                >
+                                    {showPassword ? 'visibility_off' : 'visibility'}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Terms Checkbox */}
+                        <div className="flex items-center gap-4 px-1">
+                            <label className="relative flex items-center cursor-pointer">
+                                <input
+                                    className="peer h-6 w-6 cursor-pointer appearance-none rounded-xl border border-white/10 bg-zinc-900 checked:bg-primary checked:border-primary transition-all"
+                                    type="checkbox"
+                                    checked={termsAccepted}
+                                    onChange={(e) => setTermsAccepted(e.target.checked)}
+                                />
+                                <span className="material-symbols-outlined absolute text-black font-black scale-0 peer-checked:scale-100 transition-transform left-1/2 -ml-[10px] text-lg">check</span>
+                            </label>
+                            <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest leading-relaxed">Aceito os <span className="text-primary hover:underline cursor-pointer">Termos de Uso</span> de elite</p>
+                        </div>
                     </div>
 
-                    {error && <p className="text-red-500 text-xs font-bold uppercase tracking-wider">{error}</p>}
+                    {error && <p className="text-red-500 text-[10px] font-black uppercase tracking-[0.3em] text-center bg-red-500/10 py-3 rounded-xl border border-red-500/20">{error}</p>}
 
                     {/* Action Buttons */}
-                    <div className="flex flex-col gap-4 mt-4">
+                    <div className="flex flex-col gap-6">
                         <button
-                            className="w-full bg-primary hover:bg-primary/90 text-black font-extrabold py-4 rounded-xl transition-all uppercase tracking-wide active:scale-[0.98] disabled:opacity-50"
+                            className={`w-full h-18 rounded-[2.5rem] bg-white text-black font-black tracking-[0.5em] text-[11px] uppercase transition-all duration-500 active:scale-95 shadow-[0_20px_50px_rgba(255,255,255,0.1)] relative overflow-hidden group ${loading ? 'opacity-50' : 'hover:bg-primary hover:text-black hover:shadow-[0_20px_50px_rgba(15,182,127,0.2)]'}`}
                             type="submit"
                             disabled={loading}
                         >
-                            {loading ? 'Criando...' : 'Criar Conta'}
+                            {loading ? 'Operacionalizando...' : 'Concluir Integração'}
                         </button>
 
-                        <div className="flex items-center gap-4 my-4">
-                            <div className="h-[1px] flex-1 bg-neutral-border"></div>
-                            <span className="text-xs text-slate-500 font-bold uppercase tracking-widest">ou</span>
-                            <div className="h-[1px] flex-1 bg-neutral-border"></div>
+                        <div className="flex items-center gap-6 my-2 px-8">
+                            <div className="h-[1px] flex-1 bg-white/5"></div>
+                            <span className="text-[8px] text-zinc-700 font-black uppercase tracking-[0.5em]">OR</span>
+                            <div className="h-[1px] flex-1 bg-white/5"></div>
                         </div>
 
                         <button
                             onClick={handleGoogleSignup}
-                            className="w-full bg-neutral-dark border border-neutral-border hover:bg-white-pure/5 text-text-value-pure font-bold py-4 rounded-xl flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
+                            className="w-full h-18 rounded-[2.5rem] bg-zinc-950/50 border border-white/5 text-white font-black tracking-[0.5em] text-[11px] uppercase transition-all duration-500 active:scale-95 flex items-center justify-center gap-4 shadow-2xl hover:bg-white/5 backdrop-blur-xl"
                             type="button"
                         >
                             <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -159,27 +167,23 @@ export default function Signup() {
                                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"></path>
                                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
                             </svg>
-                            Cadastrar com Google
+                            Continuar com Google
                         </button>
                     </div>
                 </form>
 
-                {/* Footer Footer */}
+                {/* Footer Section */}
                 <div className="mt-auto pt-10 pb-4 text-center">
-                    <p className="text-neutral-text text-sm">
-                        Já tem uma conta?
+                    <p className="text-zinc-600 text-[10px] font-bold uppercase tracking-[0.3em] leading-relaxed">
+                        Já possui credenciais?
                         <span
                             onClick={() => navigate('/login')}
-                            className="text-primary font-bold hover:underline transition-all cursor-pointer ml-1"
+                            className="text-primary font-black hover:underline transition-all cursor-pointer ml-2"
                         >
-                            Entrar
+                            Acessar Terminal
                         </span>
                     </p>
                 </div>
-
-                {/* Decorative Elements */}
-                <div className="fixed top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
-                <div className="fixed bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
             </div>
 
             {/* Success Popup Modal */}

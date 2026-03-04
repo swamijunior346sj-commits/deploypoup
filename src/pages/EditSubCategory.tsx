@@ -91,17 +91,17 @@ export default function EditSubCategory() {
                     </div>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-6">
                     <button
                         onClick={handleSave}
                         disabled={loading}
-                        className="w-full h-16 rounded-[2rem] bg-primary text-black font-display font-black tracking-[0.4em] uppercase text-[11px] shadow-[0_20px_40px_rgba(15,182,127,0.2)] hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-3"
+                        className={`w-full h-18 rounded-[2.5rem] bg-white text-black font-black tracking-[0.5em] text-[11px] uppercase transition-all duration-500 active:scale-95 shadow-[0_20px_50px_rgba(255,255,255,0.1)] relative overflow-hidden group ${loading ? 'opacity-50' : 'hover:bg-primary hover:text-black hover:shadow-[0_20px_50px_rgba(15,182,127,0.2)]'}`}
                     >
-                        {loading ? 'Processando...' : 'Atualizar Subcategoria'}
+                        {loading ? 'Operacionalizando...' : 'Atualizar Subcategoria'}
                     </button>
                     <button
                         onClick={() => setShowDeleteModal(true)}
-                        className="w-full h-16 rounded-[2rem] bg-transparent border border-red-500/20 text-red-500 font-display font-black tracking-[0.4em] uppercase text-[11px] hover:bg-red-500/5 active:scale-[0.98] transition-all"
+                        className="w-full h-18 rounded-[2.5rem] bg-zinc-950/50 border border-red-500/20 text-red-500 font-black tracking-[0.5em] text-[11px] uppercase transition-all duration-500 active:scale-95 hover:bg-red-500/5 shadow-2xl"
                     >
                         Excluir Subcategoria
                     </button>

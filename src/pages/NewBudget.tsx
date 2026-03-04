@@ -162,7 +162,7 @@ export default function NewBudget() {
                 <div className="max-w-lg mx-auto pointer-events-auto">
                     <button
                         onClick={handleSave}
-                        className="w-full py-4 rounded-full border border-primary bg-black/80 backdrop-blur-xl text-white font-bold text-sm tracking-[0.2em] uppercase hover:bg-primary/10 transition-all active:scale-[0.98] shadow-[0_15px_30px_rgba(0,0,0,0.5)]"
+                        className="w-full h-18 rounded-[2.5rem] bg-white text-black font-black tracking-[0.5em] text-[11px] uppercase transition-all duration-500 active:scale-95 shadow-[0_20px_50px_rgba(255,255,255,0.1)] relative overflow-hidden group hover:bg-primary hover:text-black hover:shadow-[0_20px_50px_rgba(15,182,127,0.2)]"
                     >
                         Criar Orçamento
                     </button>

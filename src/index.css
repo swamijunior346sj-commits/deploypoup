@@ -45,6 +45,8 @@
   --animate-pulse-glow: pulse-glow-v2 2s ease-in-out infinite;
   --animate-progress: progress-animation 2s ease-out forwards;
   --animate-shimmer-path: shimmer-path 3s infinite linear;
+  --animate-shimmer: shimmer 2s infinite linear;
+  --animate-shimmer-fast: shimmer 1s infinite linear;
   --animate-rotate-glow: rotate-glow 4s linear infinite;
   --animate-aura-breathe: aura-breathe 3s ease-in-out infinite;
   --animate-breathing: breathing 3s ease-in-out infinite;
@@ -519,6 +521,20 @@
     50% {
       transform: translateY(-10px) scale(1.15);
     }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .bg-gradient-conic {
+    background-image: conic-gradient(var(--tw-gradient-stops));
   }
 }
 

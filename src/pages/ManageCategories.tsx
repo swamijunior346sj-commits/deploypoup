@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import { useData } from '../contexts/DataContext';
 import { supabase } from '../lib/supabase';
 import ActionPopup from '../components/ActionPopup';
+import { motion, AnimatePresence } from 'motion/react';
 
 export default function ManageCategories() {
     const navigate = useNavigate();
@@ -174,52 +175,61 @@ export default function ManageCategories() {
             </main>
 
             {/* ── Cockpit FAB Menu ── */}
-            <div className="fixed bottom-28 right-6 z-[300] flex flex-col items-end gap-4">
-                {showCockpit && (
-                    <div className="flex flex-col gap-3 mb-2 animate-in fade-in slide-in-from-bottom-10 duration-500">
-                        <button
-                            onClick={() => {
-                                setShowCockpit(false);
-                                navigate('/new-category');
-                            }}
-                            className="bg-zinc-900 border border-white/10 px-5 py-4 rounded-2xl flex items-center gap-4 shadow-2xl active:scale-90 transition-all hover:bg-zinc-800"
+            <div className={`fixed bottom-32 right-6 z-[300] flex flex-col items-end gap-4 transition-all duration-500 ${showCockpit ? 'translate-y-[-10px]' : ''}`}>
+                <AnimatePresence>
+                    {showCockpit && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="flex flex-col gap-3 mb-2"
                         >
-                            <span className="text-[10px] font-black text-white uppercase tracking-widest">Nova Categoria</span>
-                            <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
-                                <span className="material-symbols-outlined text-primary text-xl">category</span>
-                            </div>
-                        </button>
-                        <button
-                            onClick={() => {
-                                setShowCockpit(false);
-                                navigate('/new-subcategory');
-                            }}
-                            className="bg-zinc-900 border border-white/10 px-5 py-4 rounded-2xl flex items-center gap-4 shadow-2xl active:scale-90 transition-all hover:bg-zinc-800"
-                        >
-                            <span className="text-[10px] font-black text-white uppercase tracking-widest">Nova Subcategoria</span>
-                            <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
-                                <span className="material-symbols-outlined text-primary text-xl">folder_zip</span>
-                            </div>
-                        </button>
-                    </div>
-                )}
+                            <motion.button
+                                whileTap={{ scale: 0.9 }}
+                                onClick={() => { setShowCockpit(false); navigate('/new-category'); }}
+                                className="bg-white text-black px-6 py-4 rounded-[1.8rem] flex items-center gap-4 shadow-2xl active:scale-95 transition-all hover:bg-primary"
+                            >
+                                <span className="text-[10px] font-black uppercase tracking-widest italic flex-grow">Nova Categoria</span>
+                                <div className="w-10 h-10 rounded-xl bg-black/5 flex items-center justify-center border border-black/10">
+                                    <span className="material-symbols-outlined text-black text-xl">category</span>
+                                </div>
+                            </motion.button>
+                            <motion.button
+                                whileTap={{ scale: 0.9 }}
+                                onClick={() => { setShowCockpit(false); navigate('/new-subcategory'); }}
+                                className="bg-white text-black px-6 py-4 rounded-[1.8rem] flex items-center gap-4 shadow-2xl active:scale-95 transition-all hover:bg-primary"
+                            >
+                                <span className="text-[10px] font-black uppercase tracking-widest italic flex-grow">Nova Subcategoria</span>
+                                <div className="w-10 h-10 rounded-xl bg-black/5 flex items-center justify-center border border-black/10">
+                                    <span className="material-symbols-outlined text-black text-xl">folder_zip</span>
+                                </div>
+                            </motion.button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
-                <button
+                <motion.button
+                    whileTap={{ scale: 0.9 }}
                     onClick={() => setShowCockpit(!showCockpit)}
-                    className={`w-16 h-16 rounded-3xl flex items-center justify-center shadow-[0_20px_50px_rgba(15,182,127,0.3)] transition-all duration-500 active:scale-90 group ${showCockpit ? 'bg-zinc-800 rotate-45' : 'bg-primary'}`}
+                    className={`w-16 h-16 rounded-[2rem] flex items-center justify-center shadow-[0_20px_50px_rgba(15,182,127,0.3)] transition-all duration-500 ${showCockpit ? 'bg-zinc-800 rotate-45' : 'bg-primary'}`}
                 >
                     <span className={`material-symbols-outlined text-3xl font-black transition-colors ${showCockpit ? 'text-primary' : 'text-black'}`}>
                         add
                     </span>
-                </button>
+                </motion.button>
             </div>
 
-            {showCockpit && (
-                <div
-                    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[1900] animate-in fade-in duration-300"
-                    onClick={() => setShowCockpit(false)}
-                ></div>
-            )}
+            <AnimatePresence>
+                {showCockpit && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/40 backdrop-blur-md z-[250]"
+                        onClick={() => setShowCockpit(false)}
+                    />
+                )}
+            </AnimatePresence>
 
             <ActionPopup
                 isOpen={showDeleteConfirm}

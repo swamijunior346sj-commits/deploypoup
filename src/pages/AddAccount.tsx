@@ -112,13 +112,13 @@ export default function AddAccount() {
             </div>
           </div>
 
-          <div className="pt-8">
+          <div className="pt-8 px-4">
             <button
               onClick={handleSave}
               disabled={loading || !balance}
-              className="w-full bg-transparent border border-primary text-primary py-5 rounded-2xl font-bold text-xs tracking-[0.2em] uppercase active:scale-[0.98] transition-all disabled:opacity-50"
+              className={`w-full h-18 rounded-[2.5rem] bg-white text-black font-black tracking-[0.5em] text-[11px] uppercase transition-all duration-500 active:scale-95 shadow-[0_20px_50px_rgba(255,255,255,0.1)] relative overflow-hidden group ${loading || !balance ? 'opacity-50' : 'hover:bg-primary hover:text-black hover:shadow-[0_20px_50px_rgba(15,182,127,0.2)]'}`}
             >
-              {loading ? 'Salvando...' : 'SALVAR CONTA'}
+              {loading ? 'Operacionalizando...' : 'SALVAR CONTA'}
             </button>
           </div>
         </section>

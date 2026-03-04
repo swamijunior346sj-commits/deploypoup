@@ -180,14 +180,14 @@ export default function EditGoal() {
                 </main>
 
                 {/* Fixed Action Button */}
-                <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black to-transparent z-[90]">
+                <div className="fixed bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black via-black to-transparent z-[90]">
                     <div className="max-w-lg mx-auto">
                         <button
                             onClick={handleSave}
                             disabled={loading || !name}
-                            className="w-full py-5 font-black rounded-2xl text-sm uppercase tracking-[0.2em] bg-primary text-black shadow-[0_20px_40px_rgba(15,182,127,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:grayscale"
+                            className={`w-full h-18 rounded-[2.5rem] bg-white text-black font-black tracking-[0.5em] text-[11px] uppercase transition-all duration-500 active:scale-95 shadow-[0_20px_50px_rgba(255,255,255,0.1)] relative overflow-hidden group ${loading || !name ? 'opacity-50' : 'hover:bg-primary hover:text-black hover:shadow-[0_20px_50px_rgba(15,182,127,0.2)]'}`}
                         >
-                            {loading ? 'Salvando...' : 'Confirmar Alterações'}
+                            {loading ? 'Delineando...' : 'Confirmar Alterações'}
                         </button>
                     </div>
                 </div>
@@ -205,18 +205,20 @@ export default function EditGoal() {
                                 Esta ação não pode ser desfeita. Todo o progresso acumulado será perdido permanentemente.
                             </p>
                             <div className="flex flex-col gap-3">
-                                <button
-                                    onClick={handleDelete}
-                                    className="w-full py-5 rounded-2xl font-bold text-xs tracking-[0.2em] uppercase bg-red-500 text-white hover:bg-red-600 transition-all shadow-[0_10px_20px_rgba(239,68,68,0.2)]"
-                                >
-                                    Excluir Agora
-                                </button>
-                                <button
-                                    onClick={() => setShowDeleteConfirm(false)}
-                                    className="w-full py-5 rounded-2xl font-bold text-xs tracking-[0.2em] uppercase text-zinc-500 hover:text-white transition-all"
-                                >
-                                    Manter Meta
-                                </button>
+                                <div className="flex flex-col gap-4">
+                                    <button
+                                        onClick={handleDelete}
+                                        className="w-full h-16 rounded-2xl bg-white text-black font-black text-[11px] tracking-[0.3em] uppercase transition-all duration-500 active:scale-95 shadow-[0_20px_50px_rgba(255,255,255,0.1)] hover:bg-red-500 hover:text-black hover:shadow-[0_20px_50px_rgba(239,68,68,0.2)]"
+                                    >
+                                        Excluir Agora
+                                    </button>
+                                    <button
+                                        onClick={() => setShowDeleteConfirm(false)}
+                                        className="w-full h-16 rounded-2xl bg-zinc-950/50 border border-white/5 text-zinc-500 font-bold text-[10px] tracking-[0.2em] uppercase transition-all hover:text-white"
+                                    >
+                                        Manter Meta
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

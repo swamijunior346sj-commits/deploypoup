@@ -241,15 +241,14 @@ export default function EditTransaction() {
                     </div>
                 </div>
 
-                {/* Submmit Section */}
+                {/* Submit Section */}
                 <div className="pt-4 pb-12">
                     <button
                         type="submit"
                         disabled={loading}
-                        className={`w-full h-18 rounded-[2.2rem] bg-transparent border-2 border-primary text-primary font-black tracking-[0.4em] text-[11px] uppercase transition-all duration-500 active:scale-95 active:bg-primary/5 shadow-[0_0_40px_rgba(15,182,127,0.1)] relative overflow-hidden group ${loading ? 'opacity-50' : ''}`}
+                        className={`w-full h-18 rounded-[2.2rem] bg-white text-black font-black tracking-[0.4em] text-[11px] uppercase transition-all duration-500 active:scale-95 shadow-[0_20px_40px_rgba(255,255,255,0.1)] relative overflow-hidden group ${loading ? 'opacity-50' : 'hover:bg-primary hover:shadow-[0_20px_40px_rgba(15,182,127,0.2)]'}`}
                     >
                         {loading ? 'Sincronizando...' : 'Recalibrar Registro'}
-                        <div className="absolute inset-x-0 bottom-0 h-[2px] bg-primary/20 scale-x-0 group-hover:scale-x-100 transition-transform origin-center"></div>
                     </button>
                 </div>
             </form>

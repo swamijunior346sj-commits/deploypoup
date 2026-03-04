@@ -136,332 +136,267 @@ export default function TransactionHistory() {
     }
 
     return (
-        <div className="bg-background-dark text-text-main font-sans flex flex-col min-h-screen selection:bg-primary/30 relative overflow-hidden">
-            <style>{`
-                @keyframes levitate {
-                    0% { transform: translateY(0px); }
-                    50% { transform: translateY(-10px); }
-                    100% { transform: translateY(0px); }
-                }
-                .levitate-btn { animation: levitate 3s ease-in-out infinite; }
-                @keyframes shimmer {
-                    0% { background-position: -200% 0; }
-                    100% { background-position: 200% 0; }
-                }
-                .shimmer-line {
-                    background: linear-gradient(90deg, transparent 25%, rgba(15,182,127,0.15) 50%, transparent 75%);
-                    background-size: 200% 100%;
-                    animation: shimmer 3s ease-in-out infinite;
-                }
-                @keyframes pulse-glow {
-                    0%, 100% { box-shadow: 0 0 8px rgba(15,182,127,0.1); }
-                    50% { box-shadow: 0 0 20px rgba(15,182,127,0.2); }
-                }
-                .pulse-card { animation: pulse-glow 3s ease-in-out infinite; }
-            `}</style>
+        <div className="bg-black text-white font-sans flex flex-col min-h-screen selection:bg-primary/30 relative overflow-hidden">
+            {/* ── Background Aura ── */}
+            <div className="absolute top-0 right-[-10%] w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
+            <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none"></div>
 
             {/* ── Analyzing Overlay ── */}
-            {isAnalyzing && (
-                <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex flex-col items-center justify-center animate-fade-in">
-                    <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_20px_#0FB67F] animate-scan z-50"></div>
-                    <div className="relative w-48 h-48 mb-10">
-                        <div className="absolute inset-0 border-[1px] border-primary/20 rounded-full"></div>
-                        <div className="absolute inset-0 border-[3px] border-primary border-t-transparent rounded-full animate-spin"></div>
-                        <div className="absolute inset-4 border-[1px] border-primary/40 border-b-transparent rounded-full animate-spin-slow"></div>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="material-symbols-outlined text-primary text-5xl animate-pulse">auto_awesome</span>
-                        </div>
-                    </div>
-                    <div className="text-center space-y-4">
-                        <h2 className="text-2xl font-display font-light text-text-value tracking-[0.2em] uppercase">Analisando Padrões</h2>
-                        <div className="flex flex-col items-center gap-2">
-                            <p className="text-[10px] text-primary font-bold tracking-[0.4em] uppercase opacity-70">Processamento Neural em curso</p>
-                            <div className="w-48 h-[1px] bg-zinc-800 relative overflow-hidden rounded-full">
-                                <div className="absolute inset-0 bg-primary animate-progress shadow-[0_0_10px_#0FB67F]"></div>
+            <AnimatePresence>
+                {isAnalyzing && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-3xl flex flex-col items-center justify-center p-8"
+                    >
+                        <motion.div
+                            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
+                            transition={{ duration: 3, repeat: Infinity }}
+                            className="absolute inset-0 bg-gradient-conic from-primary/10 via-transparent to-blue-500/10 blur-3xl"
+                        />
+                        <div className="relative w-64 h-64 mb-12">
+                            <div className="absolute inset-0 border border-white/5 rounded-full"></div>
+                            <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                                className="absolute inset-0 border-t-2 border-primary rounded-full shadow-[0_0_20px_#0FB67F]"
+                            />
+                            <motion.div
+                                animate={{ rotate: -360 }}
+                                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                                className="absolute inset-4 border-2 border-primary/20 border-b-transparent rounded-full"
+                            />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <motion.span
+                                    animate={{ scale: [1, 1.1, 1], opacity: [0.6, 1, 0.6] }}
+                                    transition={{ duration: 2, repeat: Infinity }}
+                                    className="material-symbols-outlined text- primary text-6xl"
+                                >
+                                    query_stats
+                                </motion.span>
                             </div>
                         </div>
-                    </div>
-                </div>
-            )}
-
-            {/* ── Wallet Summary Popup ── */}
-            {showWallet && (
-                <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6">
-                    <div className="absolute inset-0 backdrop-blur-premium transition-opacity duration-300" onClick={() => setShowWallet(false)}></div>
-                    <div className="relative w-full max-w-sm transparent-card-border rounded-[2.5rem] p-8 popup-anim">
-                        <div className="flex flex-col items-center text-center">
-                            <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-5">
-                                <span className="material-symbols-outlined text-primary text-[30px]">account_balance_wallet</span>
+                        <div className="text-center space-y-6 relative z-10 w-full max-w-xs">
+                            <h2 className="text-2xl font-black italic tracking-tighter uppercase text-white premium-text-glow">IA Neural Audit</h2>
+                            <p className="text-[10px] text-zinc-500 font-bold tracking-[0.4em] uppercase">Sincronização com ecossistema em curso</p>
+                            <div className="w-full h-[2px] bg-zinc-900 rounded-full overflow-hidden">
+                                <motion.div
+                                    initial={{ width: 0 }}
+                                    animate={{ width: "100%" }}
+                                    transition={{ duration: 3, ease: "easeInOut" }}
+                                    className="h-full bg-primary shadow-[0_0_10px_#0FB67F]"
+                                />
                             </div>
-                            <h3 className="text-lg font-bold text-white mb-1">Resumo da Carteira</h3>
-                            <p className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest mb-6">Visão geral do seu patrimônio</p>
-
-                            <div className="w-full space-y-4 mb-6">
-                                {/* Balance */}
-                                <div className="text-center py-4 border-b border-white/5">
-                                    <p className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-1">Saldo Geral</p>
-                                    <p className={`text-3xl font-display font-bold tracking-tight ${walletData.balance >= 0 ? 'text-primary' : 'text-red-500'}`}>
-                                        R$ {fmt(walletData.balance)}
-                                    </p>
-                                </div>
-
-                                {/* Month summary */}
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div className="border border-white/5 rounded-xl p-3 text-left">
-                                        <p className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-1">Receita do mês</p>
-                                        <p className="text-sm font-bold text-primary">+R$ {fmt(walletData.monthIncome)}</p>
-                                    </div>
-                                    <div className="border border-white/5 rounded-xl p-3 text-left">
-                                        <p className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-1">Gasto do mês</p>
-                                        <p className="text-sm font-bold text-red-400">-R$ {fmt(walletData.monthExpenses)}</p>
-                                    </div>
-                                </div>
-
-                                {/* Lifetime totals */}
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div className="border border-white/5 rounded-xl p-3 text-left">
-                                        <p className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-1">Total Receitas</p>
-                                        <p className="text-sm font-bold text-white">R$ {fmt(walletData.allIncome)}</p>
-                                    </div>
-                                    <div className="border border-white/5 rounded-xl p-3 text-left">
-                                        <p className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-1">Total Gastos</p>
-                                        <p className="text-sm font-bold text-white">R$ {fmt(walletData.allExpense)}</p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center justify-center gap-2 pt-1">
-                                    <span className="material-symbols-outlined text-zinc-700 text-sm">swap_horiz</span>
-                                    <span className="text-[9px] text-zinc-600 font-bold">{walletData.totalTransactions} transações registradas</span>
-                                </div>
-                            </div>
-
-                            <button
-                                onClick={() => setShowWallet(false)}
-                                className="w-full py-4 rounded-2xl bg-transparent border border-white/10 text-primary font-bold text-xs tracking-[0.2em] uppercase active:scale-95 transition-all hover:bg-primary/5 shadow-[0_10px_20px_rgba(15,182,127,0.1)]"
-                            >
-                                Fechar
-                            </button>
                         </div>
-                    </div>
-                </div>
-            )}
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
-            <Header showBack title="Transações" />
+            <Header showBack title="Fluxo de Elite" />
 
-            <main className="flex-grow px-6 space-y-6 pb-40 pt-2 mt-2 overflow-y-auto no-scrollbar">
+            <main className="flex-grow px-6 space-y-10 pb-40 pt-6 overflow-y-auto no-scrollbar relative z-10">
 
-                {/* ── Animated Daily Spending Card ── */}
-                <div className="transparent-card-border rounded-[2.5rem] p-8 relative overflow-hidden pulse-card">
-                    <div className="absolute bottom-0 left-0 right-0 h-[1px] shimmer-line"></div>
-                    <div className="flex items-center justify-between relative z-10">
-                        <div className="space-y-1">
-                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-600">Gasto Hoje</p>
-                            <h2 className="text-3xl font-display font-bold text-white tracking-tight">
-                                R$ {fmt(spentToday)}
+                {/* ── Main Stat Hero ── */}
+                <div className="transparent-card-border rounded-[3rem] p-10 bg-zinc-950/20 border-white/5 relative group cursor-pointer overflow-hidden" onClick={() => setShowWallet(true)}>
+                    <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="flex items-center justify-between">
+                        <div className="space-y-4">
+                            <span className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.5em] block">Disponibilidade</span>
+                            <h2 className="text-4xl font-black text-white italic tracking-tighter premium-text-glow">
+                                <span className="text-xl font-light text-zinc-500 mr-2">R$</span>
+                                {fmt(spentToday)}
                             </h2>
-                            {earnedToday > 0 && (
-                                <p className="text-[10px] text-primary font-bold tracking-wider">
-                                    <span className="text-zinc-600 mr-1">Recebido:</span> +R$ {fmt(earnedToday)}
-                                </p>
-                            )}
+                            <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20">
+                                    <div className="w-1 h-1 rounded-full bg-primary animate-pulse shadow-[0_0_5px_#0FB67F]"></div>
+                                    <span className="text-[8px] font-black text-primary uppercase tracking-widest leading-none">Status: Fluido</span>
+                                </div>
+                                {earnedToday > 0 && (
+                                    <span className="text-[9px] font-bold text-zinc-500">+R$ {fmt(earnedToday)}</span>
+                                )}
+                            </div>
                         </div>
-                        <button
-                            onClick={() => setShowWallet(true)}
-                            className="w-14 h-14 rounded-2xl border border-primary/20 flex items-center justify-center active:scale-90 transition-all hover:bg-primary/5 group"
-                        >
-                            <span className="material-symbols-outlined text-primary text-[28px] group-hover:scale-110 transition-transform">account_balance_wallet</span>
-                        </button>
+                        <div className="w-16 h-16 rounded-[2rem] bg-zinc-950 border border-white/10 flex items-center justify-center shadow-[0_10px_20px_rgba(0,0,0,0.3)]">
+                            <span className="material-symbols-outlined text-primary text-3xl">account_balance_wallet</span>
+                        </div>
                     </div>
                 </div>
 
-                {/* ── Date Filter Pills ── */}
-                <div className="flex gap-2">
+                {/* ── Filters ── */}
+                <div className="flex p-1 gap-1 bg-zinc-950/40 rounded-2xl border border-white/5">
                     {([
-                        { key: '7d' as const, label: '7 dias' },
-                        { key: '30d' as const, label: '30 dias' },
-                        { key: '90d' as const, label: '90 dias' },
-                        { key: 'all' as const, label: 'Todos' },
+                        { key: '7d' as const, label: '7D' },
+                        { key: '30d' as const, label: '30D' },
+                        { key: '90d' as const, label: '90D' },
+                        { key: 'all' as const, label: 'ALL' },
                     ]).map(({ key, label }) => (
                         <button
                             key={key}
                             onClick={() => setDateFilter(key)}
-                            className={`flex-1 py-3 text-[9px] font-black uppercase tracking-[0.15em] rounded-xl transition-all duration-300 active:scale-95
+                            className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all
                                 ${dateFilter === key
-                                    ? 'bg-primary/10 text-primary border border-primary/15'
-                                    : 'border border-white/[0.04] text-zinc-600 hover:text-zinc-400'}`}
+                                    ? 'bg-zinc-900 border border-white/10 text-primary shadow-[0_5px_15px_rgba(0,0,0,0.3)]'
+                                    : 'text-zinc-600 hover:text-zinc-400'}`}
                         >
                             {label}
                         </button>
                     ))}
                 </div>
 
-                {/* ── KPI Row ── */}
-                <div className="grid grid-cols-2 gap-3">
-                    <div className="border border-white/[0.04] rounded-2xl p-4 space-y-2">
-                        <div className="flex items-center justify-between">
-                            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-600">Gastos</span>
-                            <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${periodComparison.expenseChange > 0 ? 'bg-red-500/10 text-red-500' : 'bg-primary/10 text-primary'}`}>
-                                {periodComparison.expenseChange > 0 ? '↑' : '↓'} {Math.abs(periodComparison.expenseChange).toFixed(1)}%
-                            </span>
+                {/* ── Evolution Insights ── */}
+                <section className="space-y-6">
+                    <div className="flex items-center justify-between px-2">
+                        <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em]">Auditória de Evolução</h3>
+                        <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1">
+                                <div className="w-2 h-[2px] bg-primary rounded-full"></div>
+                                <span className="text-[8px] font-black text-zinc-600 uppercase">Receitas</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <div className="w-2 h-[2px] bg-red-500 rounded-full"></div>
+                                <span className="text-[8px] font-black text-zinc-600 uppercase">Gastos</span>
+                            </div>
                         </div>
-                        <p className="text-lg font-display font-bold text-red-400 tracking-tight">R$ {fmt(totalExpenses)}</p>
                     </div>
-                    <div className="border border-white/[0.04] rounded-2xl p-4 space-y-2">
-                        <div className="flex items-center justify-between">
-                            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-600">Receitas</span>
-                            <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${periodComparison.incomeChange >= 0 ? 'bg-primary/10 text-primary' : 'bg-red-500/10 text-red-500'}`}>
-                                {periodComparison.incomeChange >= 0 ? '↑' : '↓'} {Math.abs(periodComparison.incomeChange).toFixed(1)}%
-                            </span>
-                        </div>
-                        <p className="text-lg font-display font-bold text-primary tracking-tight">R$ {fmt(totalIncome)}</p>
-                    </div>
-                </div>
 
-                {/* ── Spending Evolution Chart ── */}
-                {chartData.length > 1 && (
-                    <div className="space-y-3">
-                        <h3 className="text-[9px] font-black tracking-[0.3em] text-zinc-600 uppercase px-1">Evolução de Gastos</h3>
-                        <div className="transparent-card-border rounded-[2rem] p-6 bg-zinc-950/40 backdrop-blur-md border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
-                            <ResponsiveContainer width="100%" height={130}>
-                                <AreaChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-                                    <defs>
-                                        <linearGradient id="gradExpense" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
-                                            <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
-                                        </linearGradient>
-                                    </defs>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" />
-                                    <XAxis dataKey="date" tick={{ fontSize: 8, fill: '#52525b' }} axisLine={false} tickLine={false} />
-                                    <YAxis tick={{ fontSize: 8, fill: '#52525b' }} axisLine={false} tickLine={false} />
-                                    <Tooltip
-                                        cursor={{ fill: 'transparent' }}
-                                        contentStyle={{ background: '#000000', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, fontSize: 11, padding: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}
-                                        labelStyle={{ color: '#a1a1aa', fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}
-                                        formatter={(value: number) => [`R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 'Gastos']}
-                                    />
-                                    <Area type="monotone" dataKey="Gastos" stroke="#ef4444" strokeWidth={2} fill="url(#gradExpense)" dot={false} activeDot={{ r: 4, fill: '#ef4444' }} />
-                                </AreaChart>
-                            </ResponsiveContainer>
-                        </div>
+                    <div className="transparent-card-border rounded-[2.5rem] p-6 bg-zinc-950/10 border-white/5 min-h-[160px]">
+                        <ResponsiveContainer width="100%" height={160}>
+                            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                                <defs>
+                                    <linearGradient id="gradExpense" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#ef4444" stopOpacity={0.4} />
+                                        <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                                    </linearGradient>
+                                    <linearGradient id="gradIncome" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#0FB67F" stopOpacity={0.4} />
+                                        <stop offset="95%" stopColor="#0FB67F" stopOpacity={0} />
+                                    </linearGradient>
+                                </defs>
+                                <XAxis dataKey="date" tick={{ fontSize: 8, fill: '#3f3f46', fontWeight: 900 }} axisLine={false} tickLine={false} />
+                                <YAxis axisLine={false} tickLine={false} hide />
+                                <Tooltip
+                                    contentStyle={{ background: '#000', border: '1px solid #1f1f23', borderRadius: '16px', fontSize: '10px' }}
+                                    labelStyle={{ color: '#52525b', marginBottom: '8px', fontWeight: 900 }}
+                                />
+                                <Area
+                                    type="monotone"
+                                    dataKey="Gastos"
+                                    stroke="#ef4444"
+                                    strokeWidth={3}
+                                    fill="url(#gradExpense)"
+                                    animationDuration={2000}
+                                />
+                                <Area
+                                    type="monotone"
+                                    dataKey="Receitas"
+                                    stroke="#0FB67F"
+                                    strokeWidth={3}
+                                    fill="url(#gradIncome)"
+                                    animationDuration={2000}
+                                />
+                            </AreaChart>
+                        </ResponsiveContainer>
                     </div>
-                )}
+                </section>
 
-                {/* ── Income Evolution Chart ── */}
-                {chartData.length > 1 && (
-                    <div className="space-y-3">
-                        <h3 className="text-[9px] font-black tracking-[0.3em] text-zinc-600 uppercase px-1">Evolução de Receitas</h3>
-                        <div className="transparent-card-border rounded-[2rem] p-6 bg-zinc-950/40 backdrop-blur-md border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
-                            <ResponsiveContainer width="100%" height={100}>
-                                <BarChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" />
-                                    <XAxis dataKey="date" tick={{ fontSize: 8, fill: '#52525b' }} axisLine={false} tickLine={false} />
-                                    <YAxis tick={{ fontSize: 8, fill: '#52525b' }} axisLine={false} tickLine={false} />
-                                    <Tooltip
-                                        cursor={{ fill: 'transparent' }}
-                                        contentStyle={{ background: '#000000', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, fontSize: 11, padding: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}
-                                        labelStyle={{ color: '#a1a1aa', fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}
-                                        formatter={(value: number) => [`R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 'Receitas']}
-                                    />
-                                    <Bar dataKey="Receitas" fill="#0FB67F" radius={[6, 6, 0, 0]} barSize={12} opacity={0.9} />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </div>
-                )}
-
-                {/* ── AI Analysis Button ── */}
-                <button
+                {/* ── AI Tactical Button ── */}
+                <motion.button
+                    whileTap={{ scale: 0.96 }}
                     onClick={handleAnalyze}
-                    className="w-full flex items-center justify-center gap-3 py-4 border border-primary/15 rounded-2xl group hover:bg-primary/5 transition-all active:scale-[0.98]"
+                    className="w-full h-20 rounded-[2.5rem] bg-black border border-primary/20 flex items-center justify-between px-8 group relative overflow-hidden"
                 >
-                    <span className="material-symbols-outlined text-primary text-lg group-hover:rotate-12 transition-transform">auto_awesome</span>
-                    <span className="text-[10px] font-black text-primary tracking-[0.25em] uppercase">Análise de Gastos IA</span>
-                </button>
-
-                {/* ── Search ── */}
-                <div className="flex items-center border border-white/[0.04] rounded-xl px-4 py-3 transition-all focus-within:border-primary/20">
-                    <span className="material-symbols-outlined text-zinc-700 mr-3 text-[18px]">search</span>
-                    <input
-                        className="bg-transparent border-none focus:ring-0 text-[13px] placeholder-zinc-800 w-full p-0 text-text-value font-medium"
-                        placeholder="Buscar transação…"
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                    {searchQuery && (
-                        <button onClick={() => setSearchQuery('')} className="ml-2">
-                            <span className="material-symbols-outlined text-zinc-600 text-[16px]">close</span>
-                        </button>
-                    )}
-                </div>
+                    <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                            <span className="material-symbols-outlined text-primary text-2xl group-hover:rotate-12 transition-transform">insights</span>
+                        </div>
+                        <div className="text-left">
+                            <span className="text-[10px] font-black text-white italic tracking-[0.2em] uppercase block">Análise de IA</span>
+                            <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">Geração de relatórios proativos</span>
+                        </div>
+                    </div>
+                    <span className="material-symbols-outlined text-zinc-700 text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </motion.button>
 
                 {/* ── Transaction List ── */}
-                <section className="space-y-3">
-                    <div className="flex justify-between items-center px-1">
-                        <h3 className="text-[9px] font-black tracking-[0.3em] text-zinc-600 uppercase">Histórico</h3>
-                        <span className="text-[9px] font-bold text-zinc-700">{filteredTransactions.length} registros</span>
+                <section className="space-y-6">
+                    <div className="flex justify-between items-center px-2">
+                        <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em]">Auditória de Registros</h3>
+                        <span className="text-[8px] font-black text-zinc-700 uppercase tracking-widest">{filteredTransactions.length} Operações</span>
                     </div>
 
-                    <div className="space-y-2">
-                        {filteredTransactions.length > 0 ? (
-                            filteredTransactions.map((transaction) => (
-                                <div
-                                    key={transaction.id}
-                                    onClick={() => navigate('/transaction-details', { state: { transaction } })}
-                                    className="transparent-card-border rounded-[2rem] p-5 flex items-center justify-between active:scale-[0.98] transition-all cursor-pointer group hover:bg-white/[0.02]"
-                                >
-                                    <div className="flex items-center space-x-3">
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${transaction.type === 'income'
-                                            ? 'bg-primary/10 border border-primary/20 text-primary group-hover:bg-primary/15'
-                                            : transaction.type === 'transfer'
-                                                ? 'bg-blue-500/10 border border-blue-500/20 text-blue-500 group-hover:bg-blue-500/15'
-                                                : 'bg-red-500/10 border border-red-500/20 text-red-500 group-hover:bg-red-500/15'
-                                            }`}>
-                                            <span className="material-symbols-outlined text-[20px]">
-                                                {transaction.type === 'income' ? 'payments' : (transaction.type === 'transfer' ? 'sync_alt' : 'shopping_bag')}
-                                            </span>
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <div className="flex items-center gap-2">
-                                                <p className={`text-[13px] font-semibold text-text-value leading-tight truncate max-w-[160px] ${transaction.status === 'anulada' ? 'line-through text-zinc-600' : ''}`}>{transaction.description}</p>
-                                                {transaction.status && (
-                                                    <span className={`text-[7px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-md border ${transaction.status === 'entregue' ? 'border-primary/20 text-primary bg-primary/5' :
-                                                        transaction.status === 'reconciliada' ? 'border-blue-500/20 text-blue-500 bg-blue-500/5' :
-                                                            'border-red-500/20 text-red-500 bg-red-500/5'
-                                                        }`}>
-                                                        {transaction.status}
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <div className="flex items-center space-x-1.5 mt-0.5">
-                                                <span className="text-[8px] text-zinc-600 font-bold tracking-wider uppercase">{transaction.category}</span>
-                                                <span className="w-[3px] h-[3px] rounded-full bg-zinc-800"></span>
-                                                <span className="text-[8px] text-zinc-700 font-medium">
-                                                    {new Date(transaction.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
-                                                </span>
-                                            </div>
-                                        </div>
+                    <div className="flex items-center bg-zinc-950/40 border border-white/5 rounded-2xl px-5 py-4 transition-all focus-within:border-primary/20 group">
+                        <span className="material-symbols-outlined text-zinc-700 mr-4 text-xl group-focus-within:text-primary transition-colors">search</span>
+                        <input
+                            className="bg-transparent border-none focus:ring-0 text-sm placeholder-zinc-800 w-full p-0 text-white font-bold italic"
+                            placeholder="Buscar Operação..."
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        {filteredTransactions.map((transaction, idx) => (
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: idx * 0.05 }}
+                                key={transaction.id}
+                                onClick={() => navigate('/transaction-details', { state: { transaction } })}
+                                className="transparent-card-border rounded-[2.5rem] p-6 flex items-center justify-between active:scale-[0.98] transition-all cursor-pointer group hover:bg-white/[0.02] border-white/5"
+                            >
+                                <div className="flex items-center gap-5">
+                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${transaction.type === 'income'
+                                        ? 'bg-primary/5 border border-primary/20 text-primary shadow-[0_0_20px_rgba(15,182,127,0.05)]'
+                                        : transaction.type === 'expense'
+                                            ? 'bg-red-500/5 border border-red-500/20 text-red-500'
+                                            : 'bg-blue-500/5 border border-blue-500/20 text-blue-500'
+                                        }`}>
+                                        <span className="material-symbols-outlined text-2xl">
+                                            {transaction.type === 'income' ? 'finance_chip' : (transaction.type === 'expense' ? 'receipt_long' : 'swap_horizontal_circle')}
+                                        </span>
                                     </div>
-                                    <div className="text-right">
-                                        <p className={`text-[13px] font-bold font-display tracking-tight ${transaction.status === 'anulada' ? 'text-zinc-700' : (transaction.type === 'income' ? 'text-primary' : (transaction.type === 'transfer' ? 'text-blue-400' : 'text-text-value'))
-                                            }`}>
-                                            {transaction.type === 'expense' ? '-' : (transaction.type === 'income' ? '+' : '')} R$ {Number(transaction.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                                        </p>
+                                    <div className="flex flex-col">
+                                        <span className={`text-sm font-black text-white italic tracking-tight leading-none mb-2 ${transaction.status === 'anulada' ? 'line-through opacity-40' : ''}`}>
+                                            {transaction.description}
+                                        </span>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">{transaction.category}</span>
+                                            <div className="w-1 h-1 rounded-full bg-zinc-900"></div>
+                                            <span className="text-[8px] font-bold text-zinc-700 uppercase">{new Date(transaction.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            ))
-                        ) : (
-                            <div className="py-16 text-center rounded-[32px] border border-white/[0.04] border-dashed">
-                                <span className="material-symbols-outlined text-zinc-800 text-4xl block mb-3">receipt_long</span>
-                                <p className="text-[10px] text-zinc-700 uppercase tracking-widest font-bold">Nenhuma transação encontrada</p>
-                            </div>
-                        )}
+                                <div className="text-right flex flex-col items-end gap-1.5">
+                                    <span className={`text-base font-black italic tracking-tighter ${transaction.status === 'anulada'
+                                        ? 'text-zinc-800'
+                                        : transaction.type === 'income'
+                                            ? 'text-primary'
+                                            : transaction.type === 'expense'
+                                                ? 'text-white'
+                                                : 'text-blue-400'
+                                        }`}>
+                                        {transaction.type === 'expense' ? '-' : '+'} R$ {Number(transaction.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                    </span>
+                                    {transaction.status && (
+                                        <span className={`text-[7px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-full border ${transaction.status === 'entregue' ? 'border-primary/20 text-primary' :
+                                            transaction.status === 'reconciliada' ? 'border-blue-500/20 text-blue-500' :
+                                                'border-red-500/20 text-red-500'
+                                            }`}>
+                                            {transaction.status}
+                                        </span>
+                                    )}
+                                </div>
+                            </motion.div>
+                        ))}
                     </div>
                 </section>
             </main>
 
-            {/* ── FAB & Cockpit ── */}
-            <div className="fixed bottom-28 right-6 z-[210]">
+            {/* ── Transaction Cockpit (FAB) ── */}
+            <div className="fixed bottom-10 right-10 z-[100]">
                 <AnimatePresence>
                     {showFabCockpit && (
                         <>
@@ -469,29 +404,29 @@ export default function TransactionHistory() {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
+                                className="fixed inset-0 bg-black/60 backdrop-blur-xl z-[90]"
                                 onClick={() => setShowFabCockpit(false)}
-                                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[-1]"
                             />
-                            <div className="flex flex-col items-end space-y-3 mb-4">
+                            <div className="absolute bottom-20 right-0 z-[110] flex flex-col items-end space-y-4">
                                 {[
-                                    { id: 'income', label: 'Receita', icon: 'payments', color: 'bg-primary/20 text-primary border-primary/20' },
-                                    { id: 'expense', label: 'Despesa', icon: 'shopping_bag', color: 'bg-red-500/20 text-red-500 border-red-500/20' },
-                                    { id: 'transfer', label: 'Transferência', icon: 'sync_alt', color: 'bg-blue-500/20 text-blue-500 border-blue-500/20' },
-                                ].map((option, idx) => (
+                                    { type: 'income', icon: 'add_circle', label: 'Nova Receita', color: 'text-primary border-primary/20 bg-primary/5' },
+                                    { type: 'expense', icon: 'remove_circle', label: 'Nova Despesa', color: 'text-red-500 border-red-500/20 bg-red-500/5' },
+                                    { type: 'transfer', icon: 'swap_horiz', label: 'Transferência', color: 'text-blue-500 border-blue-500/20 bg-blue-500/5' }
+                                ].map((item, i) => (
                                     <motion.button
-                                        key={option.id}
-                                        initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                                        exit={{ opacity: 0, scale: 0.8, y: 20 }}
-                                        transition={{ delay: idx * 0.05 }}
-                                        onClick={() => navigate('/new-transaction', { state: { type: option.id } })}
+                                        key={item.type}
+                                        initial={{ opacity: 0, x: 20, scale: 0.8 }}
+                                        animate={{ opacity: 1, x: 0, scale: 1 }}
+                                        exit={{ opacity: 0, x: 20, scale: 0.8 }}
+                                        transition={{ delay: i * 0.1 }}
+                                        onClick={() => navigate('/new-transaction', { state: { type: item.type } })}
                                         className="flex items-center gap-4 group"
                                     >
-                                        <span className="text-[10px] font-black text-white uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity bg-black/80 px-4 py-2 rounded-xl border border-white/10 backdrop-blur-xl translate-x-2">
-                                            {option.label}
+                                        <span className="text-[10px] font-black text-white uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity bg-zinc-950 px-3 py-1.5 rounded-lg border border-white/5">
+                                            {item.label}
                                         </span>
-                                        <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center backdrop-blur-xl shadow-2xl transition-all active:scale-95 hover:scale-105 ${option.color}`}>
-                                            <span className="material-symbols-outlined text-[24px]">{option.icon}</span>
+                                        <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center shadow-2xl backdrop-blur-md ${item.color}`}>
+                                            <span className="material-symbols-outlined text-2xl">{item.icon}</span>
                                         </div>
                                     </motion.button>
                                 ))}
@@ -499,16 +434,84 @@ export default function TransactionHistory() {
                         </>
                     )}
                 </AnimatePresence>
-
-                <button
+                <motion.button
+                    whileTap={{ scale: 0.9 }}
                     onClick={() => setShowFabCockpit(!showFabCockpit)}
-                    className={`w-16 h-16 rounded-full flex items-center justify-center shadow-[0_20px_40px_rgba(15,182,127,0.4)] active:scale-90 transition-all duration-500 relative z-10 ${showFabCockpit ? 'bg-zinc-900 rotate-45' : 'bg-primary'}`}
+                    className="w-16 h-16 rounded-[2rem] bg-primary flex items-center justify-center shadow-[0_15px_30px_rgba(15,182,127,0.3)] relative z-[110]"
                 >
-                    <span className={`material-symbols-outlined font-black text-3xl transition-colors duration-500 ${showFabCockpit ? 'text-primary' : 'text-zinc-950'}`}>
+                    <motion.span
+                        animate={{ rotate: showFabCockpit ? 45 : 0 }}
+                        className="material-symbols-outlined text-black text-3xl font-black"
+                    >
                         add
-                    </span>
-                </button>
+                    </motion.span>
+                </motion.button>
             </div>
+
+            {/* ── Wallet Summary (Gaming Edition) ── */}
+            <AnimatePresence>
+                {showWallet && (
+                    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-8">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute inset-0 bg-black/80 backdrop-blur-3xl"
+                            onClick={() => setShowWallet(false)}
+                        />
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 30 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 30 }}
+                            className="relative w-full max-w-sm transparent-card-border rounded-[3.5rem] bg-zinc-950 p-10 border-white/5 overflow-hidden"
+                        >
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl rounded-full"></div>
+
+                            <div className="relative z-10 text-center space-y-8">
+                                <div className="flex flex-col items-center">
+                                    <div className="w-20 h-20 rounded-[2.5rem] bg-zinc-900 border border-primary/20 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(15,182,127,0.1)]">
+                                        <span className="material-symbols-outlined text-primary text-4xl">account_balance_wallet</span>
+                                    </div>
+                                    <span className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em] block mb-2">Auditória Patrimonial</span>
+                                    <h3 className={`text-4xl font-black italic tracking-tighter premium-text-glow ${walletData.balance >= 0 ? 'text-white' : 'text-red-500'}`}>
+                                        <span className="text-xl font-light text-zinc-500 mr-1">R$</span>
+                                        {fmt(walletData.balance)}
+                                    </h3>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="bg-zinc-900/50 border border-white/5 rounded-3xl p-5 text-left">
+                                        <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest block mb-2">Inflows (Mês)</span>
+                                        <p className="text-sm font-black text-primary italic">+R$ {fmt(walletData.monthIncome)}</p>
+                                    </div>
+                                    <div className="bg-zinc-900/50 border border-white/5 rounded-3xl p-5 text-left">
+                                        <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest block mb-2">Outflows (Mês)</span>
+                                        <p className="text-sm font-black text-red-500 italic">-R$ {fmt(walletData.monthExpenses)}</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-col gap-4 text-left border-t border-white/5 pt-8">
+                                    <div className="flex justify-between items-center px-2">
+                                        <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Ativos Historicos</span>
+                                        <span className="text-xs font-bold text-white">R$ {fmt(walletData.allIncome)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center px-2">
+                                        <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Total Operações</span>
+                                        <span className="text-xs font-bold text-primary">{walletData.totalTransactions} Execuções</span>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={() => setShowWallet(false)}
+                                    className="w-full py-5 rounded-3xl bg-white text-black font-black text-[10px] tracking-[0.3em] uppercase active:scale-95 transition-all shadow-[0_15px_30px_rgba(255,255,255,0.1)]"
+                                >
+                                    Confirmar Leitura
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface ActionPopupProps {
     isOpen: boolean;
@@ -21,60 +22,87 @@ export default function ActionPopup({
     onCancel,
     type = 'confirm'
 }: ActionPopupProps) {
-    if (!isOpen) return null;
 
     const getIcon = () => {
         switch (type) {
-            case 'success': return 'check_circle';
-            case 'delete': return 'delete_forever';
-            default: return 'help';
+            case 'success': return 'verified';
+            case 'delete': return 'error';
+            default: return 'info';
         }
     };
 
-    const getIconColor = () => {
+    const getColorClass = () => {
         switch (type) {
-            case 'success': return 'text-primary';
-            case 'delete': return 'text-red-500';
-            default: return 'text-primary';
+            case 'success': return 'text-primary border-primary/20 shadow-[0_0_20px_rgba(15,182,127,0.2)]';
+            case 'delete': return 'text-red-500 border-red-500/20 shadow-[0_0_20px_rgba(239,68,68,0.2)]';
+            default: return 'text-blue-500 border-blue-500/20 shadow-[0_0_20px_rgba(59,130,246,0.2)]';
+        }
+    };
+
+    const getBtnClass = () => {
+        switch (type) {
+            case 'success': return 'bg-primary text-black shadow-[0_15px_30px_rgba(15,182,127,0.2)]';
+            case 'delete': return 'bg-red-500 text-white shadow-[0_15px_30px_rgba(239,68,68,0.2)]';
+            default: return 'bg-white text-black shadow-[0_15px_30px_rgba(255,255,255,0.1)]';
         }
     };
 
     return (
-        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6">
-            <div className="absolute inset-0 backdrop-blur-premium transition-opacity duration-300" onClick={onCancel}></div>
-            <div className="relative w-full max-w-sm transparent-card-border rounded-[2.5rem] p-8 popup-anim">
-                <div className="flex flex-col items-center text-center">
-                    <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-6">
-                        <span className={`material-symbols-outlined text-4xl font-bold ${getIconColor()}`}>{getIcon()}</span>
-                    </div>
+        <AnimatePresence>
+            {isOpen && (
+                <div className="fixed inset-0 z-[1000] flex items-center justify-center p-8">
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 bg-black/80 backdrop-blur-2xl"
+                        onClick={onCancel}
+                    ></motion.div>
 
-                    <h3 className="text-xl font-bold text-white mb-2 leading-tight">{title}</h3>
-                    <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest leading-relaxed mb-8">
-                        {description}
-                    </p>
+                    <motion.div
+                        initial={{ scale: 0.8, opacity: 0, y: 20 }}
+                        animate={{ scale: 1, opacity: 1, y: 0 }}
+                        exit={{ scale: 0.8, opacity: 0, y: 20 }}
+                        className="relative w-full max-w-sm transparent-card-border rounded-[3.5rem] bg-zinc-950 p-12 text-center border-white/5 shadow-[0_0_80px_rgba(0,0,0,0.5)] overflow-hidden"
+                    >
+                        {/* Decorative Background Glows */}
+                        <div className="absolute inset-0 pointer-events-none opacity-20">
+                            <div className="absolute top-[-20%] left-[-20%] w-40 h-40 bg-primary/20 blur-[60px] rounded-full"></div>
+                            <div className="absolute bottom-[-20%] right-[-20%] w-40 h-40 bg-blue-500/10 blur-[60px] rounded-full"></div>
+                        </div>
 
-                    <div className="w-full space-y-3">
-                        <button
-                            onClick={onConfirm}
-                            className={`w-full py-4 rounded-2xl font-bold text-xs tracking-[0.2em] uppercase transition-all active:scale-95 ${type === 'delete'
-                                ? 'bg-red-500 text-white shadow-[0_10px_20px_rgba(239,68,68,0.2)]'
-                                : 'bg-primary text-black shadow-[0_10px_20px_rgba(15,182,127,0.2)]'
-                                }`}
-                        >
-                            {confirmText}
-                        </button>
+                        <div className={`w-20 h-20 rounded-[2.5rem] bg-zinc-900 border flex items-center justify-center mx-auto mb-8 relative z-10 ${getColorClass()}`}>
+                            <span className="material-symbols-outlined text-4xl font-black">{getIcon()}</span>
+                        </div>
 
-                        {type !== 'success' && (
+                        <h2 className="text-2xl font-black text-white italic tracking-tighter uppercase mb-4 relative z-10">
+                            {title}
+                        </h2>
+                        <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.3em] leading-relaxed mb-10 relative z-10">
+                            {description}
+                        </p>
+
+                        <div className="flex flex-col gap-4 relative z-10">
                             <button
-                                onClick={onCancel}
-                                className="w-full py-4 rounded-2xl bg-transparent border border-white/10 text-zinc-400 font-bold text-xs tracking-[0.2em] uppercase active:scale-95 transition-all hover:bg-white/5"
+                                onClick={onConfirm}
+                                className={`w-full h-18 rounded-[2rem] bg-white text-black font-black tracking-[0.5em] text-[11px] uppercase transition-all duration-500 active:scale-95 shadow-[0_20px_50px_rgba(255,255,255,0.1)] relative overflow-hidden group 
+                                    ${type === 'delete' ? 'hover:bg-red-500 hover:shadow-[0_20px_50px_rgba(239,68,68,0.2)]' : 'hover:bg-primary hover:shadow-[0_20px_50px_rgba(15,182,127,0.2)]'}`}
                             >
-                                {cancelText}
+                                {confirmText}
                             </button>
-                        )}
-                    </div>
+
+                            {type !== 'success' && (
+                                <button
+                                    onClick={onCancel}
+                                    className="w-full h-16 rounded-2xl bg-zinc-950/50 border border-white/5 text-zinc-500 font-bold text-[10px] tracking-[0.2em] uppercase transition-all hover:text-white"
+                                >
+                                    {cancelText}
+                                </button>
+                            )}
+                        </div>
+                    </motion.div>
                 </div>
-            </div>
-        </div>
+            )}
+        </AnimatePresence>
     );
 }

@@ -129,22 +129,9 @@ export default function NewSubCategory() {
                 <button
                     onClick={handleSave}
                     disabled={!name || !selectedParent.id || loading}
-                    className={`w-full h-16 rounded-[2rem] font-display font-black tracking-[0.4em] uppercase text-[11px] transition-all duration-500 flex items-center justify-center gap-3 active:scale-95 ${name && selectedParent.id && !loading
-                        ? 'bg-primary text-black shadow-[0_20px_40px_rgba(15,182,127,0.2)]'
-                        : 'bg-zinc-900 text-zinc-700 opacity-50 cursor-not-allowed border border-white/5'
-                        }`}
+                    className={`w-full h-18 rounded-[2.5rem] bg-white text-black font-black tracking-[0.5em] text-[11px] uppercase transition-all duration-500 active:scale-95 shadow-[0_20px_50px_rgba(255,255,255,0.1)] relative overflow-hidden group ${!name || !selectedParent.id || loading ? 'opacity-50' : 'hover:bg-primary hover:text-black hover:shadow-[0_20px_50px_rgba(15,182,127,0.2)]'}`}
                 >
-                    {loading ? (
-                        <>
-                            <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
-                            <span>Processando...</span>
-                        </>
-                    ) : (
-                        <>
-                            <span className="material-symbols-outlined text-base">hub</span>
-                            <span>Acoplar Subcategoria</span>
-                        </>
-                    )}
+                    {loading ? 'Operacionalizando...' : 'Acoplar Subcategoria'}
                 </button>
             </main>
 

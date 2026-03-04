@@ -300,17 +300,17 @@ export default function TransactionDetails() {
             </main>
 
             {/* Premium Footer Actions */}
-            <footer className="fixed bottom-28 left-0 right-0 p-8 z-[210] pointer-events-none">
+            <footer className="fixed bottom-32 left-0 right-0 p-8 z-[300] pointer-events-none">
                 <div className="flex space-x-4 max-w-sm mx-auto pointer-events-auto">
                     <button
                         onClick={() => navigate('/edit-transaction', { state: { transaction } })}
-                        className="flex-1 h-16 rounded-[1.8rem] border border-primary/30 bg-black/80 backdrop-blur-xl text-primary font-black tracking-[0.3em] text-[10px] uppercase active:scale-95 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+                        className="flex-1 h-16 rounded-[1.8rem] border border-primary/30 bg-black/80 backdrop-blur-xl text-primary font-black tracking-[0.3em] text-[10px] uppercase active:scale-95 transition-all shadow-[0_15px_30px_rgba(0,0,0,0.5)]"
                     >
                         Editar Transação
                     </button>
                     <button
                         onClick={() => setShowDeleteConfirm(true)}
-                        className="flex-1 h-16 rounded-[1.8rem] border border-red-500/20 bg-black/80 backdrop-blur-xl text-red-500 font-black tracking-[0.3em] text-[10px] uppercase active:scale-95 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+                        className="flex-1 h-16 rounded-[1.8rem] border border-red-500/20 bg-black/80 backdrop-blur-xl text-red-500 font-black tracking-[0.3em] text-[10px] uppercase active:scale-95 transition-all shadow-[0_15px_30px_rgba(0,0,0,0.5)]"
                     >
                         Excluir
                     </button>
