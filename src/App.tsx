@@ -67,6 +67,9 @@ import AllProducts from './pages/AllProducts';
 import MyOrders from './pages/MyOrders';
 import NotificationCenter from './pages/NotificationCenter';
 import Admin from './pages/Admin';
+import Arsenal from './pages/Arsenal';
+import AIChat from './pages/AIChat';
+import ProtectedRoute from './components/ProtectedRoute'; // Assuming ProtectedRoute is in this path
 
 export default function App() {
   return (
@@ -79,6 +82,9 @@ export default function App() {
               <Route path="/consent" element={<Consent />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+              <Route path="/arsenal" element={<ProtectedRoute><Arsenal /></ProtectedRoute>} />
+              <Route path="/ai-chat" element={<ProtectedRoute><AIChat /></ProtectedRoute>} />
               <Route path="/" element={<Login />} />
               <Route element={<Layout />}>
                 <Route path="/dashboard" element={<Dashboard />} />
