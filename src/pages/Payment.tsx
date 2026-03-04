@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import Header from '../components/Header';
 import { supabase } from '../lib/supabase';
+import { useNotifications } from '../contexts/NotificationContext';
 
 interface MPPaymentData {
     id: number;
@@ -20,6 +21,7 @@ export default function Payment() {
     const [error, setError] = useState<string | null>(null);
     const [copied, setCopied] = useState(false);
     const [orderId, setOrderId] = useState<string | null>(null);
+    const { addNotification } = useNotifications();
 
     const saved = localStorage.getItem('poup_cart');
     const cartItems = saved ? JSON.parse(saved) : [];
@@ -78,31 +80,41 @@ export default function Payment() {
         }
     }, [total]);
 
-    // Check payment status (Polling)
+    // Check payment status (Realtime Connection)
     useEffect(() => {
-        let interval: any;
-        if (orderId && !paid) {
-            interval = setInterval(async () => {
-                try {
-                    const { data: order, error: pollError } = await supabase
-                        .from('orders')
-                        .select('status')
-                        .eq('id', orderId)
-                        .single();
+        if (!orderId || paid) return;
 
-                    if (!pollError && order.status === 'approved') {
+        const channel = supabase
+            .channel(`order_status_${orderId}`)
+            .on(
+                'postgres_changes',
+                {
+                    event: 'UPDATE',
+                    schema: 'public',
+                    table: 'orders',
+                    filter: `id=eq.${orderId}`
+                },
+                (payload) => {
+                    const newStatus = payload.new.status;
+                    if (newStatus === 'approved') {
+                        addNotification({
+                            title: 'Pagamento Detectado',
+                            message: 'A rede confirmou sua transação. Bem-vindo à Elite!',
+                            type: 'success'
+                        });
                         setPaid(true);
                         setTimeout(() => {
                             localStorage.removeItem('poup_cart');
                             navigate('/dashboard');
                         }, 3000);
                     }
-                } catch (err) {
-                    console.error('Polling error:', err);
                 }
-            }, 5000);
-        }
-        return () => clearInterval(interval);
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
     }, [orderId, paid]);
 
     useEffect(() => {
@@ -134,6 +146,11 @@ export default function Payment() {
                 .eq('id', orderId);
 
             if (!updateError) {
+                addNotification({
+                    title: 'Protocolo Sincronizado',
+                    message: 'Seu pagamento foi confirmado. Arsenal liberado!',
+                    type: 'success'
+                });
                 setPaid(true);
                 setTimeout(() => {
                     localStorage.removeItem('poup_cart');

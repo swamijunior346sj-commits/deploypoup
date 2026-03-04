@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
+import { RewardSystem } from '../contexts/RewardSystem';
 
 const navTabs = [
   { path: '/dashboard', label: 'Início', icon: 'grid_view' },
@@ -64,6 +65,7 @@ export default function Layout() {
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white font-sans overflow-x-hidden relative">
+      <RewardSystem />
       <style>{`
         .glass-nav {
             background: rgba(10, 10, 10, 0.7);

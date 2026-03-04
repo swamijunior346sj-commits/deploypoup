@@ -2,30 +2,34 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import Header from '../components/Header';
+import { useNotifications } from '../contexts/NotificationContext';
+import { useData } from '../contexts/DataContext';
 
 export const allProducts = [
     // E-Books
-    { id: '1', title: 'Dominando Investimentos', author: 'POUP Intelligence', type: 'E-Book', price: 'R$ 49,90', originalPrice: 'R$ 89,90', image: 'https://images.unsplash.com/photo-1592496431122-2349e0fbc666?auto=format&fit=crop&q=80&w=400', tag: 'Mais Vendido', description: 'O guia definitivo para quem deseja sair do zero e construir um patrimônio sólido através de estratégias testadas.', rating: '4.9', reviews: '1.2k', pages: '184', published: '2023', delivery: 'Envio Imediato' },
-    { id: '4', title: 'Mindset Milionário', author: 'Thiago Nigro', type: 'E-Book', price: 'R$ 39,90', originalPrice: 'R$ 59,90', image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=400', description: 'Aprenda a pensar como os grandes investidores e mude sua relação com o dinheiro para sempre.', rating: '4.8', reviews: '850', pages: '210', published: '2022', delivery: 'Envio Imediato' },
+    { id: '1', title: 'Dominando Investimentos', author: 'POUP Intelligence', type: 'E-Book', price: 'R$ 49,90', originalPrice: 'R$ 89,90', image: 'https://images.unsplash.com/photo-1592496431122-2349e0fbc666?auto=format&fit=crop&q=80&w=400', tag: 'Mais Vendido', description: 'O guia definitivo para quem deseja sair do zero e construir um patrimônio sólido através de estratégias testadas.', rating: '4.9', reviews: '1.2k', pages: '184', published: '2023', delivery: 'Envio Imediato', accessLink: 'https://drive.google.com/poup-ebook-investimentos' },
+    { id: '4', title: 'Mindset Milionário', author: 'Thiago Nigro', type: 'E-Book', price: 'R$ 39,90', originalPrice: 'R$ 59,90', image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=400', description: 'Aprenda a pensar como os grandes investidores e mude sua relação com o dinheiro para sempre.', rating: '4.8', reviews: '850', pages: '210', published: '2022', delivery: 'Envio Imediato', accessLink: 'https://drive.google.com/poup-ebook-mindset' },
 
     // Cursos
-    { id: '2', title: 'Masterclass: Criptoeconomia', author: 'Especialista Convidado', type: 'Curso', price: 'R$ 297,00', originalPrice: 'R$ 597,00', image: 'https://images.unsplash.com/photo-1621504450181-5d356f61d307?auto=format&fit=crop&q=80&w=400', tag: 'Lançamento', description: 'Mergulhe no mundo das criptomoedas, DEFI e Web3 com quem realmente entende do mercado.', rating: '5.0', reviews: '320', pages: '12 Módulos', published: '2024', delivery: 'Acesso Vitalício' },
+    { id: '2', title: 'Masterclass: Criptoeconomia', author: 'Especialista Convidado', type: 'Curso', price: 'R$ 297,00', originalPrice: 'R$ 597,00', image: 'https://images.unsplash.com/photo-1621504450181-5d356f61d307?auto=format&fit=crop&q=80&w=400', tag: 'Lançamento', description: 'Mergulhe no mundo das criptomoedas, DEFI e Web3 com quem realmente entende do mercado.', rating: '5.0', reviews: '320', pages: '12 Módulos', published: '2024', delivery: 'Acesso Vitalício', accessLink: 'https://poupe-academy.com/crypto-masterclass' },
 
     // Ferramentas
-    { id: '3', title: 'Planilha de Ativos Black', author: 'POUP Pro', type: 'Ferramenta', price: 'R$ 29,90', originalPrice: 'R$ 69,90', image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=400', description: 'O dashboard mais completo para controlar seus investimentos em ações, FIIs e Exterior.', rating: '4.9', reviews: '2.3k', pages: 'Excel/Google Sheets', published: 'V2.4', delivery: 'Download Imediato' },
+    { id: '3', title: 'Planilha de Ativos Black', author: 'POUP Pro', type: 'Ferramenta', price: 'R$ 29,90', originalPrice: 'R$ 69,90', image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=400', description: 'O dashboard mais completo para controlar seus investimentos em ações, FIIs e Exterior.', rating: '4.9', reviews: '2.3k', pages: 'Excel/Google Sheets', published: 'V2.4', delivery: 'Download Imediato', accessLink: 'https://docs.google.com/spreadsheets/poup-black-sheet' },
 
     // Mentorias
-    { id: '11', title: 'Individual: 1 Mi', author: 'Founder POUP', type: 'Mentoria', price: 'R$ 2.497,00', originalPrice: 'R$ 4.997,00', image: 'https://images.unsplash.com/photo-1521791136364-798a7bc0d26c?auto=format&fit=crop&q=80&w=400', description: 'Atendimento exclusivo via Zoom para desenhar seu plano rumo ao primeiro milhão investido.', rating: '5.0', reviews: '95', pages: '4 Encontros', published: 'Vagas Limitadas', delivery: 'Agendamento' },
+    { id: '11', title: 'Individual: 1 Mi', author: 'Founder POUP', type: 'Mentoria', price: 'R$ 2.497,00', originalPrice: 'R$ 4.997,00', image: 'https://images.unsplash.com/photo-1521791136364-798a7bc0d26c?auto=format&fit=crop&q=80&w=400', description: 'Atendimento exclusivo via Zoom para desenhar seu plano rumo ao primeiro milhão investido.', rating: '5.0', reviews: '95', pages: '4 Encontros', published: 'Vagas Limitadas', delivery: 'Agendamento', accessLink: 'https://zoom.us/j/poup-exclusive' },
 
     // Physical Books
-    { id: 'pb1', title: 'A Jornada do Investidor', author: 'POUP Press', type: 'Livro Físico', price: 'R$ 89,90', originalPrice: 'R$ 120,00', image: 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=400', description: 'Edição de luxo com capa dura e ilustrações exclusivas sobre o mercado financeiro.', rating: '5.0', reviews: '150', pages: '420', published: '2024', delivery: 'Frete Grátis' },
+    { id: 'pb1', title: 'A Jornada do Investidor', author: 'POUP Press', type: 'Livro Físico', price: 'R$ 89,90', originalPrice: 'R$ 120,00', image: 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=400', description: 'Edição de luxo com capa dura e ilustrações exclusivas sobre o mercado financeiro.', rating: '5.0', reviews: '150', pages: '420', published: '2024', delivery: 'Frete Grátis', accessLink: 'https://poup.com.br/rastreio/pb1' },
 
     // Networking
-    { id: '13', title: 'Acesso VIP: Platinum', author: 'POUP Networking', type: 'Networking', price: 'R$ 1.200,00', originalPrice: 'R$ 2.000,00', image: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&q=80&w=400', description: 'O clube de benefícios mais exclusivo do Brasil para investidores profissionais e HNWI.', rating: '5.0', reviews: '55', pages: 'Vitalício', published: 'VIP', delivery: 'Acesso Imediato' },
+    { id: '13', title: 'Acesso VIP: Platinum', author: 'POUP Networking', type: 'Networking', price: 'R$ 1.200,00', originalPrice: 'R$ 2.000,00', image: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&q=80&w=400', description: 'O clube de benefícios mais exclusivo do Brasil para investidores profissionais e HNWI.', rating: '5.0', reviews: '55', pages: 'Vitalício', published: 'VIP', delivery: 'Acesso Imediato', accessLink: 'https://discord.gg/poup-platinum' },
 ];
 
 export default function Shop() {
     const navigate = useNavigate();
+    const { unreadCount } = useNotifications();
+    const { xp, level, levelName, currentMaxXP } = useData();
     const [searchQuery, setSearchQuery] = useState('');
     const [cartCount, setCartCount] = useState(() => {
         const saved = localStorage.getItem('poup_cart');
@@ -63,9 +67,14 @@ export default function Shop() {
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
-                        <button className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center relative">
+                        <button
+                            onClick={() => navigate('/notifications')}
+                            className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center relative"
+                        >
                             <span className="material-symbols-outlined text-xl text-zinc-400">notifications</span>
-                            <div className="absolute top-2.5 right-3 w-2 h-2 bg-red-500 rounded-full border-2 border-black"></div>
+                            {unreadCount > 0 && (
+                                <div className="absolute top-2.5 right-3 w-2 h-2 bg-red-500 rounded-full border-2 border-black animate-pulse shadow-[0_0_8px_#EF4444]"></div>
+                            )}
                         </button>
                         <button
                             onClick={() => navigate('/cart')}
@@ -157,18 +166,24 @@ export default function Shop() {
 
                 {/* ── User Level / Gamification Card (ML Points Style) ── */}
                 <section className="px-4 mb-10">
-                    <div className="bg-gradient-to-r from-zinc-900 to-black border border-white/5 rounded-[2rem] p-5 flex items-center justify-between">
+                    <div
+                        onClick={() => navigate('/missions')}
+                        className="bg-gradient-to-r from-zinc-900 to-black border border-white/5 rounded-[2rem] p-5 flex items-center justify-between cursor-pointer active:scale-95 transition-all"
+                    >
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-full border-2 border-primary/50 p-1">
-                                <div className="w-full h-full rounded-full bg-zinc-800 flex items-center justify-center font-black text-primary italic">L6</div>
+                                <div className="w-full h-full rounded-full bg-zinc-800 flex items-center justify-center font-black text-primary italic text-xs">L{level}</div>
                             </div>
                             <div>
-                                <h4 className="text-[10px] font-black text-white uppercase tracking-widest">Nível Platinum</h4>
+                                <h4 className="text-[10px] font-black text-white uppercase tracking-widest">{levelName}</h4>
                                 <div className="flex items-center gap-2 mt-1">
                                     <div className="w-24 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-                                        <div className="w-2/3 h-full bg-primary shadow-[0_0_8px_#0FB67F]"></div>
+                                        <div
+                                            className="h-full bg-primary shadow-[0_0_8px_#0FB67F] transition-all duration-1000"
+                                            style={{ width: `${(xp / currentMaxXP) * 100}%` }}
+                                        ></div>
                                     </div>
-                                    <span className="text-[8px] font-bold text-zinc-500">1200 / 1500 XP</span>
+                                    <span className="text-[8px] font-bold text-zinc-500">{xp} / {currentMaxXP} XP</span>
                                 </div>
                             </div>
                         </div>

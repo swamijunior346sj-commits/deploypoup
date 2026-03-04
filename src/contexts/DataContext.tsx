@@ -55,6 +55,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 setLevel(l => {
                     const nextL = l + 1;
                     localStorage.setItem('poup_level', String(nextL));
+                    // Dispatch event for UI
+                    window.dispatchEvent(new CustomEvent('level_up', { detail: { level: nextL } }));
                     return nextL;
                 });
                 const leftover = nextXp - currentMaxXP;

@@ -1,14 +1,42 @@
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../contexts/DataContext';
 import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { PieChart, Pie, Cell, ResponsiveContainer, AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ComposedChart, Line } from 'recharts';
-import React, { useState, useMemo } from 'react';
+import { useNotifications } from '../contexts/NotificationContext';
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { transactions, assets, goals, loading, xp, level, levelName, currentMaxXP, userName } = useData();
+  const { addNotification } = useNotifications();
+
+  // ── Engagement Notifications Simulation ──
+  useEffect(() => {
+    if (!loading) {
+      const timer = setTimeout(() => {
+        // Randomly pick an engagement notification
+        const engagementType = Math.random() > 0.5 ? 'earning' : 'offer';
+
+        if (engagementType === 'earning') {
+          addNotification({
+            title: 'Market Update: Dividendos',
+            message: 'Novos proventos de R$ 124,50 identificados em sua carteira de FIIs.',
+            type: 'success'
+          });
+        } else {
+          addNotification({
+            title: 'Oferta Relâmpago: Arsenal Black',
+            message: 'Um novo upgrade de inteligência está disponível com 40% OFF no Marketplace.',
+            type: 'info'
+          });
+        }
+      }, 3500); // Wait for the "Syncing" vibe to finish
+
+      return () => clearTimeout(timer);
+    }
+  }, [loading]);
 
   const activeTransactions = transactions.filter(t => t.status !== 'anulada');
 
@@ -214,7 +242,7 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* ── Neural Intelligence Hub (Entry to New Analysis) ── */}
+        {/* ── Neural Intelligence Hub ── */}
         <section
           whileTap={{ scale: 0.98 }}
           onClick={() => navigate('/financial-analysis')}
@@ -241,6 +269,47 @@ export default function Dashboard() {
               <span className="material-symbols-outlined text-primary text-xl">arrow_forward_ios</span>
             </motion.div>
           </div>
+        </section>
+
+        {/* ── Gamified Ecosystem (Missions & Ranking) ── */}
+        <section className="grid grid-cols-2 gap-4">
+          <motion.div
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate('/missions')}
+            className="p-6 bg-zinc-950/40 rounded-[2.5rem] border border-white/5 relative overflow-hidden group cursor-pointer h-44 flex flex-col justify-between"
+          >
+            <div className="absolute top-0 right-0 w-16 h-16 bg-blue-500/10 blur-2xl rounded-full group-hover:bg-blue-500/20 transition-all"></div>
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+              <span className="material-symbols-outlined text-blue-400 text-xl">target</span>
+            </div>
+            <div className="space-y-1">
+              <h4 className="text-[11px] font-black text-white uppercase italic">Missões Diárias</h4>
+              <div className="flex items-center gap-2">
+                <div className="flex-1 h-0.5 bg-zinc-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-blue-400 w-2/3 shadow-[0_0_8px_#60a5fa]"></div>
+                </div>
+                <span className="text-[8px] font-black text-blue-400 italic">2/3</span>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate('/ranking')}
+            className="p-6 bg-zinc-950/40 rounded-[2.5rem] border border-white/5 relative overflow-hidden group cursor-pointer h-44 flex flex-col justify-between"
+          >
+            <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/10 blur-2xl rounded-full group-hover:bg-amber-500/20 transition-all"></div>
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+              <span className="material-symbols-outlined text-amber-400 text-xl">trophy</span>
+            </div>
+            <div className="space-y-1">
+              <h4 className="text-[11px] font-black text-white uppercase italic">Elite Ranking</h4>
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black text-amber-500 italic premium-text-glow">#14 Elite</span>
+                <span className="material-symbols-outlined text-[8px] text-zinc-600">trending_up</span>
+              </div>
+            </div>
+          </motion.div>
         </section>
 
         {/* ── Goal in Focus (Elite Progress Ring) ── */}
