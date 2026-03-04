@@ -157,14 +157,16 @@ export default function NewBudget() {
                 </section>
             </main>
 
-            {/* Footer with Fixed Action Button */}
-            <footer className="relative z-10 p-6 mt-auto bg-black/80 backdrop-blur-md sticky bottom-0 border-t border-white/5">
-                <button
-                    onClick={handleSave}
-                    className="w-full py-4 rounded-full border border-primary text-white font-bold text-sm tracking-[0.2em] uppercase hover:bg-primary/10 transition-all active:scale-[0.98] shadow-[0_0_20px_rgba(15,182,127,0.1)]"
-                >
-                    Criar Orçamento
-                </button>
+            {/* Footer with Floating Action Button */}
+            <footer className="fixed bottom-28 left-0 right-0 p-6 z-[210] pointer-events-none">
+                <div className="max-w-lg mx-auto pointer-events-auto">
+                    <button
+                        onClick={handleSave}
+                        className="w-full py-4 rounded-full border border-primary bg-black/80 backdrop-blur-xl text-white font-bold text-sm tracking-[0.2em] uppercase hover:bg-primary/10 transition-all active:scale-[0.98] shadow-[0_15px_30px_rgba(0,0,0,0.5)]"
+                    >
+                        Criar Orçamento
+                    </button>
+                </div>
             </footer>
         </div>
     );

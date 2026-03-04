@@ -17,6 +17,28 @@ export default function TransactionDetails() {
     const [showSuccess, setShowSuccess] = useState(false);
     const [receiptUrl, setReceiptUrl] = useState<string | null>(transaction?.receipt_url || null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [showStatusCockpit, setShowStatusCockpit] = useState(false);
+    const [status, setStatus] = useState<'entregue' | 'anulada' | 'reconciliada' | null>(transaction?.status || null);
+
+    const updateStatus = async (newStatus: 'entregue' | 'anulada' | 'reconciliada' | null) => {
+        setLoading(true);
+        try {
+            const { error } = await supabase
+                .from('transactions')
+                .update({ status: newStatus })
+                .eq('id', transaction.id);
+
+            if (error) throw error;
+            setStatus(newStatus);
+            await refreshData();
+            setShowStatusCockpit(false);
+        } catch (error: any) {
+            console.error('Error updating status:', error);
+            alert('Erro ao recalibrar status');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     if (!transaction) {
         return (
@@ -79,7 +101,7 @@ export default function TransactionDetails() {
             }, 2000);
         } catch (error: any) {
             console.error('Error deleting transaction:', error);
-            alert('Erro ao neutralizar registro');
+            alert('Erro ao excluir registro');
         } finally {
             setLoading(false);
             setShowDeleteConfirm(false);
@@ -88,12 +110,70 @@ export default function TransactionDetails() {
 
     const fmtNum = (v: number) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 
+    const getStatusConfig = (s: string | null) => {
+        switch (s) {
+            case 'entregue': return { label: 'Entregue', icon: 'check_circle', color: 'text-primary', bg: 'bg-primary/10' };
+            case 'anulada': return { label: 'Anulada', icon: 'cancel', color: 'text-red-500', bg: 'bg-red-500/10' };
+            case 'reconciliada': return { label: 'Reconciliada', icon: 'verified', color: 'text-blue-500', bg: 'bg-blue-500/10' };
+            default: return { label: 'Pendente', icon: 'pending', color: 'text-zinc-500', bg: 'bg-zinc-500/10' };
+        }
+    };
+
     return (
         <div className="bg-black text-white font-sans flex flex-col min-h-screen selection:bg-primary/30 relative overflow-hidden">
             {/* ── Background Aura ── */}
             <div className="fixed top-[-10%] right-[-10%] w-[60%] h-[40%] bg-white/5 blur-[120px] rounded-full pointer-events-none z-0 rotate-12"></div>
 
-            <Header showBack title="Detalhes" />
+            <Header
+                showBack
+                title="Detalhes"
+                rightElement={
+                    <button
+                        onClick={() => setShowStatusCockpit(!showStatusCockpit)}
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all border ${showStatusCockpit ? 'bg-primary border-primary text-black' : 'bg-zinc-900 border-white/5 text-zinc-400'}`}
+                    >
+                        <span className="material-symbols-outlined text-xl">settings_accessibility</span>
+                    </button>
+                }
+            />
+
+            {/* Status Cockpit Popover */}
+            <AnimatePresence>
+                {showStatusCockpit && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setShowStatusCockpit(false)}
+                            className="fixed inset-0 z-[250] bg-black/40 backdrop-blur-sm"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 10, x: 10 }}
+                            animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 10, x: 10 }}
+                            className="fixed top-24 right-6 z-[260] w-60 transparent-card-border rounded-3xl bg-black/90 backdrop-blur-2xl p-4 shadow-2xl space-y-2 border border-white/10"
+                        >
+                            <p className="text-[9px] font-black text-zinc-500 uppercase tracking-[0.3em] px-2 mb-3 mt-1 text-center">Protocolo de Registro</p>
+                            {[
+                                { id: 'entregue', label: 'Entregue', icon: 'check_circle', color: 'text-primary' },
+                                { id: 'reconciliada', label: 'Reconciliada', icon: 'verified', color: 'text-blue-500' },
+                                { id: 'anulada', label: 'Anulada', icon: 'cancel', color: 'text-red-500' },
+                                { id: null, label: 'Limpar Status', icon: 'restart_alt', color: 'text-zinc-400' }
+                            ].map((item) => (
+                                <button
+                                    key={item.label}
+                                    onClick={() => updateStatus(item.id as any)}
+                                    className={`w-full flex items-center gap-3 p-3 rounded-2xl transition-all active:scale-95 ${status === item.id ? 'bg-white/5 border border-white/10' : 'hover:bg-white/5'}`}
+                                >
+                                    <span className={`material-symbols-outlined text-xl ${item.color}`}>{item.icon}</span>
+                                    <span className="text-xs font-bold text-zinc-300">{item.label}</span>
+                                </button>
+                            ))}
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
 
             <input
                 type="file"
@@ -110,10 +190,16 @@ export default function TransactionDetails() {
                     animate={{ opacity: 1, y: 0 }}
                     className="transparent-card-border rounded-[2.5rem] bg-zinc-950/20 p-8 flex flex-col items-center text-center relative overflow-hidden"
                 >
-                    <div className="absolute top-0 right-0 p-4">
+                    <div className="absolute top-0 right-0 p-4 flex flex-col items-end gap-2">
                         <span className={`text-[8px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full border ${transaction.type === 'income' ? 'border-primary/20 text-primary bg-primary/5' : (transaction.type === 'expense' ? 'border-red-500/20 text-red-500 bg-red-500/5' : 'border-blue-500/20 text-blue-500 bg-blue-500/5')}`}>
                             {transaction.type === 'income' ? 'Entrada' : (transaction.type === 'expense' ? 'Saída' : 'Transferência')}
                         </span>
+                        {status && (
+                            <span className={`text-[8px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full border border-white/5 bg-white/5 flex items-center gap-1.5 ${getStatusConfig(status).color}`}>
+                                <span className="material-symbols-outlined text-[12px]">{getStatusConfig(status).icon}</span>
+                                {getStatusConfig(status).label}
+                            </span>
+                        )}
                     </div>
 
                     <div className={`w-20 h-20 rounded-[1.8rem] ${transaction.type === 'income' ? 'bg-primary/10 border border-primary/20 text-primary shadow-[0_0_30px_rgba(15,182,127,0.1)]' : (transaction.type === 'expense' ? 'bg-red-500/10 border border-red-500/20 text-red-500' : 'bg-blue-500/10 border border-blue-500/20 text-blue-500')} flex items-center justify-center mb-6`}>
@@ -214,19 +300,19 @@ export default function TransactionDetails() {
             </main>
 
             {/* Premium Footer Actions */}
-            <footer className="fixed bottom-0 left-0 right-0 p-8 glass-nav z-50">
-                <div className="flex space-x-4 max-w-sm mx-auto">
+            <footer className="fixed bottom-28 left-0 right-0 p-8 z-[210] pointer-events-none">
+                <div className="flex space-x-4 max-w-sm mx-auto pointer-events-auto">
                     <button
                         onClick={() => navigate('/edit-transaction', { state: { transaction } })}
-                        className="flex-1 h-16 rounded-[1.8rem] border border-primary/30 bg-primary/5 text-primary font-black tracking-[0.3em] text-[10px] uppercase active:scale-95 transition-all shadow-[0_10px_30px_rgba(15,182,127,0.1)]"
+                        className="flex-1 h-16 rounded-[1.8rem] border border-primary/30 bg-black/80 backdrop-blur-xl text-primary font-black tracking-[0.3em] text-[10px] uppercase active:scale-95 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
                     >
-                        Reajustar
+                        Editar Transação
                     </button>
                     <button
                         onClick={() => setShowDeleteConfirm(true)}
-                        className="flex-1 h-16 rounded-[1.8rem] border border-red-500/20 bg-red-500/5 text-red-500 font-black tracking-[0.3em] text-[10px] uppercase active:scale-95 transition-all"
+                        className="flex-1 h-16 rounded-[1.8rem] border border-red-500/20 bg-black/80 backdrop-blur-xl text-red-500 font-black tracking-[0.3em] text-[10px] uppercase active:scale-95 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
                     >
-                        Neutralizar
+                        Excluir
                     </button>
                 </div>
             </footer>
@@ -235,9 +321,9 @@ export default function TransactionDetails() {
                 isOpen={showDeleteConfirm}
                 onCancel={() => setShowDeleteConfirm(false)}
                 onConfirm={handleDelete}
-                title="NEUTRALIZAR REGISTRO"
-                description="Esta transação será removida permanentemente do seu fluxo estratégico."
-                confirmText="CONFIRMAR"
+                title="EXCLUIR REGISTRO"
+                description="Tem certeza que deseja apagar esta transação? Esta ação não pode ser desfeita."
+                confirmText="EXCLUIR"
                 type="delete"
             />
 
@@ -256,10 +342,10 @@ export default function TransactionDetails() {
                             className="relative w-full max-w-sm transparent-card-border rounded-[3rem] p-12 bg-black/80"
                         >
                             <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-8 mx-auto border border-primary/20 shadow-[0_0_40px_rgba(15,182,127,0.1)]">
-                                <span className="material-symbols-outlined text-5xl text-primary font-bold animate-pulse">verified</span>
+                                <span className="material-symbols-outlined text-5xl text-primary font-bold animate-pulse">delete_forever</span>
                             </div>
-                            <h2 className="text-2xl font-black text-white mb-3 tracking-tighter uppercase italic">Neutralizado</h2>
-                            <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.35em] leading-relaxed">Fluxo recalibrado<br />com sucesso</p>
+                            <h2 className="text-2xl font-black text-white mb-3 tracking-tighter uppercase italic">Excluído</h2>
+                            <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.35em] leading-relaxed">Registro removido<br />com sucesso</p>
                         </motion.div>
                     </motion.div>
                 )}

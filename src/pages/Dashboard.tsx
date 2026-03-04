@@ -1,19 +1,22 @@
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../contexts/DataContext';
 import { useAuth } from '../contexts/AuthContext';
-import { motion } from 'motion/react';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import { motion, AnimatePresence } from 'motion/react';
+import { PieChart, Pie, Cell, ResponsiveContainer, AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import React, { useState, useMemo } from 'react';
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { transactions, assets, goals, loading, xp, level, levelName, currentMaxXP } = useData();
 
+  const activeTransactions = transactions.filter(t => t.status !== 'anulada');
+
   const totalAssetsValue = assets.reduce((acc, asset) => acc + Number(asset.current_value || 0), 0);
-  const totalExpenses = transactions
+  const totalExpenses = activeTransactions
     .filter(t => t.type === 'expense')
     .reduce((acc, t) => acc + Number(t.amount), 0);
-  const totalIncome = transactions
+  const totalIncome = activeTransactions
     .filter(t => t.type === 'income')
     .reduce((acc, t) => acc + Number(t.amount), 0);
 
@@ -35,6 +38,46 @@ export default function Dashboard() {
   }).filter(d => d.value > 0);
 
   const chartData = allocationData.length > 0 ? allocationData : [{ name: 'Sem Dados', value: 1, color: '#18181b' }];
+
+  // Evolution Data Logic
+  const evolutionData = useMemo(() => {
+    const last7Days = [...Array(7)].map((_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - (6 - i));
+      return d.toISOString().split('T')[0];
+    });
+
+    return last7Days.map(date => {
+      const dayExpenses = activeTransactions
+        .filter(t => t.type === 'expense' && t.date.split('T')[0] === date)
+        .reduce((sum, t) => sum + Number(t.amount), 0);
+      const dayIncome = activeTransactions
+        .filter(t => t.type === 'income' && t.date.split('T')[0] === date)
+        .reduce((sum, t) => sum + Number(t.amount), 0);
+
+      return {
+        date: new Date(date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }),
+        Gastos: dayExpenses,
+        Receitas: dayIncome
+      };
+    });
+  }, [activeTransactions]);
+
+  // Calendar Logic
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const calendarDays = useMemo(() => {
+    const start = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+    const end = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
+    const days = [];
+
+    // Padding for first week
+    for (let i = 0; i < start.getDay(); i++) days.push(null);
+
+    for (let i = 1; i <= end.getDate(); i++) {
+      days.push(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i));
+    }
+    return days;
+  }, [currentMonth]);
 
   if (loading) {
     return (
@@ -115,84 +158,162 @@ export default function Dashboard() {
           </motion.div>
         </section>
 
-        {/* ── AI Insights ── */}
-        <motion.section
-          whileTap={{ scale: 0.98 }}
-          onClick={() => navigate('/ai-analysis')}
-          className="cursor-pointer"
-        >
-          <div className="ai-gradient-border p-[1px] rounded-[2.5rem]">
-            <div className="bg-[#050505] rounded-[2.5rem] p-6 flex items-start gap-4">
-              <div className="w-10 h-10 rounded-2xl bg-purple-500/10 flex items-center justify-center flex-shrink-0 animate-pulse-glow border border-purple-500/20">
-                <span className="material-symbols-outlined text-purple-400">auto_awesome</span>
-              </div>
-              <div className="space-y-2">
-                <h4 className="text-[11px] font-black text-white uppercase tracking-widest">IA Insight Profissional</h4>
-                <p className="text-xs text-zinc-400 font-medium leading-relaxed italic">
-                  "Analisei seu fluxo de caixa corporativo: Sua saúde financeira é {netWorth > 0 ? 'ELITE' : 'EM EVOLUÇÃO'}. Considere novos aportes estratégicos."
-                </p>
-                <div className="flex items-center gap-2 text-[9px] font-black text-primary uppercase tracking-widest mt-2">
-                  <span>Ver Análise Completa</span>
-                  <span className="material-symbols-outlined text-xs">arrow_forward</span>
+        {/* ── Level Mastery Card (Minimalist Neon) ── */}
+        <section>
+          <div className="relative p-[1px] rounded-[2rem] overflow-hidden">
+            {/* Neon Border Glow */}
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/50 via-blue-500/50 to-primary/50 animate-shimmer-fast opacity-30"></div>
+
+            <div className="relative bg-zinc-950/90 backdrop-blur-3xl rounded-[2rem] p-6 border border-white/5">
+              <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 shadow-[0_0_15px_rgba(15,182,127,0.2)]">
+                    <span className="text-primary font-black text-xs">LV{level}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em]">{levelName}</span>
+                    <span className="text-[8px] font-bold text-primary uppercase tracking-[0.1em]">Ecossistema Ativo</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="text-[10px] font-black text-white italic tracking-tighter">{xp} / {currentMaxXP} XP</span>
                 </div>
               </div>
-            </div>
-          </div>
-        </motion.section>
 
-        {/* ── Allocation Section ── */}
-        <section className="space-y-6">
-          <div className="flex items-center justify-between px-2">
-            <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em]">Alocação Estratégica</h3>
-            <button onClick={() => navigate('/investments')} className="text-[9px] font-black text-primary uppercase tracking-widest">Detalhes</button>
-          </div>
-
-          <div className="transparent-card-border rounded-[2.5rem] p-8 flex items-center gap-10 min-h-[160px]">
-            <div className="w-32 h-32 flex-shrink-0 relative">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={chartData}
-                    innerRadius={38}
-                    outerRadius={50}
-                    paddingAngle={8}
-                    dataKey="value"
-                    stroke="none"
-                    animationDuration={1500}
-                  >
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <span className="text-[8px] font-black text-zinc-600 uppercase tracking-tighter">Status</span>
-                <span className="text-xs font-bold text-white italic">MASTER</span>
+              <div className="relative h-1.5 w-full bg-zinc-900/50 rounded-full overflow-hidden">
+                {/* Neon Filling */}
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${(xp / currentMaxXP) * 100}%` }}
+                  transition={{ duration: 2, ease: "circOut" }}
+                  className="absolute h-full bg-gradient-to-r from-primary to-blue-500 shadow-[0_0_10px_#0FB67F,0_0_20px_#0FB67F]"
+                />
+                {/* Moving Light Highlight */}
+                <motion.div
+                  animate={{ x: ['-100%', '300%'] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                  className="absolute inset-y-0 w-20 bg-white/20 skew-x-12 blur-sm"
+                />
               </div>
             </div>
+          </div>
+        </section>
 
-            <div className="flex-grow space-y-4">
-              {chartData.slice(0, 3).map((item, idx) => {
-                const percentage = allocationData.length > 0 ? ((item.value / totalAssetsValue) * 100) : 0;
+        {/* ── AI Analysis Section (Transparent with Simulation Background) ── */}
+        <section className="relative h-44 flex items-center justify-center overflow-hidden rounded-[2.5rem] group cursor-pointer" onClick={() => navigate('/ai-analysis')}>
+          {/* AI Simulation Animation Background */}
+          <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 bg-black/40 z-10"></div>
+            <motion.div
+              animate={{
+                scale: [1, 1.2, 1],
+                rotate: [0, 90, 180, 270, 360],
+                opacity: [0.1, 0.2, 0.1]
+              }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-conic from-purple-500/30 via-primary/30 to-blue-500/30 blur-[80px]"
+            />
+            <div className="absolute inset-0 grid grid-cols-6 grid-rows-3 opacity-20">
+              {[...Array(18)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  animate={{ opacity: [0, 0.5, 0] }}
+                  transition={{ duration: Math.random() * 3 + 2, repeat: Infinity, delay: Math.random() * 2 }}
+                  className="border border-white/5"
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="relative z-20 flex flex-col items-center text-center space-y-4 px-8">
+            <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.05)]">
+              <span className="material-symbols-outlined text-3xl text-white group-hover:scale-110 transition-transform">insights</span>
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-sm font-black text-white uppercase tracking-[0.3em]">Análise de Gastos de IA</h3>
+              <p className="text-[9px] text-zinc-400 font-bold uppercase tracking-widest opacity-60">Sincronização em tempo real com o ecossistema</p>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Evolution Charts Section (Expenses & Income) ── */}
+        <section className="space-y-8">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between px-2">
+              <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em]">Evolução de Gastos</h3>
+              <span className="text-[8px] font-black text-red-500 uppercase tracking-widest">Últimos 7 dias</span>
+            </div>
+            <div className="transparent-card-border rounded-[2.5rem] p-6 bg-zinc-950/40 backdrop-blur-md border border-white/10">
+              <ResponsiveContainer width="100%" height={120}>
+                <AreaChart data={evolutionData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorGastos" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="date" tick={{ fontSize: 8, fill: '#52525b' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 8, fill: '#52525b' }} axisLine={false} tickLine={false} hide />
+                  <Tooltip
+                    contentStyle={{ background: '#000', border: '1px solid #1f1f23', borderRadius: '12px', fontSize: '10px' }}
+                    itemStyle={{ color: '#ef4444' }}
+                  />
+                  <Area type="monotone" dataKey="Gastos" stroke="#ef4444" strokeWidth={2} fillOpacity={1} fill="url(#colorGastos)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="flex items-center justify-between px-2">
+              <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em]">Evolução de Receitas</h3>
+              <span className="text-[8px] font-black text-primary uppercase tracking-widest">Últimos 7 dias</span>
+            </div>
+            <div className="transparent-card-border rounded-[2.5rem] p-6 bg-zinc-950/40 backdrop-blur-md border border-white/10">
+              <ResponsiveContainer width="100%" height={120}>
+                <BarChart data={evolutionData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                  <XAxis dataKey="date" tick={{ fontSize: 8, fill: '#52525b' }} axisLine={false} tickLine={false} />
+                  <YAxis axisLine={false} tickLine={false} hide />
+                  <Tooltip
+                    contentStyle={{ background: '#000', border: '1px solid #1f1f23', borderRadius: '12px', fontSize: '10px' }}
+                    itemStyle={{ color: '#0FB67F' }}
+                  />
+                  <Bar dataKey="Receitas" fill="#0FB67F" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Calendar Widget ── */}
+        <section className="space-y-6">
+          <div className="flex items-center justify-between px-2">
+            <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em]">Calendário Estratégico</h3>
+            <span className="text-[9px] font-black text-white uppercase tracking-widest">{currentMonth.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</span>
+          </div>
+
+          <div className="transparent-card-border rounded-[2.5rem] p-8 space-y-6 border-white/5">
+            <div className="grid grid-cols-7 gap-1">
+              {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map(d => (
+                <span key={d} className="text-[8px] font-black text-zinc-700 text-center uppercase">{d}</span>
+              ))}
+              {calendarDays.map((day, i) => {
+                const isToday = day && day.toDateString() === new Date().toDateString();
+                const hasTransaction = day && activeTransactions.some(t => new Date(t.date).toDateString() === day.toDateString());
+
                 return (
-                  <div key={idx} className="flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: item.color }}></div>
-                        <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest truncate max-w-[80px]">{item.name}</span>
-                      </div>
-                      <span className="text-[10px] font-black text-white italic">{percentage.toFixed(0)}%</span>
-                    </div>
-                    <div className="h-[2px] w-full bg-zinc-900 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${percentage}%` }}
-                        transition={{ duration: 1.5, ease: "circOut" }}
-                        className="h-full rounded-full"
-                        style={{ backgroundColor: item.color }}
-                      ></motion.div>
-                    </div>
+                  <div key={i} className="aspect-square flex flex-col items-center justify-center relative">
+                    {day ? (
+                      <>
+                        <span className={`text-[10px] font-bold ${isToday ? 'text-primary' : 'text-zinc-500'}`}>{day.getDate()}</span>
+                        {hasTransaction && (
+                          <div className="w-1 h-1 rounded-full bg-primary/40 mt-1"></div>
+                        )}
+                        {isToday && (
+                          <div className="absolute inset-0 border border-primary/20 rounded-lg"></div>
+                        )}
+                      </>
+                    ) : null}
                   </div>
                 );
               })}
@@ -224,38 +345,7 @@ export default function Dashboard() {
           </div>
         </motion.section>
 
-        {/* ── XP & Leveling ── */}
-        <section className="space-y-6">
-          <div className="transparent-card-border rounded-[2.5rem] p-8 space-y-8 relative overflow-hidden group border-white/5">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl rounded-full -translate-y-1/2 translate-x-1/2"></div>
-            <div className="flex justify-between items-end">
-              <div className="space-y-1">
-                <span className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em]">Progresso de Nível</span>
-                <h3 className="text-4xl font-display font-black text-white italic">Nível {level}</h3>
-              </div>
-              <span className="text-[11px] font-black text-primary uppercase tracking-widest">{xp} / {currentMaxXP} XP</span>
-            </div>
-            <div className="space-y-6">
-              <div className="thin-progress-bar h-[4px] bg-zinc-900/50">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${(xp / currentMaxXP) * 100}%` }}
-                  className="thin-progress-fill"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <motion.div onClick={() => navigate('/missions')} className="bg-zinc-900/40 p-5 rounded-[1.5rem] border border-white/5 flex flex-col gap-3">
-                  <span className="material-symbols-outlined text-primary">verified</span>
-                  <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Missões</span>
-                </motion.div>
-                <motion.div onClick={() => navigate('/shop')} className="bg-zinc-900/40 p-5 rounded-[1.5rem] border border-white/5 flex flex-col gap-3">
-                  <span className="material-symbols-outlined text-amber-500">workspace_premium</span>
-                  <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Loja Elite</span>
-                </motion.div>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* ── Redundant XP Section Removed ── */}
 
         {/* ── Goals ── */}
         <section className="space-y-6 pb-12">

@@ -1,9 +1,10 @@
-import { useNavigate } from 'react-router-dom';
-import React, { useState, useMemo } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useData } from '../contexts/DataContext';
 import Header from '../components/Header';
 import ActionPopup from '../components/ActionPopup';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { motion, AnimatePresence } from 'motion/react';
 
 export default function TransactionHistory() {
     const navigate = useNavigate();
@@ -12,6 +13,9 @@ export default function TransactionHistory() {
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [dateFilter, setDateFilter] = useState<'7d' | '30d' | '90d' | 'all'>('30d');
     const [showWallet, setShowWallet] = useState(false);
+    const [showFabCockpit, setShowFabCockpit] = useState(false);
+
+    const activeTransactions = useMemo(() => transactions.filter(t => t.status !== 'anulada'), [transactions]);
 
     // ── Date filtering ──
     const filteredByDate = useMemo(() => {
@@ -34,10 +38,10 @@ export default function TransactionHistory() {
 
     // ── KPIs ──
     const today = new Date().toISOString().split('T')[0];
-    const spentToday = transactions
+    const spentToday = activeTransactions
         .filter(t => t.type === 'expense' && t.date?.startsWith(today))
         .reduce((acc, t) => acc + Number(t.amount), 0);
-    const earnedToday = transactions
+    const earnedToday = activeTransactions
         .filter(t => t.type === 'income' && t.date?.startsWith(today))
         .reduce((acc, t) => acc + Number(t.amount), 0);
 
@@ -50,23 +54,23 @@ export default function TransactionHistory() {
 
     // ── Wallet Summary ──
     const walletData = useMemo(() => {
-        const allIncome = transactions
+        const allIncome = activeTransactions
             .filter(t => t.type === 'income')
             .reduce((a, t) => a + Number(t.amount), 0);
-        const allExpense = transactions
+        const allExpense = activeTransactions
             .filter(t => t.type === 'expense')
             .reduce((a, t) => a + Number(t.amount), 0);
         const balance = allIncome - allExpense;
-        const totalTransactions = transactions.length;
+        const totalTransactions = activeTransactions.length;
         const thisMonth = new Date().getMonth();
-        const monthExpenses = transactions
+        const monthExpenses = activeTransactions
             .filter(t => t.type === 'expense' && new Date(t.date).getMonth() === thisMonth)
             .reduce((a, t) => a + Number(t.amount), 0);
-        const monthIncome = transactions
+        const monthIncome = activeTransactions
             .filter(t => t.type === 'income' && new Date(t.date).getMonth() === thisMonth)
             .reduce((a, t) => a + Number(t.amount), 0);
         return { allIncome, allExpense, balance, totalTransactions, monthExpenses, monthIncome };
-    }, [transactions]);
+    }, [activeTransactions]);
 
     // ── Period comparison ──
     const periodComparison = useMemo(() => {
@@ -78,22 +82,22 @@ export default function TransactionHistory() {
         const midpoint = new Date(now.getTime() - days * 86400000);
         const start = new Date(midpoint.getTime() - days * 86400000);
 
-        const currentExpenses = transactions
+        const currentExpenses = activeTransactions
             .filter(t => t.type === 'expense' && new Date(t.date) >= midpoint)
             .reduce((a, t) => a + Number(t.amount), 0);
-        const previousExpenses = transactions
+        const previousExpenses = activeTransactions
             .filter(t => t.type === 'expense' && new Date(t.date) >= start && new Date(t.date) < midpoint)
             .reduce((a, t) => a + Number(t.amount), 0);
-        const currentIncome = transactions
+        const currentIncome = activeTransactions
             .filter(t => t.type === 'income' && new Date(t.date) >= midpoint)
             .reduce((a, t) => a + Number(t.amount), 0);
-        const previousIncome = transactions
+        const previousIncome = activeTransactions
             .filter(t => t.type === 'income' && new Date(t.date) >= start && new Date(t.date) < midpoint)
             .reduce((a, t) => a + Number(t.amount), 0);
         const expenseChange = previousExpenses === 0 ? 0 : ((currentExpenses - previousExpenses) / previousExpenses) * 100;
         const incomeChange = previousIncome === 0 ? 0 : ((currentIncome - previousIncome) / previousIncome) * 100;
         return { expenseChange, incomeChange };
-    }, [transactions, dateFilter]);
+    }, [activeTransactions, dateFilter]);
 
     // ── Chart data ──
     const chartData = useMemo(() => {
@@ -317,7 +321,7 @@ export default function TransactionHistory() {
                 {chartData.length > 1 && (
                     <div className="space-y-3">
                         <h3 className="text-[9px] font-black tracking-[0.3em] text-zinc-600 uppercase px-1">Evolução de Gastos</h3>
-                        <div className="transparent-card-border rounded-[2rem] p-6">
+                        <div className="transparent-card-border rounded-[2rem] p-6 bg-zinc-950/40 backdrop-blur-md border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
                             <ResponsiveContainer width="100%" height={130}>
                                 <AreaChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
                                     <defs>
@@ -346,7 +350,7 @@ export default function TransactionHistory() {
                 {chartData.length > 1 && (
                     <div className="space-y-3">
                         <h3 className="text-[9px] font-black tracking-[0.3em] text-zinc-600 uppercase px-1">Evolução de Receitas</h3>
-                        <div className="transparent-card-border rounded-[2rem] p-6">
+                        <div className="transparent-card-border rounded-[2rem] p-6 bg-zinc-950/40 backdrop-blur-md border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
                             <ResponsiveContainer width="100%" height={100}>
                                 <BarChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" />
@@ -418,7 +422,17 @@ export default function TransactionHistory() {
                                             </span>
                                         </div>
                                         <div className="flex flex-col">
-                                            <p className="text-[13px] font-semibold text-text-value leading-tight truncate max-w-[160px]">{transaction.description}</p>
+                                            <div className="flex items-center gap-2">
+                                                <p className={`text-[13px] font-semibold text-text-value leading-tight truncate max-w-[160px] ${transaction.status === 'anulada' ? 'line-through text-zinc-600' : ''}`}>{transaction.description}</p>
+                                                {transaction.status && (
+                                                    <span className={`text-[7px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-md border ${transaction.status === 'entregue' ? 'border-primary/20 text-primary bg-primary/5' :
+                                                        transaction.status === 'reconciliada' ? 'border-blue-500/20 text-blue-500 bg-blue-500/5' :
+                                                            'border-red-500/20 text-red-500 bg-red-500/5'
+                                                        }`}>
+                                                        {transaction.status}
+                                                    </span>
+                                                )}
+                                            </div>
                                             <div className="flex items-center space-x-1.5 mt-0.5">
                                                 <span className="text-[8px] text-zinc-600 font-bold tracking-wider uppercase">{transaction.category}</span>
                                                 <span className="w-[3px] h-[3px] rounded-full bg-zinc-800"></span>
@@ -429,7 +443,7 @@ export default function TransactionHistory() {
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className={`text-[13px] font-bold font-display tracking-tight ${transaction.type === 'income' ? 'text-primary' : (transaction.type === 'transfer' ? 'text-blue-400' : 'text-text-value')
+                                        <p className={`text-[13px] font-bold font-display tracking-tight ${transaction.status === 'anulada' ? 'text-zinc-700' : (transaction.type === 'income' ? 'text-primary' : (transaction.type === 'transfer' ? 'text-blue-400' : 'text-text-value'))
                                             }`}>
                                             {transaction.type === 'expense' ? '-' : (transaction.type === 'income' ? '+' : '')} R$ {Number(transaction.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                                         </p>
@@ -446,13 +460,53 @@ export default function TransactionHistory() {
                 </section>
             </main>
 
-            {/* ── FAB ── */}
-            <div className="fixed bottom-24 right-6 z-[150] levitate-btn">
+            {/* ── FAB & Cockpit ── */}
+            <div className="fixed bottom-28 right-6 z-[210]">
+                <AnimatePresence>
+                    {showFabCockpit && (
+                        <>
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={() => setShowFabCockpit(false)}
+                                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[-1]"
+                            />
+                            <div className="flex flex-col items-end space-y-3 mb-4">
+                                {[
+                                    { id: 'income', label: 'Receita', icon: 'payments', color: 'bg-primary/20 text-primary border-primary/20' },
+                                    { id: 'expense', label: 'Despesa', icon: 'shopping_bag', color: 'bg-red-500/20 text-red-500 border-red-500/20' },
+                                    { id: 'transfer', label: 'Transferência', icon: 'sync_alt', color: 'bg-blue-500/20 text-blue-500 border-blue-500/20' },
+                                ].map((option, idx) => (
+                                    <motion.button
+                                        key={option.id}
+                                        initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.8, y: 20 }}
+                                        transition={{ delay: idx * 0.05 }}
+                                        onClick={() => navigate('/new-transaction', { state: { type: option.id } })}
+                                        className="flex items-center gap-4 group"
+                                    >
+                                        <span className="text-[10px] font-black text-white uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity bg-black/80 px-4 py-2 rounded-xl border border-white/10 backdrop-blur-xl translate-x-2">
+                                            {option.label}
+                                        </span>
+                                        <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center backdrop-blur-xl shadow-2xl transition-all active:scale-95 hover:scale-105 ${option.color}`}>
+                                            <span className="material-symbols-outlined text-[24px]">{option.icon}</span>
+                                        </div>
+                                    </motion.button>
+                                ))}
+                            </div>
+                        </>
+                    )}
+                </AnimatePresence>
+
                 <button
-                    onClick={() => navigate('/new-transaction')}
-                    className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-[0_20px_40px_rgba(15,182,127,0.4)] active:scale-90 transition-all group"
+                    onClick={() => setShowFabCockpit(!showFabCockpit)}
+                    className={`w-16 h-16 rounded-full flex items-center justify-center shadow-[0_20px_40px_rgba(15,182,127,0.4)] active:scale-90 transition-all duration-500 relative z-10 ${showFabCockpit ? 'bg-zinc-900 rotate-45' : 'bg-primary'}`}
                 >
-                    <span className="material-symbols-outlined text-black font-black text-3xl group-hover:scale-110 transition-transform">add</span>
+                    <span className={`material-symbols-outlined font-black text-3xl transition-colors duration-500 ${showFabCockpit ? 'text-primary' : 'text-zinc-950'}`}>
+                        add
+                    </span>
                 </button>
             </div>
         </div>

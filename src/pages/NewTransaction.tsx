@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import React, { useState, useEffect, useMemo } from 'react';
 import Header from '../components/Header';
 import ActionPopup from '../components/ActionPopup';
@@ -8,16 +8,19 @@ import { useData } from '../contexts/DataContext';
 
 export default function NewTransaction() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { user } = useAuth();
     const { assets, categories, subCategories, addXP, refreshData } = useData();
     const [loading, setLoading] = useState(false);
+
+    const initialType = location.state?.type as 'income' | 'expense' | 'transfer' || 'expense';
 
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
     const [categoryId, setCategoryId] = useState('');
     const [subCategoryName, setSubCategoryName] = useState('');
     const [notes, setNotes] = useState('');
-    const [type, setType] = useState<'income' | 'expense' | 'transfer'>('expense');
+    const [type, setType] = useState<'income' | 'expense' | 'transfer'>(initialType);
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [fromAccount, setFromAccount] = useState('');
     const [toAccount, setToAccount] = useState('');

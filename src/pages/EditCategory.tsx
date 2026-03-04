@@ -160,7 +160,7 @@ export default function EditCategory() {
                         onClick={() => setShowDeleteModal(true)}
                         className="w-full h-16 rounded-[2rem] bg-transparent border border-red-500/20 text-red-500 font-display font-black tracking-[0.4em] uppercase text-[11px] hover:bg-red-500/5 active:scale-[0.98] transition-all"
                     >
-                        Neutralizar Categoria
+                        Excluir Categoria
                     </button>
                 </div>
             </main>
@@ -177,9 +177,9 @@ export default function EditCategory() {
 
             <ActionPopup
                 isOpen={showDeleteModal}
-                title="Neutralizar?"
+                title="EXCLUIR?"
                 description={`Tem certeza que deseja apagar a categoria "${name}" e romper suas conexões?`}
-                confirmText="Neutralizar"
+                confirmText="EXCLUIR"
                 type="delete"
                 onConfirm={handleDelete}
                 onCancel={() => setShowDeleteModal(false)}

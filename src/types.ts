@@ -11,6 +11,7 @@ export interface Transaction {
     from_account_id?: string | null;
     to_account_id?: string | null;
     receipt_url?: string | null;
+    status?: 'entregue' | 'anulada' | 'reconciliada' | null;
     created_at: string;
 }
 

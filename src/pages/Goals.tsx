@@ -178,8 +178,8 @@ export default function Goals() {
             {/* Level Comparison Modal */}
             {showLevelModal && (
                 <div className="fixed inset-0 z-[200] flex items-end justify-center px-4 pb-12">
-                    <div className="absolute inset-0 backdrop-blur-premium" onClick={() => setShowLevelModal(false)}></div>
-                    <div className="relative w-full max-w-md transparent-card-border bg-zinc-900/90 rounded-[3rem] overflow-hidden popup-anim">
+                    <div className="absolute inset-0 bg-black/80 backdrop-blur-2xl" onClick={() => setShowLevelModal(false)}></div>
+                    <div className="relative w-full max-w-md transparent-card-border bg-zinc-950 rounded-[3rem] overflow-hidden popup-anim shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/10">
                         <div className="p-8 pb-4">
                             <h3 className="text-2xl font-black text-white mb-1 uppercase tracking-tighter">Escala de Evolução</h3>
                             <p className="text-[10px] text-zinc-500 uppercase font-black tracking-[0.2em] opacity-60">Cada nível desbloqueia novas taxas e benefícios</p>

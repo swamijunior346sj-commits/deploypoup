@@ -174,7 +174,7 @@ export default function ManageCategories() {
             </main>
 
             {/* ── Cockpit FAB Menu ── */}
-            <div className="fixed bottom-10 right-6 z-[2000] flex flex-col items-end gap-4">
+            <div className="fixed bottom-28 right-6 z-[300] flex flex-col items-end gap-4">
                 {showCockpit && (
                     <div className="flex flex-col gap-3 mb-2 animate-in fade-in slide-in-from-bottom-10 duration-500">
                         <button
@@ -223,9 +223,9 @@ export default function ManageCategories() {
 
             <ActionPopup
                 isOpen={showDeleteConfirm}
-                title={`Neutralizar ${deletingType === 'category' ? 'Categoria' : 'Subcategoria'}?`}
+                title={`Excluir ${deletingType === 'category' ? 'Categoria' : 'Subcategoria'}?`}
                 description={deletingType === 'category' ? "Esta ação removerá permanentemente a categoria e suas conexões." : "Deseja remover esta subcategoria do ecossistema?"}
-                confirmText="Confirmar"
+                confirmText="Excluir"
                 type="delete"
                 onConfirm={handleDelete}
                 onCancel={() => setShowDeleteConfirm(false)}
