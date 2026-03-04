@@ -36,6 +36,29 @@ export default function Shop() {
         return saved ? JSON.parse(saved).length : 0;
     });
 
+    const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+    const [shippingAddress, setShippingAddress] = useState(() => {
+        const saved = localStorage.getItem('poup_shipping_address');
+        return saved ? JSON.parse(saved) : null;
+    });
+
+    // Address Form State
+    const [addressForm, setAddressForm] = useState({
+        cep: shippingAddress?.cep || '',
+        street: shippingAddress?.street || '',
+        number: shippingAddress?.number || '',
+        complement: shippingAddress?.complement || '',
+        neighborhood: shippingAddress?.neighborhood || '',
+        city: shippingAddress?.city || '',
+        state: shippingAddress?.state || ''
+    });
+
+    const handleSaveAddress = () => {
+        setShippingAddress(addressForm);
+        localStorage.setItem('poup_shipping_address', JSON.stringify(addressForm));
+        setIsAddressModalOpen(false);
+    };
+
     const categories = [
         { id: 'courses', name: 'Cursos', icon: 'school', color: 'text-blue-500', path: '/courses' },
         { id: 'mentorship', name: 'Mentorias', icon: 'diversity_3', color: 'text-purple-500', path: '/mentorships' },
@@ -62,8 +85,8 @@ export default function Shop() {
                             <span className="material-symbols-outlined text-black font-black">shopping_bag</span>
                         </div>
                         <div>
-                            <h1 className="text-xs font-black text-white uppercase tracking-[0.2em] leading-none mb-1">Luxury</h1>
-                            <h2 className="text-[10px] font-bold text-primary uppercase tracking-[0.3em] leading-none">Marketplace</h2>
+                            <h1 className="text-xs font-black text-white uppercase tracking-[0.2em] leading-none mb-1">Poup</h1>
+                            <h2 className="text-[10px] font-bold text-primary uppercase tracking-[0.3em] leading-none">Shop</h2>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -114,11 +137,21 @@ export default function Shop() {
                 </div>
 
                 {/* Location/Status Bar */}
-                <div className="flex items-center gap-2 px-1">
-                    <span className="material-symbols-outlined text-sm text-primary">location_on</span>
-                    <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Enviar para <span className="text-white">Seu Conhecimento</span></span>
-                    <span className="material-symbols-outlined text-xs text-zinc-600">chevron_right</span>
-                </div>
+                <button
+                    onClick={() => setIsAddressModalOpen(true)}
+                    className="flex items-center justify-between w-full px-1 group"
+                >
+                    <div className="flex items-center gap-2">
+                        <span className="material-symbols-outlined text-sm text-primary group-hover:animate-bounce">location_on</span>
+                        <div className="flex flex-col text-left">
+                            <span className="text-[8px] font-bold text-zinc-500 uppercase tracking-widest leading-tight">Enviar para</span>
+                            <span className="text-[10px] font-black text-white uppercase tracking-widest truncate max-w-[200px]">
+                                {shippingAddress?.street ? `${shippingAddress.street}, ${shippingAddress.number}` : 'Escolher endereço'}
+                            </span>
+                        </div>
+                    </div>
+                    <span className="material-symbols-outlined text-xs text-zinc-600 group-hover:text-primary transition-colors">chevron_right</span>
+                </button>
             </header>
 
             <main className="flex-grow pb-32 relative z-10 overflow-y-auto no-scrollbar">
@@ -305,6 +338,138 @@ export default function Shop() {
                 </section>
 
             </main>
+
+            {/* ── Luxury Address Modal ── */}
+            <AnimatePresence>
+                {isAddressModalOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-md p-4"
+                    >
+                        <motion.div
+                            initial={{ y: "100%", opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: "100%", opacity: 0 }}
+                            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                            className="w-full max-w-md bg-zinc-950/90 border border-white/10 rounded-[2.5rem] p-8 space-y-8 relative overflow-hidden backdrop-blur-2xl shadow-[0_0_50px_rgba(0,0,0,0.8)]"
+                        >
+                            {/* Modal Aura */}
+                            <div className="absolute top-0 right-0 w-40 h-40 bg-primary/10 blur-[80px] rounded-full pointer-events-none"></div>
+
+                            <div className="flex justify-between items-start relative z-10">
+                                <div>
+                                    <h3 className="text-xl font-black text-white italic tracking-tight mb-1">Localização</h3>
+                                    <p className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Defina seu ponto de entrega seguro</p>
+                                </div>
+                                <button
+                                    onClick={() => setIsAddressModalOpen(false)}
+                                    className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors"
+                                >
+                                    <span className="material-symbols-outlined text-sm text-zinc-400">close</span>
+                                </button>
+                            </div>
+
+                            <div className="space-y-5 relative z-10">
+                                {/* CEP */}
+                                <div className="space-y-2 relative">
+                                    <label className="text-[8px] font-black text-zinc-500 uppercase tracking-widest ml-1">CEP</label>
+                                    <input
+                                        type="text"
+                                        placeholder="00000-000"
+                                        className="w-full bg-black/50 border border-white/5 rounded-2xl px-4 py-3 text-sm font-bold text-white placeholder:text-zinc-700 focus:border-primary/50 focus:outline-none transition-colors"
+                                        value={addressForm.cep}
+                                        onChange={(e) => setAddressForm({ ...addressForm, cep: e.target.value })}
+                                    />
+                                    <span className="material-symbols-outlined absolute right-4 top-8 text-zinc-600 text-sm">search</span>
+                                </div>
+
+                                {/* Street & Number */}
+                                <div className="grid grid-cols-3 gap-3">
+                                    <div className="space-y-2 col-span-2">
+                                        <label className="text-[8px] font-black text-zinc-500 uppercase tracking-widest ml-1">Logradouro</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Ex: Av. Paulista"
+                                            className="w-full bg-black/50 border border-white/5 rounded-2xl px-4 py-3 text-sm font-bold text-white placeholder:text-zinc-700 focus:border-primary/50 focus:outline-none transition-colors"
+                                            value={addressForm.street}
+                                            onChange={(e) => setAddressForm({ ...addressForm, street: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[8px] font-black text-zinc-500 uppercase tracking-widest ml-1">Nº</label>
+                                        <input
+                                            type="text"
+                                            placeholder="1000"
+                                            className="w-full bg-black/50 border border-white/5 rounded-2xl px-4 py-3 text-sm font-bold text-white placeholder:text-zinc-700 focus:border-primary/50 focus:outline-none transition-colors text-center"
+                                            value={addressForm.number}
+                                            onChange={(e) => setAddressForm({ ...addressForm, number: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Complement & Neighborhood */}
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-2">
+                                        <label className="text-[8px] font-black text-zinc-500 uppercase tracking-widest ml-1">Complemento</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Apto 101"
+                                            className="w-full bg-black/50 border border-white/5 rounded-2xl px-4 py-3 text-sm font-bold text-white placeholder:text-zinc-700 focus:border-primary/50 focus:outline-none transition-colors"
+                                            value={addressForm.complement}
+                                            onChange={(e) => setAddressForm({ ...addressForm, complement: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[8px] font-black text-zinc-500 uppercase tracking-widest ml-1">Bairro</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Bela Vista"
+                                            className="w-full bg-black/50 border border-white/5 rounded-2xl px-4 py-3 text-sm font-bold text-white placeholder:text-zinc-700 focus:border-primary/50 focus:outline-none transition-colors"
+                                            value={addressForm.neighborhood}
+                                            onChange={(e) => setAddressForm({ ...addressForm, neighborhood: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* City & State */}
+                                <div className="grid grid-cols-3 gap-3">
+                                    <div className="col-span-2 space-y-2">
+                                        <label className="text-[8px] font-black text-zinc-500 uppercase tracking-widest ml-1">Cidade</label>
+                                        <input
+                                            type="text"
+                                            placeholder="São Paulo"
+                                            className="w-full bg-black/50 border border-white/5 rounded-2xl px-4 py-3 text-sm font-bold text-white placeholder:text-zinc-700 focus:border-primary/50 focus:outline-none transition-colors"
+                                            value={addressForm.city}
+                                            onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[8px] font-black text-zinc-500 uppercase tracking-widest ml-1">UF</label>
+                                        <input
+                                            type="text"
+                                            placeholder="SP"
+                                            maxLength={2}
+                                            className="w-full bg-black/50 border border-white/5 rounded-2xl px-4 py-3 text-sm font-bold text-white placeholder:text-zinc-700 focus:border-primary/50 focus:outline-none transition-colors text-center uppercase"
+                                            value={addressForm.state}
+                                            onChange={(e) => setAddressForm({ ...addressForm, state: e.target.value.toUpperCase() })}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={handleSaveAddress}
+                                className="w-full py-4 rounded-2xl bg-white text-black font-black uppercase tracking-[0.2em] text-[10px] hover:bg-primary transition-all active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)] relative z-10 flex items-center justify-center gap-2 group"
+                            >
+                                Sincronizar Coordenadas
+                                <span className="material-symbols-outlined text-[12px] group-hover:translate-x-1 transition-transform">arrow_forward_ios</span>
+                            </button>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

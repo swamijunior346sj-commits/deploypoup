@@ -8,7 +8,7 @@ const navTabs = [
   { path: '/transactions', label: 'Transações', icon: 'swap_vert' },
   { path: '/arsenal', label: 'Arsenal', icon: 'token' },
   { path: '/investments', label: 'Carteira', icon: 'account_balance_wallet' },
-  { path: '/shop', label: 'Shop', icon: 'workspace_premium' },
+  { path: '/shop', label: 'Shop', icon: 'storefront' },
 ];
 
 export default function Layout() {
