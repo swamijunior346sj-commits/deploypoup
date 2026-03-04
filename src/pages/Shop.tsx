@@ -157,43 +157,64 @@ export default function Shop() {
                 </div>
             </div>
 
-            <div className="px-6 mb-6">
-                <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-white text-lg font-bold">Explorar</h3>
-                </div>
+            <div className="px-6 space-y-12 mb-20 overflow-y-auto">
+                {categories.map((cat) => {
+                    const catProducts = allProducts.filter(p =>
+                        p.type.toLowerCase() === cat.name.toLowerCase() ||
+                        (cat.id === 'mentorship' && p.type === 'Mentoria')
+                    );
 
-                <div className="grid grid-cols-1 gap-4">
-                    {allProducts.map((product) => (
-                        <div
-                            key={product.id}
-                            onClick={() => navigate(`/ebook/${product.id}`)}
-                            className="flex gap-4 p-4 rounded-3xl bg-surface/30 border border-white/5 hover:border-primary/20 transition-all active:scale-[0.98] cursor-pointer group"
-                        >
-                            <div className="relative w-24 h-28 rounded-2xl overflow-hidden shrink-0 bg-zinc-900 border border-white/5">
-                                <img src={product.image} alt={product.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                                {product.tag && (
-                                    <div className="absolute top-2 left-2 px-1.5 py-0.5 bg-primary text-black text-[8px] font-bold uppercase tracking-widest rounded shadow-[0_0_10px_rgba(15,182,127,0.4)]">
-                                        {product.tag}
+                    if (catProducts.length === 0) return null;
+
+                    return (
+                        <section key={cat.id} className="space-y-6">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                                        <span className="material-symbols-outlined text-primary text-xl font-bold">{cat.icon}</span>
                                     </div>
-                                )}
-                            </div>
-                            <div className="flex flex-col justify-center flex-1">
-                                <span className="text-[10px] text-primary font-bold uppercase tracking-widest opacity-80 mb-1">{product.type}</span>
-                                <h4 className="text-off-white text-sm font-bold leading-snug line-clamp-2">{product.title}</h4>
-                                <span className="text-zinc-500 text-[11px] mt-1">{product.author}</span>
-                                <div className="mt-auto flex items-center justify-between">
-                                    <span className="text-white font-bold">{product.price}</span>
-                                    <button
-                                        onClick={(e) => addToCart(product, e)}
-                                        className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-black transition-all active:scale-90 group-hover:border-primary/40 shadow-lg"
-                                    >
-                                        <span className="material-symbols-outlined !text-[20px]">shopping_cart</span>
-                                    </button>
+                                    <h3 className="text-white text-lg font-bold tracking-tight uppercase tracking-[0.1em]">{cat.name}</h3>
                                 </div>
+                                <span className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">{catProducts.length} Itens</span>
                             </div>
-                        </div>
-                    ))}
-                </div>
+
+                            <div className="grid grid-cols-1 gap-4">
+                                {catProducts.map((product) => (
+                                    <div
+                                        key={product.id}
+                                        onClick={() => navigate(`/ebook/${product.id}`)}
+                                        className="flex gap-4 p-4 rounded-3xl bg-surface/30 border border-white/5 hover:border-primary/20 transition-all active:scale-[0.98] cursor-pointer group relative overflow-hidden"
+                                    >
+                                        <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-primary/5 blur-2xl rounded-full"></div>
+                                        <div className="relative w-24 h-28 rounded-2xl overflow-hidden shrink-0 bg-zinc-900 border border-white/5">
+                                            <img src={product.image} alt={product.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                            {product.tag && (
+                                                <div className="absolute top-2 left-2 px-1.5 py-0.5 bg-primary text-black text-[8px] font-bold uppercase tracking-widest rounded shadow-[0_0_10px_rgba(15,182,127,0.4)]">
+                                                    {product.tag}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="flex flex-col justify-center flex-1 relative z-10">
+                                            <span className="text-[10px] text-primary font-bold uppercase tracking-widest mb-1">{product.author}</span>
+                                            <h4 className="text-off-white text-sm font-bold leading-snug line-clamp-2 mb-1">{product.title}</h4>
+                                            <div className="mt-auto flex items-center justify-between">
+                                                <div className="flex flex-col">
+                                                    <span className="text-white font-black text-lg">{product.price}</span>
+                                                </div>
+                                                <button
+                                                    onClick={(e) => addToCart(product, e)}
+                                                    className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 text-primary flex items-center justify-center hover:bg-primary hover:text-black transition-all active:scale-90 shadow-lg"
+                                                >
+                                                    <span className="material-symbols-outlined !text-[20px] font-black">add_shopping_cart</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    );
+                })}
             </div>
         </div>
     );

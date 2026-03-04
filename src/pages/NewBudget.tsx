@@ -8,7 +8,7 @@ export default function NewBudget() {
     const [amount, setAmount] = useState(2500);
     const [showSuccess, setShowSuccess] = useState(false);
 
-    const totalAssets = useMemo(() => assets.reduce((acc, a) => acc + Number(a.current_value || 0), 0), [assets]);
+    const totalAssets = useMemo(() => assets.reduce((acc, a) => acc + parseFloat(a.amount?.toString() || a.value?.toString() || '0'), 0), [assets]);
     const totalExpenses = useMemo(() =>
         transactions.filter(t => t.type === 'expense').reduce((acc, t) => acc + Number(t.amount), 0)
         , [transactions]);

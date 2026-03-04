@@ -1,18 +1,55 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
+import { useData } from '../contexts/DataContext';
+import ActionPopup from '../components/ActionPopup';
 
 export default function EditSubCategory() {
     const navigate = useNavigate();
     const location = useLocation();
-    const subcategory = location.state?.subcategory || { id: '1', name: 'Aluguel', parentCategory: 'Moradia' };
+    const { categories, refreshData } = useData();
+    const subCategory = location.state?.subcategory || null;
 
-    const [name, setName] = useState(subcategory.name);
-    const [selectedParent, setSelectedParent] = useState(subcategory.parentCategory || 'Moradia');
+    if (!subCategory) {
+        navigate('/manage-categories');
+        return null;
+    }
 
-    const mainCategories = [
-        'Moradia', 'Alimentação', 'Transporte', 'Lazer',
-        'Saúde', 'Educação', 'Investimentos', 'Assinaturas', 'Outros'
-    ];
+    const [name, setName] = useState(subCategory.name);
+    const [selectedParentId, setSelectedParentId] = useState(subCategory.category_id);
+    const [loading, setLoading] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    const handleSave = async () => {
+        if (!name) return;
+        setLoading(true);
+        try {
+            const { error } = await supabase.from('subcategories').update({
+                name,
+                category_id: selectedParentId
+            }).eq('id', subCategory.id);
+
+            if (error) throw error;
+            await refreshData();
+            setShowSuccess(true);
+        } catch (err) {
+            console.error('Error updating subcategory:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDelete = async () => {
+        try {
+            const { error } = await supabase.from('subcategories').delete().eq('id', subCategory.id);
+            if (error) throw error;
+            await refreshData();
+            navigate('/manage-categories');
+        } catch (err) {
+            console.error('Error deleting subcategory:', err);
+        }
+    };
 
     return (
         <div className="bg-black text-white font-sans min-h-screen flex flex-col">
@@ -27,7 +64,7 @@ export default function EditSubCategory() {
                 <div className="w-10"></div>
             </header>
 
-            <main className="flex-grow px-8 pb-32">
+            <main className="flex-grow px-8 pb-32 pt-4">
                 <div className="bg-[#121212] border border-zinc-800/50 rounded-2xl p-6 mb-8">
                     <label className="block text-[10px] font-bold tracking-[0.15em] text-zinc-500 uppercase mb-4">Nome da Subcategoria</label>
                     <input
@@ -43,12 +80,12 @@ export default function EditSubCategory() {
                     <label className="text-[10px] font-bold text-zinc-500 tracking-[0.15em] uppercase block mb-1">Categoria Principal</label>
                     <div className="relative w-full">
                         <select
-                            value={selectedParent}
-                            onChange={(e) => setSelectedParent(e.target.value)}
+                            value={selectedParentId}
+                            onChange={(e) => setSelectedParentId(e.target.value)}
                             className="w-full bg-transparent border-none border-b border-zinc-800 rounded-none py-3 text-sm font-semibold text-white focus:ring-0 appearance-none bg-none pr-8 focus:border-primary transition-colors"
                         >
-                            {mainCategories.map((cat) => (
-                                <option key={cat} className="bg-black text-white" value={cat}>{cat}</option>
+                            {categories.map((cat) => (
+                                <option key={cat.id} className="bg-black text-white" value={cat.id}>{cat.name}</option>
                             ))}
                         </select>
                         <span className="material-symbols-outlined absolute right-0 bottom-3 text-zinc-600 pointer-events-none">expand_more</span>
@@ -57,25 +94,40 @@ export default function EditSubCategory() {
 
                 <div className="space-y-4">
                     <button
-                        onClick={() => navigate(-1)}
+                        onClick={handleSave}
+                        disabled={loading}
                         className="w-full bg-primary py-5 rounded-2xl text-black font-display font-bold tracking-[0.1em] uppercase text-sm shadow-lg shadow-primary/20 hover:opacity-90 active:scale-[0.98] transition-all"
                     >
-                        SALVAR ALTERAÇÕES
+                        {loading ? 'SALVANDO...' : 'SALVAR ALTERAÇÕES'}
                     </button>
                     <button
+                        onClick={() => setShowDeleteModal(true)}
                         className="w-full bg-transparent border border-zinc-800 py-5 rounded-2xl text-zinc-500 font-display font-bold tracking-[0.1em] uppercase text-sm hover:bg-zinc-900/50 active:scale-[0.98] transition-all"
                     >
                         EXCLUIR SUBCATEGORIA
                     </button>
                 </div>
-
-                <footer className="mt-20 py-4 text-center">
-                    <div className="flex items-center justify-center space-x-2 text-zinc-800">
-                        <span className="material-symbols-outlined text-base">auto_awesome</span>
-                        <p className="text-[9px] font-semibold tracking-[0.2em] uppercase"></p>
-                    </div>
-                </footer>
             </main>
+
+            <ActionPopup
+                isOpen={showSuccess}
+                title="Salvo!"
+                description="Subcategoria atualizada com sucesso."
+                confirmText="OK"
+                type="success"
+                onConfirm={() => navigate('/manage-categories')}
+                onCancel={() => navigate('/manage-categories')}
+            />
+
+            <ActionPopup
+                isOpen={showDeleteModal}
+                title="Excluir?"
+                description={`Deseja remover a subcategoria "${name}"?`}
+                confirmText="Excluir"
+                type="delete"
+                onConfirm={handleDelete}
+                onCancel={() => setShowDeleteModal(false)}
+            />
         </div>
     );
 }

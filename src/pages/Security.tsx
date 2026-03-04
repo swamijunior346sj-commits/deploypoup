@@ -1,12 +1,21 @@
-import React from 'react';
+import { useState } from 'react';
 import Header from '../components/Header';
 import Card from '../components/Card';
 import { useAuth } from '../contexts/AuthContext';
 import { useData } from '../contexts/DataContext';
+import ActionPopup from '../components/ActionPopup';
 
 export default function Security() {
   const { user } = useAuth();
   const { clearAllData } = useData();
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+
+  const handleDeleteAll = async () => {
+    await clearAllData();
+    setShowDeletePopup(false);
+    setShowSuccessPopup(true);
+  };
 
   return (
     <div className="space-y-6">
@@ -79,12 +88,7 @@ export default function Security() {
                 </div>
               </div>
               <button
-                onClick={async () => {
-                  if (window.confirm('Tem certeza que deseja apagar todos os seus dados? Esta ação é irreversível.')) {
-                    await clearAllData();
-                    alert('Dados limpos com sucesso!');
-                  }
-                }}
+                onClick={() => setShowDeletePopup(true)}
                 className="w-full mt-6 py-4 rounded-xl border border-[#FF4B4B]/30 text-[#FF4B4B] font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-[#FF4B4B]/10 active:scale-95 transition-all"
               >
                 Confirmar Reset Total
@@ -93,6 +97,26 @@ export default function Security() {
           </div>
         </main>
       </div>
+
+      <ActionPopup
+        isOpen={showDeletePopup}
+        title="Deseja apagar tudo?"
+        description="Esta ação é irreversível. Você perderá todo o histórico de transações, investimentos e metas."
+        confirmText="Apagar Tudo"
+        type="delete"
+        onConfirm={handleDeleteAll}
+        onCancel={() => setShowDeletePopup(false)}
+      />
+
+      <ActionPopup
+        isOpen={showSuccessPopup}
+        title="Dados Apagados"
+        description="Seu perfil foi reiniciado com sucesso. Sincronização concluída."
+        confirmText="Entendido"
+        type="success"
+        onConfirm={() => setShowSuccessPopup(false)}
+        onCancel={() => setShowSuccessPopup(false)}
+      />
     </div>
   );
 }

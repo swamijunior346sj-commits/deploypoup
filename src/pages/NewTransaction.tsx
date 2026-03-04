@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Header from '../components/Header';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -8,37 +8,37 @@ import { useData } from '../contexts/DataContext';
 export default function NewTransaction() {
     const navigate = useNavigate();
     const { user } = useAuth();
-    const { assets, addXP } = useData();
+    const { assets, categories, subCategories, addXP, refreshData } = useData();
     const [loading, setLoading] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
 
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
-    const [category, setCategory] = useState('Alimentação');
-    const [subCategory, setSubCategory] = useState('');
+    const [categoryId, setCategoryId] = useState('');
+    const [subCategoryName, setSubCategoryName] = useState('');
     const [notes, setNotes] = useState('');
     const [type, setType] = useState<'income' | 'expense' | 'transfer'>('expense');
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [fromAccount, setFromAccount] = useState('');
     const [toAccount, setToAccount] = useState('');
 
-    const categories: Record<string, string[]> = {
-        'Alimentação': ['Supermercado', 'Restaurante', 'Lanches', 'IFood'],
-        'Moradia': ['Aluguel', 'Condomínio', 'Luz', 'Água', 'Internet'],
-        'Transporte': ['Gasolina', 'Uber', 'Ônibus', 'Manutenção'],
-        'Lazer': ['Cinema', 'Viagem', 'Shows', 'Hobbies'],
-        'Saúde': ['Farmácia', 'Consulta', 'Exames', 'Academia'],
-        'Educação': ['Cursos', 'Livros', 'Faculdade'],
-        'Investimentos': ['Ações', 'FIIs', 'Cripto', 'Reserva'],
-        'Assinaturas': ['Netflix', 'Spotify', 'iCloud'],
-        'Outros': ['Presentes', 'Taxas', 'Diversos']
-    };
+    useEffect(() => {
+        if (categories.length > 0 && !categoryId) {
+            setCategoryId(categories[0].id);
+        }
+    }, [categories]);
+
+    const filteredSubCategories = useMemo(() => {
+        return subCategories.filter(s => s.category_id === categoryId);
+    }, [subCategories, categoryId]);
 
     useEffect(() => {
-        if (categories[category]) {
-            setSubCategory(categories[category][0]);
+        if (filteredSubCategories.length > 0) {
+            setSubCategoryName(filteredSubCategories[0].name);
+        } else {
+            setSubCategoryName('');
         }
-    }, [category]);
+    }, [filteredSubCategories]);
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -55,12 +55,14 @@ export default function NewTransaction() {
 
         setLoading(true);
         try {
+            const selectedCategory = categories.find(c => c.id === categoryId);
+
             const transactionData = {
                 user_id: user.id,
                 amount: parsedAmount,
                 description,
-                category: type === 'transfer' ? 'Transferência' : category,
-                subcategory: type === 'transfer' ? '' : subCategory,
+                category: type === 'transfer' ? 'Transferência' : (selectedCategory?.name || 'Geral'),
+                subcategory: type === 'transfer' ? '' : subCategoryName,
                 notes,
                 type,
                 date,
@@ -73,12 +75,12 @@ export default function NewTransaction() {
             if (error) throw error;
 
             addXP(2);
+            await refreshData();
             setShowSuccess(true);
 
-            // Re-fetch data to reflect changes immediately
             setTimeout(() => {
                 setShowSuccess(false);
-                navigate('/transactions'); // Navigate to history to see the new entry
+                navigate('/transactions');
             }, 2000);
         } catch (error: any) {
             console.error('Error saving transaction:', error);
@@ -109,12 +111,12 @@ export default function NewTransaction() {
 
             <main className="flex-grow px-8 pb-32 mt-2">
                 <form className="space-y-8" onSubmit={handleSave}>
-                    <div className="relative py-4">
+                    <div className="relative py-4 text-center">
                         <label className="text-[10px] font-bold text-zinc-500 tracking-[0.15em] uppercase block mb-1">Valor</label>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-center gap-3">
                             <span className="text-primary font-bold text-2xl">R$</span>
                             <input
-                                className="ios-underlined-input w-full py-2 text-4xl font-bold placeholder:text-zinc-800 text-white focus:ring-0"
+                                className="w-1/2 bg-transparent border-none py-2 text-4xl font-bold placeholder:text-zinc-800 text-white focus:ring-0 text-center"
                                 placeholder="0,00"
                                 type="text"
                                 value={amount}
@@ -122,6 +124,7 @@ export default function NewTransaction() {
                                 required
                             />
                         </div>
+                        <div className="h-[2px] w-1/3 mx-auto bg-primary/20 mt-1"></div>
                     </div>
 
                     <div className="flex gap-2 p-1 bg-white/[0.03] rounded-2xl border border-white/5">
@@ -153,8 +156,8 @@ export default function NewTransaction() {
                         <div className="flex items-center gap-3">
                             <span className="material-symbols-outlined text-zinc-500 text-xl">edit_note</span>
                             <input
-                                className="ios-underlined-input w-full py-3 text-sm placeholder:text-zinc-700 text-white focus:ring-0"
-                                placeholder="Ex: Supermercado Semanal"
+                                className="w-full py-3 text-sm placeholder:text-zinc-700 text-white focus:ring-0 bg-transparent border-none border-b border-zinc-900 rounded-none focus:border-primary transition-colors"
+                                placeholder="Ex: Almoço de Domingo"
                                 type="text"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
@@ -170,12 +173,12 @@ export default function NewTransaction() {
                                 <div className="flex items-center gap-3">
                                     <span className="material-symbols-outlined text-zinc-500">upload</span>
                                     <select
-                                        className="ios-underlined-input w-full py-3 text-sm text-white focus:ring-0 appearance-none bg-transparent"
+                                        className="w-full py-3 text-sm text-white focus:ring-0 appearance-none bg-transparent border-none border-b border-zinc-900 rounded-none focus:border-primary"
                                         value={fromAccount}
                                         onChange={(e) => setFromAccount(e.target.value)}
                                         required
                                     >
-                                        <option value="">Selecione a conta</option>
+                                        <option value="" className="bg-black">Selecione a conta</option>
                                         {assets.map(a => <option key={a.id} className="bg-black" value={a.id}>{a.name}</option>)}
                                     </select>
                                 </div>
@@ -185,12 +188,12 @@ export default function NewTransaction() {
                                 <div className="flex items-center gap-3">
                                     <span className="material-symbols-outlined text-zinc-500">download</span>
                                     <select
-                                        className="ios-underlined-input w-full py-3 text-sm text-white focus:ring-0 appearance-none bg-transparent"
+                                        className="w-full py-3 text-sm text-white focus:ring-0 appearance-none bg-transparent border-none border-b border-zinc-900 rounded-none focus:border-primary"
                                         value={toAccount}
                                         onChange={(e) => setToAccount(e.target.value)}
                                         required
                                     >
-                                        <option value="">Selecione a conta</option>
+                                        <option value="" className="bg-black">Selecione a conta</option>
                                         {assets.map(a => <option key={a.id} className="bg-black" value={a.id}>{a.name}</option>)}
                                     </select>
                                 </div>
@@ -200,46 +203,40 @@ export default function NewTransaction() {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="relative">
                                 <label className="text-[10px] font-bold text-zinc-500 tracking-[0.15em] uppercase block mb-1">Categoria</label>
-                                <div className="flex items-center gap-2">
-                                    <select
-                                        className="ios-underlined-input w-full py-3 text-sm text-white focus:ring-0 appearance-none bg-transparent"
-                                        value={category}
-                                        onChange={(e) => setCategory(e.target.value)}
-                                    >
-                                        {Object.keys(categories).map(cat => (
-                                            <option key={cat} className="bg-black" value={cat}>{cat}</option>
-                                        ))}
-                                    </select>
-                                </div>
+                                <select
+                                    className="w-full py-3 text-sm text-white focus:ring-0 appearance-none bg-transparent border-none border-b border-zinc-900 rounded-none focus:border-primary"
+                                    value={categoryId}
+                                    onChange={(e) => setCategoryId(e.target.value)}
+                                >
+                                    {categories.map(cat => (
+                                        <option key={cat.id} className="bg-black" value={cat.id}>{cat.name}</option>
+                                    ))}
+                                </select>
                             </div>
                             <div className="relative">
                                 <label className="text-[10px] font-bold text-zinc-500 tracking-[0.15em] uppercase block mb-1">Subcategoria</label>
-                                <div className="flex items-center gap-2">
-                                    <select
-                                        className="ios-underlined-input w-full py-3 text-sm text-white focus:ring-0 appearance-none bg-transparent"
-                                        value={subCategory}
-                                        onChange={(e) => setSubCategory(e.target.value)}
-                                    >
-                                        {categories[category]?.map(sub => (
-                                            <option key={sub} className="bg-black" value={sub}>{sub}</option>
-                                        ))}
-                                    </select>
-                                </div>
+                                <select
+                                    className="w-full py-3 text-sm text-white focus:ring-0 appearance-none bg-transparent border-none border-b border-zinc-900 rounded-none focus:border-primary"
+                                    value={subCategoryName}
+                                    onChange={(e) => setSubCategoryName(e.target.value)}
+                                >
+                                    <option value="" className="bg-black">Geral</option>
+                                    {filteredSubCategories.map(sub => (
+                                        <option key={sub.id} className="bg-black" value={sub.name}>{sub.name}</option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
                     )}
 
                     <div className="relative">
-                        <label className="text-[10px] font-bold text-zinc-500 tracking-[0.15em] uppercase block mb-1">Observações (Opcional)</label>
-                        <div className="flex items-start gap-3 mt-2">
-                            <span className="material-symbols-outlined text-zinc-500 text-xl mt-2">notes</span>
-                            <textarea
-                                className="ios-underlined-input w-full py-3 text-sm placeholder:text-zinc-700 text-white focus:ring-0 bg-transparent min-h-[80px]"
-                                placeholder="Notas adicionais sobre esta transação..."
-                                value={notes}
-                                onChange={(e) => setNotes(e.target.value)}
-                            />
-                        </div>
+                        <label className="text-[10px] font-bold text-zinc-500 tracking-[0.15em] uppercase block mb-1">Notas (Opcional)</label>
+                        <textarea
+                            className="w-full py-3 text-sm placeholder:text-zinc-700 text-white focus:ring-0 bg-transparent border-none border-b border-zinc-900 rounded-none focus:border-primary min-h-[60px]"
+                            placeholder="Notas adicionais..."
+                            value={notes}
+                            onChange={(e) => setNotes(e.target.value)}
+                        />
                     </div>
 
                     <div className="relative">
@@ -247,7 +244,7 @@ export default function NewTransaction() {
                         <div className="flex items-center gap-3">
                             <span className="material-symbols-outlined text-zinc-500 text-xl">calendar_today</span>
                             <input
-                                className="ios-underlined-input w-full py-3 text-sm text-white focus:ring-0 appearance-none bg-transparent"
+                                className="w-full py-3 text-sm text-white focus:ring-0 appearance-none bg-transparent border-none border-b border-zinc-900 rounded-none [color-scheme:dark]"
                                 type="date"
                                 value={date}
                                 onChange={(e) => setDate(e.target.value)}
@@ -255,9 +252,9 @@ export default function NewTransaction() {
                         </div>
                     </div>
 
-                    <div className="pt-8 space-y-4">
+                    <div className="pt-8">
                         <button
-                            className="w-full bg-transparent border-2 border-primary text-primary py-5 rounded-2xl font-bold text-xs tracking-[0.3em] uppercase active:scale-[0.98] active:bg-primary/5 transition-all flex items-center justify-center disabled:opacity-50"
+                            className="w-full bg-primary py-5 rounded-2xl font-bold text-black text-xs tracking-[0.3em] uppercase active:scale-[0.98] shadow-[0_0_20px_#0fb67f30] transition-all disabled:opacity-50"
                             type="submit"
                             disabled={loading}
                         >

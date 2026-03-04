@@ -1,11 +1,19 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
+import { useData } from '../contexts/DataContext';
+import ActionPopup from '../components/ActionPopup';
 
 export default function NewCategory() {
     const navigate = useNavigate();
+    const { user } = useAuth();
+    const { refreshData } = useData();
     const [name, setName] = useState('');
     const [selectedIcon, setSelectedIcon] = useState('category');
     const [selectedColor, setSelectedColor] = useState('#0fb67f');
+    const [loading, setLoading] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
 
     const icons = [
         'category', 'shopping_cart', 'directions_car', 'restaurant',
@@ -17,6 +25,30 @@ export default function NewCategory() {
         '#0fb67f', '#3b82f6', '#a855f7', '#ec4899',
         '#ef4444', '#f59e0b', '#eab308', '#14b8a6'
     ];
+
+    const handleSave = async () => {
+        if (!user || !name) return;
+        setLoading(true);
+        try {
+            const { error } = await supabase.from('categories').insert([
+                {
+                    user_id: user.id,
+                    name,
+                    icon: selectedIcon,
+                    color: selectedColor,
+                    planned_budget: 0
+                }
+            ]);
+
+            if (error) throw error;
+            await refreshData();
+            setShowSuccess(true);
+        } catch (err) {
+            console.error('Error creating category:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="bg-black text-white font-sans min-h-screen flex flex-col">
@@ -80,12 +112,12 @@ export default function NewCategory() {
 
                 <div className="space-y-4">
                     <button
-                        onClick={() => navigate(-1)}
-                        disabled={!name}
-                        className={`w-full py-5 rounded-2xl text-black font-display font-bold tracking-[0.1em] uppercase text-sm shadow-lg transition-all ${name ? 'bg-primary shadow-primary/20 hover:opacity-90 active:scale-[0.98]' : 'bg-zinc-800 text-zinc-600 opacity-50 cursor-not-allowed'
+                        onClick={handleSave}
+                        disabled={!name || loading}
+                        className={`w-full py-5 rounded-2xl text-black font-display font-bold tracking-[0.1em] uppercase text-sm shadow-lg transition-all ${name && !loading ? 'bg-primary shadow-primary/20 hover:opacity-90 active:scale-[0.98]' : 'bg-zinc-800 text-zinc-600 opacity-50 cursor-not-allowed'
                             }`}
                     >
-                        CRIAR CATEGORIA
+                        {loading ? 'CRIANDO...' : 'CRIAR CATEGORIA'}
                     </button>
                 </div>
 
@@ -96,6 +128,16 @@ export default function NewCategory() {
                     </div>
                 </footer>
             </main>
+
+            <ActionPopup
+                isOpen={showSuccess}
+                title="Pronto!"
+                description="Sua nova categoria foi criada com sucesso."
+                confirmText="OK"
+                type="success"
+                onConfirm={() => navigate('/manage-categories')}
+                onCancel={() => navigate('/manage-categories')}
+            />
         </div>
     );
 }

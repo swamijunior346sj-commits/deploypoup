@@ -1,298 +1,274 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
+import ActionPopup from '../components/ActionPopup';
+import Card from '../components/Card';
+import { useData } from '../contexts/DataContext';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 
 export default function NewInvestment() {
     const navigate = useNavigate();
     const { user } = useAuth();
-    const [loading, setLoading] = useState(false);
-
-    // Form States
-    const [sliderValue, setSliderValue] = useState(30000);
-    const [assetId, setAssetId] = useState('');
-    const [broker, setBroker] = useState('');
+    const { refreshData } = useData();
+    const [amount, setAmount] = useState(100);
+    const [selectedAsset, setSelectedAsset] = useState('PETR4');
+    const [selectedBroker, setSelectedBroker] = useState('NuInvest');
     const [quantity, setQuantity] = useState('');
     const [price, setPrice] = useState('');
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    // Manual Input Toggles
-    const [manualAsset, setManualAsset] = useState(false);
-    const [manualBroker, setManualBroker] = useState(false);
+    // Manual inputs
+    const [isManualAsset, setIsManualAsset] = useState(false);
+    const [manualAssetName, setManualAssetName] = useState('');
+    const [isManualBroker, setIsManualBroker] = useState(false);
+    const [manualBrokerName, setManualBrokerName] = useState('');
+
+    const assets = ['PETR4', 'VALE3', 'ITUB4', 'BBDC4', 'WEGE3', 'BTC', 'ETH', 'Tesouro Selic 2026', 'CDB Inter 102%'];
+    const brokers = ['NuInvest', 'XP Investimentos', 'BTG Pactual', 'Inter', 'Binance', 'Bitybank'];
 
     const totalCost = useMemo(() => {
-        const q = parseFloat(quantity) || 0;
-        const p = parseFloat(price) || 0;
+        const q = parseFloat(quantity.replace(',', '.')) || 0;
+        const p = parseFloat(price.replace(',', '.')) || 0;
         return q * p;
     }, [quantity, price]);
 
     const handleSave = async () => {
-        if (!user || !assetId || !quantity || !price) {
-            alert('Por favor, preencha todos os campos obrigatórios.');
-            return;
-        }
-
+        if (!user) return;
         setLoading(true);
         try {
+            const finalAsset = isManualAsset ? manualAssetName : selectedAsset;
+            const finalBroker = isManualBroker ? manualBrokerName : selectedBroker;
+            const finalQuantity = parseFloat(quantity.replace(',', '.')) || 0;
+            const finalPrice = parseFloat(price.replace(',', '.')) || 0;
+
             const { error } = await supabase.from('assets').insert([
                 {
                     user_id: user.id,
-                    ticker: assetId.toUpperCase(),
-                    name: assetId.toUpperCase(),
-                    type: manualAsset ? 'Manual' : 'Renda Variável',
-                    current_value: totalCost,
-                    amount: parseFloat(quantity),
-                    purchase_date: new Date().toISOString().split('T')[0],
-                    change_24h: 0,
-                    broker: broker
+                    symbol: finalAsset,
+                    name: finalAsset,
+                    type: finalAsset.includes('CDB') || finalAsset.includes('Tesouro') ? 'Renda Fixa' : (finalAsset.length <= 6 ? 'Renda Variável' : 'Outros'),
+                    amount: finalQuantity * finalPrice,
+                    quantity: finalQuantity,
+                    avg_price: finalPrice,
+                    broker: finalBroker,
+                    purchase_date: new Date().toISOString()
                 }
             ]);
 
             if (error) throw error;
-            navigate('/analysis');
-        } catch (error: any) {
-            console.error('Error saving investment:', error);
-            alert(`Erro ao salvar investimento: ${error.message || 'Erro desconhecido'}`);
+            await refreshData();
+            setShowSuccess(true);
+        } catch (err) {
+            console.error('Error saving investment:', err);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="bg-black text-[#FCFCFC] font-sans flex flex-col min-h-screen selection:bg-primary/30 antialiased overflow-y-auto">
-            <style>{`
-                .custom-ring {
-                    position: relative;
-                    width: 280px;
-                    height: 280px;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    border: 1px solid rgba(15, 182, 127, 0.05);
-                    box-shadow: inset 0 0 20px rgba(15, 182, 127, 0.02);
-                }
-                .custom-ring::before {
-                    content: '';
-                    position: absolute;
-                    top: -1px;
-                    left: -1px;
-                    right: -1px;
-                    bottom: -1px;
-                    border-radius: 50%;
-                    border: 1px solid transparent;
-                    border-top-color: #0FB67F;
-                    border-right-color: #0FB67F;
-                    transform: rotate(-45deg);
-                    filter: drop-shadow(0 0 8px rgba(15, 182, 127, 0.6));
-                }
-                .glow-slider {
-                    -webkit-appearance: none;
-                    width: 100%;
-                    height: 2px;
-                    background: rgba(15, 182, 127, 0.1);
-                    border-radius: 999px;
-                    outline: none;
-                }
-                .glow-slider::-webkit-slider-thumb {
-                    -webkit-appearance: none;
-                    appearance: none;
-                    width: 16px;
-                    height: 16px;
-                    background: #0FB67F;
-                    border-radius: 50%;
-                    cursor: pointer;
-                    box-shadow: 0 0 20px 4px rgba(15, 182, 127, 0.6);
-                    border: 1px solid #ffffff;
-                }
-                .slider-glow-track {
-                    position: absolute;
-                    left: 0;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    height: 2px;
-                    background: #0FB67F;
-                    border-radius: 999px;
-                    box-shadow: 0 0 12px rgba(15, 182, 127, 0.5);
-                    pointer-events: none;
-                    z-index: 0;
-                }
-            `}</style>
-
-            <header className="flex items-center justify-between px-6 py-6 bg-black sticky top-0 z-50">
-                <button onClick={() => navigate(-1)} className="flex items-center justify-center size-10 rounded-full transition-colors hover:bg-primary/5">
-                    <span className="material-symbols-outlined text-white">arrow_back</span>
+        <div className="bg-black text-[#fcfcfc] font-sans min-h-screen flex flex-col">
+            <header className="px-6 pt-14 pb-4 flex items-center sticky top-0 bg-black/95 backdrop-blur-xl z-20">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95"
+                >
+                    <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">arrow_back_ios_new</span>
                 </button>
-                <h1 className="text-white text-lg font-semibold tracking-tight">Novo Investimento</h1>
-                <div className="size-10"></div>
+                <h1 className="flex-grow text-center text-xs font-display font-bold tracking-[0.3em] uppercase text-[#fcfcfc] pr-8">Novo Investimento</h1>
             </header>
 
-            <main className="flex-1 px-6 pb-20">
-                <section className="flex flex-col items-center justify-center pt-8 pb-12">
-                    <div className="custom-ring">
-                        <div className="text-center">
-                            <p className="text-[#D6D6D6] text-sm font-medium mb-1 uppercase tracking-widest opacity-60">Valor do Aporte</p>
-                            <p className="text-white text-4xl tracking-tight font-light font-display">
-                                R$ {sliderValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                            </p>
+            <main className="flex-grow px-6 space-y-12 pb-32 pt-8 overflow-y-auto no-scrollbar">
+                {/* Visual Amount Slider */}
+                <div className="space-y-8 flex flex-col items-center">
+                    <div className="text-center">
+                        <span className="text-[10px] uppercase font-bold tracking-[0.3em] text-zinc-500 mb-2 block">Valor Previsto</span>
+                        <div className="flex items-baseline justify-center gap-1">
+                            <span className="text-xl font-display font-bold text-primary">R$</span>
+                            <span className="text-5xl font-display font-bold text-[#fcfcfc]">{amount.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}</span>
                         </div>
                     </div>
 
-                    <div className="w-full max-w-[280px] mt-10 space-y-4">
-                        <div className="flex justify-between items-center px-1">
-                            <span className="text-zinc-700 text-[10px] font-bold uppercase tracking-tighter">R$ 0</span>
-                            <span className="text-zinc-700 text-[10px] font-bold uppercase tracking-tighter">R$ 100k</span>
+                    <div className="w-full max-w-sm px-4 space-y-4">
+                        <input
+                            type="range"
+                            min="0"
+                            max="10000"
+                            step="5"
+                            value={amount}
+                            onChange={(e) => setAmount(parseInt(e.target.value))}
+                            className="w-full h-1.5 bg-zinc-900 rounded-lg appearance-none cursor-pointer accent-primary"
+                        />
+                        <div className="flex justify-between text-[8px] font-bold text-zinc-600 uppercase tracking-widest">
+                            <span>Mínimo R$0</span>
+                            <span>Máximo R$10k</span>
                         </div>
-                        <div className="relative flex items-center">
-                            <div className="slider-glow-track" style={{ width: `${(sliderValue / 100000) * 100}%` }}></div>
-                            <input
-                                className="glow-slider cursor-pointer z-10"
-                                max="100000"
-                                min="0"
-                                step="5"
-                                type="range"
-                                value={sliderValue}
-                                onChange={(e) => setSliderValue(Number(e.target.value))}
-                            />
-                        </div>
-                        <div className="flex justify-center">
-                            <div className="px-3 py-1 bg-primary/5 rounded-full border border-primary/10">
-                                <p className="text-primary text-[10px] font-semibold flex items-center gap-1">
-                                    <span className="material-symbols-outlined text-[14px]">auto_awesome</span>
-                                    Ajuste rápido de valor
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <div className="space-y-6 max-w-md mx-auto">
-                    {/* Asset Selection */}
-                    <div className="space-y-2">
-                        <div className="flex justify-between items-center px-1">
-                            <label className="text-[#D6D6D6] text-[10px] font-bold uppercase tracking-[0.2em] opacity-60">Ativo</label>
-                            <button onClick={() => { setManualAsset(!manualAsset); setAssetId(''); }} className="text-[9px] text-primary font-bold uppercase tracking-widest flex items-center gap-1">
-                                <span className="material-symbols-outlined text-[12px]">{manualAsset ? 'list' : 'add'}</span>
-                                {manualAsset ? 'Lista' : 'Adicionar'}
-                            </button>
-                        </div>
-                        <div className="relative group">
-                            {manualAsset ? (
-                                <input
-                                    value={assetId}
-                                    onChange={(e) => setAssetId(e.target.value)}
-                                    placeholder="Digite o código (ex: PETR4)"
-                                    className="w-full h-14 border border-primary/20 bg-black rounded-2xl px-4 text-white focus:outline-none focus:border-primary transition-all uppercase placeholder:text-zinc-800"
-                                />
-                            ) : (
-                                <>
-                                    <select
-                                        value={assetId}
-                                        onChange={(e) => setAssetId(e.target.value)}
-                                        className="w-full h-14 border border-primary/20 bg-black rounded-2xl px-4 text-white appearance-none focus:outline-none focus:border-primary transition-all cursor-pointer"
-                                    >
-                                        <option disabled value="">Selecionar Ativo</option>
-                                        <option value="petr4">PETR4 - Petrobras</option>
-                                        <option value="vale3">VALE3 - Vale</option>
-                                        <option value="itub4">ITUB4 - Itaú Unibanco</option>
-                                        <option value="bbas3">BBAS3 - Banco do Brasil</option>
-                                        <option value="btc">BTC - Bitcoin</option>
-                                        <option value="eth">ETH - Ethereum</option>
-                                    </select>
-                                    <span className="material-symbols-outlined absolute right-4 top-4 text-zinc-500 pointer-events-none">expand_more</span>
-                                </>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Broker Selection */}
-                    <div className="space-y-2">
-                        <div className="flex justify-between items-center px-1">
-                            <label className="text-[#D6D6D6] text-[10px] font-bold uppercase tracking-[0.2em] opacity-60">Corretora</label>
-                            <button onClick={() => { setManualBroker(!manualBroker); setBroker(''); }} className="text-[9px] text-primary font-bold uppercase tracking-widest flex items-center gap-1">
-                                <span className="material-symbols-outlined text-[12px]">{manualBroker ? 'list' : 'add'}</span>
-                                {manualBroker ? 'Lista' : 'Adicionar'}
-                            </button>
-                        </div>
-                        <div className="relative group">
-                            {manualBroker ? (
-                                <input
-                                    value={broker}
-                                    onChange={(e) => setBroker(e.target.value)}
-                                    placeholder="Digite o nome da corretora"
-                                    className="w-full h-14 border border-primary/20 bg-black rounded-2xl px-4 text-white focus:outline-none focus:border-primary transition-all placeholder:text-zinc-800"
-                                />
-                            ) : (
-                                <>
-                                    <select
-                                        value={broker}
-                                        onChange={(e) => setBroker(e.target.value)}
-                                        className="w-full h-14 border border-primary/20 bg-black rounded-2xl px-4 text-white appearance-none focus:outline-none focus:border-primary transition-all cursor-pointer"
-                                    >
-                                        <option disabled value="">Selecionar Corretora</option>
-                                        <option value="xp">XP Investimentos</option>
-                                        <option value="btg">BTG Pactual</option>
-                                        <option value="nu">Nubank / NuInvest</option>
-                                        <option value="inter">Inter Invest</option>
-                                        <option value="binance">Binance</option>
-                                    </select>
-                                    <span className="material-symbols-outlined absolute right-4 top-4 text-zinc-500 pointer-events-none">expand_more</span>
-                                </>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Quantity and Price */}
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <label className="text-[#D6D6D6] text-[10px] font-bold uppercase tracking-[0.2em] ml-1 opacity-60">Quantidade</label>
-                            <input
-                                value={quantity}
-                                onChange={(e) => setQuantity(e.target.value)}
-                                className="w-full h-14 border border-primary/20 bg-black rounded-2xl px-4 text-white focus:outline-none focus:border-primary transition-all placeholder:text-zinc-800"
-                                placeholder="0"
-                                type="number"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-[#D6D6D6] text-[10px] font-bold uppercase tracking-[0.2em] ml-1 opacity-60">Preço Médio</label>
-                            <div className="relative">
-                                <span className="absolute left-4 top-4 text-zinc-600 text-sm">R$</span>
-                                <input
-                                    value={price}
-                                    onChange={(e) => setPrice(e.target.value)}
-                                    className="w-full h-14 border border-primary/20 bg-black rounded-2xl pl-11 pr-4 text-white focus:outline-none focus:border-primary transition-all placeholder:text-zinc-800"
-                                    placeholder="0,00"
-                                    type="number"
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Summary Insight Card */}
-                    <div className="border border-primary/10 bg-primary/[0.02] rounded-2xl p-6 flex justify-between items-center">
-                        <div className="flex flex-col">
-                            <span className="text-[#D6D6D6] text-[10px] font-bold uppercase tracking-widest opacity-60">Custo total estimado</span>
-                            <span className="text-primary text-2xl font-display font-bold">
-                                R$ {totalCost.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                            </span>
-                        </div>
-                        <div className="size-10 bg-primary/10 rounded-full flex items-center justify-center">
-                            <span className="material-symbols-outlined text-primary text-lg">info</span>
-                        </div>
-                    </div>
-
-                    {/* Repositioned Save Button */}
-                    <div className="pt-8 mb-10">
-                        <button
-                            onClick={handleSave}
-                            disabled={loading}
-                            className="w-full py-5 border border-primary text-white font-bold rounded-2xl hover:bg-primary/10 active:scale-[0.98] transition-all bg-transparent uppercase tracking-widest text-sm disabled:opacity-50 shadow-[0_0_20px_rgba(15,182,127,0.1)]"
-                        >
-                            {loading ? 'Processando...' : 'Confirmar Investimento'}
-                        </button>
                     </div>
                 </div>
+
+                <div className="space-y-6">
+                    {/* Seção de Ativo */}
+                    <div className="space-y-4">
+                        <div className="flex justify-between items-center px-2">
+                            <label className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 uppercase">Ativo</label>
+                            <label className="flex items-center gap-2 cursor-pointer group">
+                                <span className={`text-[8px] font-bold uppercase transition-colors ${isManualAsset ? 'text-primary' : 'text-zinc-600'}`}>Manual</span>
+                                <div className="relative inline-block w-8 h-4">
+                                    <input
+                                        type="checkbox"
+                                        className="sr-only peer"
+                                        checked={isManualAsset}
+                                        onChange={() => setIsManualAsset(!isManualAsset)}
+                                    />
+                                    <div className="w-full h-full bg-zinc-900 border border-zinc-800 rounded-full peer peer-checked:bg-primary/20 peer-checked:border-primary/40 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-zinc-700 peer-checked:after:bg-primary after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:after:translate-x-4"></div>
+                                </div>
+                            </label>
+                        </div>
+
+                        {isManualAsset ? (
+                            <div className="bg-[#121212] border border-zinc-800 rounded-2xl p-4">
+                                <input
+                                    type="text"
+                                    placeholder="Digite o nome do ativo"
+                                    className="w-full bg-transparent border-none text-white font-medium p-0 focus:ring-0 placeholder:text-zinc-700"
+                                    value={manualAssetName}
+                                    onChange={(e) => setManualAssetName(e.target.value)}
+                                />
+                            </div>
+                        ) : (
+                            <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar px-1">
+                                {assets.map((asset) => (
+                                    <button
+                                        key={asset}
+                                        onClick={() => setSelectedAsset(asset)}
+                                        className={`flex-shrink-0 px-6 py-3 rounded-2xl text-[10px] font-bold border transition-all active:scale-95 ${selectedAsset === asset
+                                            ? 'bg-primary border-primary text-black'
+                                            : 'bg-zinc-900/50 border-zinc-800 text-zinc-400'
+                                            }`}
+                                    >
+                                        {asset}
+                                    </button>
+                                ))}
+                                <button
+                                    onClick={() => setIsManualAsset(true)}
+                                    className="flex-shrink-0 w-10 h-10 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-600"
+                                >
+                                    <span className="material-symbols-outlined text-sm">add</span>
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Custódia / Corretora */}
+                    <div className="space-y-4">
+                        <div className="flex justify-between items-center px-2">
+                            <label className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 uppercase">Instituição</label>
+                            <label className="flex items-center gap-2 cursor-pointer">
+                                <span className={`text-[8px] font-bold uppercase ${isManualBroker ? 'text-primary' : 'text-zinc-600'}`}>Manual</span>
+                                <div className="relative inline-block w-8 h-4">
+                                    <input
+                                        type="checkbox"
+                                        className="sr-only peer"
+                                        checked={isManualBroker}
+                                        onChange={() => setIsManualBroker(!isManualBroker)}
+                                    />
+                                    <div className="w-full h-full bg-zinc-900 border border-zinc-800 rounded-full peer peer-checked:bg-primary/20 peer-checked:border-primary/40 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-zinc-700 peer-checked:after:bg-primary after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:after:translate-x-4"></div>
+                                </div>
+                            </label>
+                        </div>
+
+                        {isManualBroker ? (
+                            <div className="bg-[#121212] border border-zinc-800 rounded-2xl p-4">
+                                <input
+                                    type="text"
+                                    placeholder="Nome da Corretora ou Banco"
+                                    className="w-full bg-transparent border-none text-white font-medium p-0 focus:ring-0 placeholder:text-zinc-700"
+                                    value={manualBrokerName}
+                                    onChange={(e) => setManualBrokerName(e.target.value)}
+                                />
+                            </div>
+                        ) : (
+                            <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar px-1">
+                                {brokers.map((broker) => (
+                                    <button
+                                        key={broker}
+                                        onClick={() => setSelectedBroker(broker)}
+                                        className={`flex-shrink-0 px-6 py-3 rounded-2xl text-[10px] font-bold border transition-all active:scale-95 ${selectedBroker === broker
+                                            ? 'bg-primary border-primary text-black'
+                                            : 'bg-zinc-900/50 border-zinc-800 text-zinc-400'
+                                            }`}
+                                    >
+                                        {broker}
+                                    </button>
+                                ))}
+                                <button
+                                    onClick={() => setIsManualBroker(true)}
+                                    className="flex-shrink-0 w-10 h-10 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-600"
+                                >
+                                    <span className="material-symbols-outlined text-sm">add</span>
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Quantidade e Preço */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-[#121212] border border-zinc-800/50 rounded-2xl p-6">
+                            <label className="block text-[8px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Qtd Comprada</label>
+                            <input
+                                className="w-full bg-transparent border-none p-0 text-xl font-display font-bold focus:ring-0 placeholder:text-zinc-800"
+                                type="text"
+                                placeholder="0.00"
+                                value={quantity}
+                                onChange={(e) => setQuantity(e.target.value)}
+                            />
+                        </div>
+                        <div className="bg-[#121212] border border-zinc-800/50 rounded-2xl p-6">
+                            <label className="block text-[8px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Preço Pago (Un)</label>
+                            <input
+                                className="w-full bg-transparent border-none p-0 text-xl font-display font-bold focus:ring-0 placeholder:text-zinc-800"
+                                type="text"
+                                placeholder="R$ 0,00"
+                                value={price}
+                                onChange={(e) => setPrice(e.target.value)}
+                            />
+                        </div>
+                    </div>
+
+                    <Card className="p-6 bg-primary/5 border-primary/20 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                                <span className="material-symbols-outlined">receipt_long</span>
+                            </div>
+                            <div>
+                                <p className="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">Custo Total</p>
+                                <p className="text-xl font-display font-bold text-primary">R$ {totalCost.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                            </div>
+                        </div>
+                        <span className="material-symbols-outlined text-primary/30">info</span>
+                    </Card>
+                </div>
+
+                <div className="pt-4  mb-10">
+                    <button
+                        onClick={handleSave}
+                        disabled={loading || !quantity || !price}
+                        className={`w-full py-5 bg-primary rounded-2xl text-black font-display font-bold text-xs tracking-[0.2em] uppercase active:scale-[0.98] transition-all shadow-[0_10px_40px_rgba(15,182,127,0.2)] ${loading ? 'opacity-50' : 'hover:bg-primary/90'}`}
+                    >
+                        {loading ? 'Processando...' : 'Confirmar Investimento'}
+                    </button>
+                </div>
             </main>
+
+            <ActionPopup
+                isOpen={showSuccess}
+                title="Parabéns!"
+                description="Novo investimento criado com sucesso. Seu patrimônio agradece!"
+                confirmText="Ver Minha Carteira"
+                type="success"
+                onConfirm={() => navigate('/investments')}
+                onCancel={() => setShowSuccess(false)}
+            />
         </div>
     );
 }

@@ -1,12 +1,46 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ActionPopup from '../components/ActionPopup';
+import { useData } from '../contexts/DataContext';
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 
 export default function NewGoal() {
     const navigate = useNavigate();
+    const { user } = useAuth();
+    const { refreshData } = useData();
     const [name, setName] = useState('');
     const [target, setTarget] = useState('');
     const [date, setDate] = useState('');
     const [selectedIcon, setSelectedIcon] = useState('savings');
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const handleSave = async () => {
+        if (!user || !name || !target) return;
+        setLoading(true);
+        try {
+            const { error } = await supabase.from('goals').insert([
+                {
+                    user_id: user.id,
+                    title: name,
+                    target_amount: parseFloat(target.replace(/\./g, '').replace(',', '.')),
+                    current_amount: 0,
+                    deadline: date,
+                    icon: selectedIcon,
+                    category: 'Financeiro'
+                }
+            ]);
+
+            if (error) throw error;
+            await refreshData();
+            setShowSuccess(true);
+        } catch (err) {
+            console.error('Error saving goal:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const icons = [
         'savings', 'home', 'directions_car', 'flight', 'laptop_mac',
@@ -15,7 +49,7 @@ export default function NewGoal() {
 
     return (
         <div className="bg-black text-[#fcfcfc] font-sans min-h-screen flex flex-col">
-            <header className="px-6 pt-14 pb-4 flex items-center sticky top-0 bg-black/95 backdrop-blur-xl z-10">
+            <header className="px-6 pt-14 pb-4 flex items-center sticky top-0 bg-black/95 backdrop-blur-xl z-20">
                 <button
                     onClick={() => navigate(-1)}
                     className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95"
@@ -25,8 +59,7 @@ export default function NewGoal() {
                 <h1 className="flex-grow text-center text-xs font-display font-bold tracking-[0.3em] uppercase text-[#fcfcfc] pr-8">Nova Meta</h1>
             </header>
 
-            <main className="flex-grow px-6 pt-6 pb-40 space-y-6">
-                {/* Name and Icon Section */}
+            <main className="flex-grow px-6 pt-6 pb-20 space-y-6 overflow-y-auto no-scrollbar">
                 <div className="bg-transparent rounded-[32px] p-6 border border-white/10">
                     <label className="block text-[10px] font-display font-bold tracking-[0.2em] text-[#a7a7a7] uppercase mb-4">Nome da Meta</label>
                     <div className="flex items-center gap-4">
@@ -40,7 +73,7 @@ export default function NewGoal() {
                         </div>
                         <div className="flex-grow">
                             <input
-                                className="w-full bg-transparent border-none focus:ring-0 text-xl font-display font-bold text-[#fcfcfc] p-0 placeholder:text-zinc-600"
+                                className="w-full bg-transparent border-none focus:ring-0 text-xl font-display font-bold text-[#fcfcfc] p-0 placeholder:text-zinc-600 focus:outline-none"
                                 type="text"
                                 placeholder="Qual seu objetivo?"
                                 value={name}
@@ -51,7 +84,7 @@ export default function NewGoal() {
                     </div>
 
                     <div className="mt-8">
-                        <p className="text-[10px] font-display font-bold tracking-[0.1em] text-[#a7a7a7] uppercase mb-4">Selecione um Ícone</p>
+                        <p className="text-[10px] font-display font-bold tracking-[0.1em] text-[#a7a7a7] uppercase mb-4 px-1">Selecione um Ícone</p>
                         <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
                             {icons.map((icon) => (
                                 <button
@@ -69,7 +102,6 @@ export default function NewGoal() {
                     </div>
                 </div>
 
-                {/* Financial Details Section */}
                 <div className="bg-transparent rounded-[32px] p-6 border border-white/10 space-y-8">
                     <div className="space-y-2">
                         <label className="block text-[10px] font-display font-bold tracking-[0.2em] text-[#a7a7a7] uppercase">Valor Total</label>
@@ -88,40 +120,53 @@ export default function NewGoal() {
                     <div className="grid grid-cols-1 gap-6">
                         <div className="space-y-2">
                             <label className="block text-[10px] font-display font-bold tracking-[0.2em] text-[#a7a7a7] uppercase">Data Limite</label>
-                            <div className="flex items-center gap-3 bg-white/5 rounded-2xl p-4 border border-white/10 focus-within:border-primary/50 focus-within:shadow-[0_0_10px_rgba(15,182,127,0.2)] transition-all">
+                            <label
+                                htmlFor="goal-date"
+                                className="relative flex items-center gap-3 bg-white/5 rounded-2xl p-4 border border-white/10 focus-within:border-primary/50 focus-within:shadow-[0_0_10px_rgba(15,182,127,0.2)] transition-all cursor-pointer"
+                            >
                                 <span className="material-symbols-outlined text-[#a7a7a7]">calendar_today</span>
                                 <input
-                                    className="bg-transparent border-none focus:ring-0 text-sm font-semibold text-[#fcfcfc] w-full p-0 placeholder:text-zinc-600"
-                                    type="text"
-                                    placeholder="DD / MM / AAAA"
+                                    id="goal-date"
+                                    className="bg-transparent border-none focus:ring-0 text-sm font-semibold text-[#fcfcfc] w-full p-0 [color-scheme:dark] cursor-pointer"
+                                    type="date"
                                     value={date}
                                     onChange={(e) => setDate(e.target.value)}
                                 />
-                            </div>
+                            </label>
                         </div>
 
-                        {/* IA Insight */}
                         <div className="space-y-2">
                             <label className="block text-[10px] font-display font-bold tracking-[0.2em] text-[#a7a7a7] uppercase">Aporte Mensal Sugerido</label>
                             <div className="flex items-center gap-3 bg-white/5 rounded-2xl p-4 border border-zinc-800 opacity-70">
                                 <span className="material-symbols-outlined text-[#a7a7a7]">payments</span>
                                 <span className="text-sm font-semibold text-[#fcfcfc] italic text-zinc-500">
-                                    {target && date ? 'Calculando...' : 'Preencha os dados acima'}
+                                    {target && date ? `R$ ${(parseFloat(target.replace(/\./g, '').replace(',', '.')) / 12).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : 'Preencha os dados acima'}
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div className="py-6 mb-10">
+                    <button
+                        onClick={handleSave}
+                        disabled={loading || !name || !target}
+                        className={`w-full py-5 bg-transparent border border-primary rounded-2xl text-primary font-display font-bold text-xs tracking-[0.2em] uppercase active:scale-[0.98] transition-all shadow-[0_10px_30px_rgba(15,182,127,0.1)] ${loading ? 'opacity-50' : 'hover:bg-primary/5'}`}
+                    >
+                        {loading ? 'Salvando...' : 'Confirmar Meta'}
+                    </button>
+                </div>
             </main>
 
-            <footer className="fixed bottom-0 left-0 right-0 bg-transparent px-6 pt-6 pb-12 z-20">
-                <button
-                    onClick={() => navigate(-1)}
-                    className="w-full py-5 bg-transparent border border-primary rounded-2xl text-primary font-display font-bold text-xs tracking-[0.2em] uppercase active:scale-[0.98] transition-transform"
-                >
-                    Criar Meta
-                </button>
-            </footer>
+            <ActionPopup
+                isOpen={showSuccess}
+                title="Meta Criada!"
+                description="Sua nova jornada financeira começou. Mantenha o foco!"
+                confirmText="Ver Minhas Metas"
+                type="success"
+                onConfirm={() => navigate('/goals')}
+                onCancel={() => setShowSuccess(false)}
+            />
         </div>
     );
 }

@@ -17,13 +17,31 @@ export default function Missions() {
       { name: "Gestão", icon: "receipt_long", color: "text-amber-400" }
     ];
 
+    const missionNames1 = [
+      "Poupador Flash", "Zero Boletos", "Café em Casa", "Mestre do Cofrinho", "Dívida Zero",
+      "Caçador de Ofertas", "Controle Total", "Semana do Real", "Check-up Saldo", "Economia Áurea",
+      "Pico de Poupança", "Alvo de Gastos", "Muralha de Emergência", "Escudo Financeiro", "Fuga dos Juros",
+      "Rota do Ouro", "Mente Blindada", "Disciplina de Ferro", "Salto de Capital", "Ninho de Ovos",
+      "Garra de Poupador", "Despertar Financeiro", "Festa sem Gastos", "Troco Solidário", "Bússola de Preços",
+      "Farol do Orçamento", "Ancora de Ativos", "Voo do Poupador", "Cume do Patrimônio", "Legado POUP"
+    ];
+
+    const missionNames2 = [
+      "Primeiro Ativo", "Mestre Dividendos", "Radar de Oportunidade", "Aporte Sagrado", "Visão de Longo Prazo",
+      "Diversificação Pro", "Leitura de Gráfico", "Mentoria Express", "Estrategista Alpha", "Fundo Imobiliário",
+      "Dólar na Carteira", "Ação de Valor", "Índice de Sucesso", "Rebalanceamento", "Criptonita Positiva",
+      "Carteira Blindada", "Lucro Real", "Juros Compostos", "Independência Já", "Renda Passiva",
+      "Patrimônio Líquido", "Analista Sênior", "Gestor de Risco", "Horizonte de Lucro", "Ativo Inteligente",
+      "Mercado Global", "Safra de Dividendos", "Tesouro Direto", "Onda de Investimento", "ImpérioPOUP"
+    ];
+
     return Array.from({ length: 30 }, (_, dayIdx) => {
       const day = dayIdx + 1;
       return [
         {
           id: day * 2 - 1,
           day,
-          title: `Missão 1 - Dia ${day}`,
+          title: missionNames1[dayIdx] || `Missão 1 - Dia ${day}`,
           desc: "Foco em controle e disciplina financeira.",
           reward: 5,
           cat: categories[day % categories.length]
@@ -31,7 +49,7 @@ export default function Missions() {
         {
           id: day * 2,
           day,
-          title: `Missão 2 - Dia ${day}`,
+          title: missionNames2[dayIdx] || `Missão 2 - Dia ${day}`,
           desc: "Foco em expansão de patrimônio e conhecimento.",
           reward: 10,
           cat: categories[(day + 1) % categories.length]

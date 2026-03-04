@@ -1,21 +1,25 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
+import { useData } from '../contexts/DataContext';
+import ActionPopup from '../components/ActionPopup';
 
 export default function EditCategory() {
     const navigate = useNavigate();
     const location = useLocation();
-    const category = location.state?.category || {
-        id: '1',
-        name: 'Moradia',
-        spent: 1250,
-        planned: 1500,
-        icon: 'home',
-        color: '#0fb67f'
-    };
+    const { refreshData } = useData();
+    const category = location.state?.category || null;
+
+    if (!category) {
+        navigate('/manage-categories');
+        return null;
+    }
 
     const [name, setName] = useState(category.name);
     const [selectedIcon, setSelectedIcon] = useState(category.icon);
     const [selectedColor, setSelectedColor] = useState(category.color || '#0fb67f');
+    const [loading, setLoading] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const icons = [
@@ -27,6 +31,36 @@ export default function EditCategory() {
         '#0fb67f', '#3b82f6', '#a855f7', '#ec4899',
         '#ef4444', '#f59e0b', '#eab308', '#14b8a6'
     ];
+
+    const handleSave = async () => {
+        setLoading(true);
+        try {
+            const { error } = await supabase.from('categories').update({
+                name,
+                icon: selectedIcon,
+                color: selectedColor
+            }).eq('id', category.id);
+
+            if (error) throw error;
+            await refreshData();
+            setShowSuccess(true);
+        } catch (err) {
+            console.error('Error updating category:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDelete = async () => {
+        try {
+            const { error } = await supabase.from('categories').delete().eq('id', category.id);
+            if (error) throw error;
+            await refreshData();
+            navigate('/manage-categories');
+        } catch (err) {
+            console.error('Error deleting category:', err);
+        }
+    };
 
     return (
         <div className="bg-black text-white font-sans min-h-screen flex flex-col">
@@ -89,10 +123,11 @@ export default function EditCategory() {
 
                 <div className="space-y-4">
                     <button
-                        onClick={() => navigate(-1)}
+                        onClick={handleSave}
+                        disabled={loading}
                         className="w-full bg-primary py-5 rounded-2xl text-black font-display font-bold tracking-[0.1em] uppercase text-sm shadow-lg shadow-primary/20 hover:opacity-90 active:scale-[0.98] transition-all"
                     >
-                        SALVAR ALTERAÇÕES
+                        {loading ? 'SALVANDO...' : 'SALVAR ALTERAÇÕES'}
                     </button>
                     <button
                         onClick={() => setShowDeleteModal(true)}
@@ -101,42 +136,27 @@ export default function EditCategory() {
                         EXCLUIR CATEGORIA
                     </button>
                 </div>
-
-                <footer className="mt-12 py-4 text-center">
-                    <div className="flex items-center justify-center space-x-2 text-zinc-800">
-                        <span className="material-symbols-outlined text-base">auto_awesome</span>
-                        <p className="text-[9px] font-semibold tracking-[0.2em] uppercase"></p>
-                    </div>
-                </footer>
             </main>
 
-            {showDeleteModal && (
-                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center px-6 animate-in fade-in duration-300">
-                    <div className="w-full max-w-sm bg-[#121212] border border-zinc-800 rounded-[32px] p-8 flex flex-col items-center text-center shadow-[0_0_20px_rgba(15,182,127,0.15)] animate-in zoom-in-95 duration-300">
-                        <div className="mb-6">
-                            <span className="material-symbols-outlined text-primary text-6xl !font-light">warning</span>
-                        </div>
-                        <h2 className="text-white font-display font-bold text-xl tracking-tight mb-4">EXCLUIR CATEGORIA?</h2>
-                        <p className="text-zinc-400 text-sm leading-relaxed mb-8">
-                            Tem certeza que deseja apagar a categoria <span className="text-white font-semibold">{name}</span>? Todas as subcategorias vinculadas também serão removidas.
-                        </p>
-                        <div className="w-full flex flex-col gap-3">
-                            <button
-                                onClick={() => setShowDeleteModal(false)}
-                                className="w-full bg-primary py-4 rounded-2xl text-black font-display font-bold tracking-[0.1em] uppercase text-sm shadow-lg shadow-primary/20 hover:opacity-90 active:scale-[0.98] transition-all"
-                            >
-                                CANCELAR
-                            </button>
-                            <button
-                                onClick={() => navigate('/manage-categories')}
-                                className="w-full bg-transparent py-3 rounded-2xl text-[#a7a7a7] font-display font-bold tracking-[0.1em] uppercase text-xs hover:text-white transition-colors"
-                            >
-                                SIM, EXCLUIR
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <ActionPopup
+                isOpen={showSuccess}
+                title="Salvo!"
+                description="As alterações foram salvas com sucesso."
+                confirmText="OK"
+                type="success"
+                onConfirm={() => navigate('/manage-categories')}
+                onCancel={() => navigate('/manage-categories')}
+            />
+
+            <ActionPopup
+                isOpen={showDeleteModal}
+                title="Excluir?"
+                description={`Tem certeza que deseja apagar a categoria "${name}"?`}
+                confirmText="Excluir"
+                type="delete"
+                onConfirm={handleDelete}
+                onCancel={() => setShowDeleteModal(false)}
+            />
         </div>
     );
 }

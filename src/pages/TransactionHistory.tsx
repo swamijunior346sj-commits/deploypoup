@@ -77,7 +77,7 @@ export default function TransactionHistory() {
                         className="flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-xl group hover:bg-primary/20 transition-all active:scale-95 shadow-[0_0_15px_rgba(15,182,127,0.1)]"
                     >
                         <span className="material-symbols-outlined text-primary text-sm group-hover:rotate-12 transition-transform">auto_awesome</span>
-                        <span className="text-[9px] font-bold text-primary tracking-widest uppercase">Analise de gastos IA</span>
+                        <span className="text-[9px] font-bold text-primary tracking-widest uppercase">Análise de gastos IA</span>
                     </button>
                     <button className="w-9 h-9 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center">
                         <span className="material-symbols-outlined text-zinc-400 text-[20px]">more_vert</span>

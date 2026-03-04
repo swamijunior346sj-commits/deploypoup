@@ -7,10 +7,10 @@ export default function Investments() {
   const navigate = useNavigate();
   const { assets, loading } = useData();
 
-  const totalAssets = assets.reduce((acc, asset) => acc + Number(asset.amount || asset.value), 0);
+  const totalAssets = assets.reduce((acc, asset) => acc + (parseFloat(asset.amount?.toString() || asset.value?.toString() || '0')), 0);
 
   const getCategoryTotal = (type: string) =>
-    assets.filter(a => a.type === type).reduce((acc, a) => acc + Number(a.amount || a.value), 0);
+    assets.filter(a => a.type === type).reduce((acc, a) => acc + (parseFloat(a.amount?.toString() || a.value?.toString() || '0')), 0);
 
   const rendaFixa = getCategoryTotal('Renda Fixa');
   const rendaVariavel = getCategoryTotal('Renda Variável');
@@ -48,9 +48,21 @@ export default function Investments() {
           </div>
 
           <div className="flex flex-col items-center py-4">
-            <div className="relative w-64 h-64 flex items-center justify-center chart-container">
+            <div className="relative w-64 h-64 flex items-center justify-center">
               <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" fill="transparent" r="40" stroke="#10B981" strokeDasharray="251.2" strokeDashoffset={251.2 - (251.2 * (rendaFixa / (totalAssets || 1)))} strokeLinecap="round" strokeWidth="10"></circle>
+                <circle cx="50" cy="50" fill="transparent" r="40" stroke="#18181b" strokeWidth="8"></circle>
+                <circle
+                  cx="50"
+                  cy="50"
+                  fill="transparent"
+                  r="40"
+                  stroke="#10B981"
+                  strokeDasharray="251.2"
+                  strokeDashoffset={251.2 - (251.2 * (Math.min(1, rendaFixa / (totalAssets || 1))))}
+                  strokeLinecap="round"
+                  strokeWidth="8"
+                  className="transition-all duration-1000 ease-out"
+                ></circle>
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Patrimônio Total</span>
@@ -84,30 +96,44 @@ export default function Investments() {
                 <p className="text-sm font-bold text-primary">R$ {rendaVariavel.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}</p>
               </div>
             </Card>
-            <Card className="p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-amber-500 text-sm">grouped_bar_chart</span>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between px-2">
+              <h3 className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 uppercase">Meus Ativos</h3>
+              <span className="text-[10px] text-zinc-700 font-bold uppercase">{assets.length} Ativos</span>
+            </div>
+
+            <div className="space-y-3">
+              {assets.length > 0 ? (
+                assets.map((asset) => (
+                  <div key={asset.id} className="bg-[#121212] border border-white/5 rounded-2xl p-4 flex items-center justify-between active:scale-95 transition-all">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                        <span className="material-symbols-outlined text-lg">
+                          {asset.type === 'Renda Fixa' ? 'lock' : (asset.type === 'Cripto' ? 'currency_bitcoin' : 'show_chart')}
+                        </span>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-white">{asset.symbol}</h4>
+                        <p className="text-[8px] font-bold text-zinc-600 uppercase tracking-widest">{asset.broker || 'Corretora'}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-bold text-white">R$ {parseFloat(asset.amount?.toString() || asset.value?.toString() || '0').toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                      <div className="flex items-center justify-end gap-1 text-[8px] font-bold uppercase text-primary">
+                        <span className="material-symbols-outlined text-[10px]">arrow_drop_up</span>
+                        <span>2.4%</span>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="py-10 text-center border border-dashed border-zinc-800 rounded-3xl">
+                  <p className="text-zinc-600 font-bold text-[10px] uppercase tracking-widest">Nenhum ativo registrado</p>
                 </div>
-                <span className="text-[10px] font-bold text-zinc-500">{totalAssets ? Math.round((fiis / totalAssets) * 100) : 0}%</span>
-              </div>
-              <div>
-                <h4 className="text-[9px] text-zinc-400 font-bold uppercase tracking-wider">FIIs</h4>
-                <p className="text-sm font-bold text-primary">R$ {fiis.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}</p>
-              </div>
-            </Card>
-            <Card className="p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-purple-500 text-sm">currency_bitcoin</span>
-                </div>
-                <span className="text-[10px] font-bold text-zinc-500">{totalAssets ? Math.round((cripto / totalAssets) * 100) : 0}%</span>
-              </div>
-              <div>
-                <h4 className="text-[9px] text-zinc-400 font-bold uppercase tracking-wider">Cripto</h4>
-                <p className="text-sm font-bold text-primary">R$ {cripto.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}</p>
-              </div>
-            </Card>
+              )}
+            </div>
           </div>
         </main>
       </div>
