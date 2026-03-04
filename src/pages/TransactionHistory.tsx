@@ -10,7 +10,6 @@ export default function TransactionHistory() {
     const navigate = useNavigate();
     const { transactions, loading } = useData();
     const [searchQuery, setSearchQuery] = useState('');
-    const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [dateFilter, setDateFilter] = useState<'7d' | '30d' | '90d' | 'all'>('30d');
     const [showWallet, setShowWallet] = useState(false);
     const [showFabCockpit, setShowFabCockpit] = useState(false);
@@ -117,20 +116,13 @@ export default function TransactionHistory() {
             }));
     }, [filteredByDate]);
 
-    const handleAnalyze = () => {
-        setIsAnalyzing(true);
-        setTimeout(() => {
-            setIsAnalyzing(false);
-            navigate('/spending-analysis');
-        }, 3000);
-    };
 
     const fmt = (v: number) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     if (loading) {
         return (
             <div className="bg-background-dark text-white min-h-screen flex items-center justify-center">
-                <div className="animate-pulse text-primary tracking-widest uppercase font-bold text-xs">Sincronizando Fluxo...</div>
+                <div className="animate-pulse text-primary tracking-widest uppercase font-bold text-xs">Sincronizando Transações...</div>
             </div>
         );
     }
@@ -141,59 +133,8 @@ export default function TransactionHistory() {
             <div className="absolute top-0 right-[-10%] w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
             <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none"></div>
 
-            {/* ── Analyzing Overlay ── */}
-            <AnimatePresence>
-                {isAnalyzing && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-3xl flex flex-col items-center justify-center p-8"
-                    >
-                        <motion.div
-                            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
-                            transition={{ duration: 3, repeat: Infinity }}
-                            className="absolute inset-0 bg-gradient-conic from-primary/10 via-transparent to-blue-500/10 blur-3xl"
-                        />
-                        <div className="relative w-64 h-64 mb-12">
-                            <div className="absolute inset-0 border border-white/5 rounded-full"></div>
-                            <motion.div
-                                animate={{ rotate: 360 }}
-                                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                                className="absolute inset-0 border-t-2 border-primary rounded-full shadow-[0_0_20px_#0FB67F]"
-                            />
-                            <motion.div
-                                animate={{ rotate: -360 }}
-                                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                                className="absolute inset-4 border-2 border-primary/20 border-b-transparent rounded-full"
-                            />
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <motion.span
-                                    animate={{ scale: [1, 1.1, 1], opacity: [0.6, 1, 0.6] }}
-                                    transition={{ duration: 2, repeat: Infinity }}
-                                    className="material-symbols-outlined text- primary text-6xl"
-                                >
-                                    query_stats
-                                </motion.span>
-                            </div>
-                        </div>
-                        <div className="text-center space-y-6 relative z-10 w-full max-w-xs">
-                            <h2 className="text-2xl font-black italic tracking-tighter uppercase text-white premium-text-glow">IA Neural Audit</h2>
-                            <p className="text-[10px] text-zinc-500 font-bold tracking-[0.4em] uppercase">Sincronização com ecossistema em curso</p>
-                            <div className="w-full h-[2px] bg-zinc-900 rounded-full overflow-hidden">
-                                <motion.div
-                                    initial={{ width: 0 }}
-                                    animate={{ width: "100%" }}
-                                    transition={{ duration: 3, ease: "easeInOut" }}
-                                    className="h-full bg-primary shadow-[0_0_10px_#0FB67F]"
-                                />
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
 
-            <Header showBack title="Fluxo de Elite" />
+            <Header showBack title="Transações de Elite" />
 
             <main className="flex-grow px-6 space-y-10 pb-40 pt-6 overflow-y-auto no-scrollbar relative z-10">
 
@@ -300,24 +241,6 @@ export default function TransactionHistory() {
                     </div>
                 </section>
 
-                {/* ── AI Tactical Button ── */}
-                <motion.button
-                    whileTap={{ scale: 0.96 }}
-                    onClick={handleAnalyze}
-                    className="w-full h-20 rounded-[2.5rem] bg-black border border-primary/20 flex items-center justify-between px-8 group relative overflow-hidden"
-                >
-                    <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">
-                            <span className="material-symbols-outlined text-primary text-2xl group-hover:rotate-12 transition-transform">insights</span>
-                        </div>
-                        <div className="text-left">
-                            <span className="text-[10px] font-black text-white italic tracking-[0.2em] uppercase block">Análise de IA</span>
-                            <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">Geração de relatórios proativos</span>
-                        </div>
-                    </div>
-                    <span className="material-symbols-outlined text-zinc-700 text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                </motion.button>
 
                 {/* ── Transaction List ── */}
                 <section className="space-y-6">
@@ -395,8 +318,8 @@ export default function TransactionHistory() {
                 </section>
             </main>
 
-            {/* ── Transaction Cockpit (FAB) ── */}
-            <div className="fixed bottom-10 right-10 z-[100]">
+            {/* ── Transaction Cockpit (Standardized FAB) ── */}
+            <div className={`fixed bottom-24 right-6 z-[150] transition-all duration-500 ${!showFabCockpit ? 'levitate-btn' : ''}`}>
                 <AnimatePresence>
                     {showFabCockpit && (
                         <>
@@ -437,7 +360,7 @@ export default function TransactionHistory() {
                 <motion.button
                     whileTap={{ scale: 0.9 }}
                     onClick={() => setShowFabCockpit(!showFabCockpit)}
-                    className="w-16 h-16 rounded-[2rem] bg-primary flex items-center justify-center shadow-[0_15px_30px_rgba(15,182,127,0.3)] relative z-[110]"
+                    className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-[0_20px_40px_rgba(15,182,127,0.4)] relative z-[110]"
                 >
                     <motion.span
                         animate={{ rotate: showFabCockpit ? 45 : 0 }}
@@ -447,6 +370,17 @@ export default function TransactionHistory() {
                     </motion.span>
                 </motion.button>
             </div>
+
+            <style>{`
+                @keyframes levitate {
+                    0% { transform: translateY(0px); }
+                    50% { transform: translateY(-10px); }
+                    100% { transform: translateY(0px); }
+                }
+                .levitate-btn {
+                    animation: levitate 3s ease-in-out infinite;
+                }
+            `}</style>
 
             {/* ── Wallet Summary (Gaming Edition) ── */}
             <AnimatePresence>

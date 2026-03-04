@@ -1,185 +1,269 @@
-import React, { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../contexts/DataContext';
+import { motion, AnimatePresence } from 'motion/react';
+import {
+    BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
+    PieChart, Pie, Cell, AreaChart, Area, CartesianGrid
+} from 'recharts';
+import Header from '../components/Header';
 
 export default function SpendingAnalysis() {
     const navigate = useNavigate();
-    const { budgets, transactions } = useData();
-    const [isAnalyzing, setIsAnalyzing] = useState(false);
+    const { transactions, budgets, loading } = useData();
+    const [period, setPeriod] = useState<'mensal' | 'semanal' | 'anual'>('mensal');
+    const [simulationValue, setSimulationValue] = useState(10); // Percentage to save
 
-    // Mock/Calc data points
-    const totalSpent = transactions
-        .filter(t => t.type === 'expense')
-        .reduce((acc, t) => acc + Number(t.amount), 0);
+    // ── Data Processing ──
+    const now = new Date();
+    const filteredTransactions = useMemo(() => {
+        return transactions.filter(t => {
+            const tDate = new Date(t.date);
+            if (period === 'semanal') {
+                const weekAgo = new Date();
+                weekAgo.setDate(now.getDate() - 7);
+                return tDate >= weekAgo;
+            } else if (period === 'mensal') {
+                return tDate.getMonth() === now.getMonth() && tDate.getFullYear() === now.getFullYear();
+            } else {
+                return tDate.getFullYear() === now.getFullYear();
+            }
+        });
+    }, [transactions, period]);
 
-    const totalLimit = budgets.reduce((acc, b) => acc + Number(b.amount || b.target), 0) || 0;
-    const consumptionPercent = Math.min(Math.round((totalSpent / totalLimit) * 100), 100);
+    const totalIncome = useMemo(() =>
+        filteredTransactions.filter(t => t.type === 'income').reduce((acc, t) => acc + Number(t.amount), 0)
+        , [filteredTransactions]);
 
-    const categories = budgets.map(b => {
-        const spent = transactions
-            .filter(t => t.category === b.name && t.type === 'expense')
-            .reduce((acc, t) => acc + Number(t.amount), 0);
-        return {
-            name: b.name,
-            icon: b.icon || 'category',
-            spent: spent,
-            limit: b.amount,
-            remaining: Math.max(Number(b.amount) - spent, 0),
-            percent: Math.min(Math.round((spent / Number(b.amount)) * 100), 100)
-        };
-    }).slice(0, 3);
+    const totalExpense = useMemo(() =>
+        filteredTransactions.filter(t => t.type === 'expense').reduce((acc, t) => acc + Number(t.amount), 0)
+        , [filteredTransactions]);
 
-    const handleAIAnalysis = () => {
-        setIsAnalyzing(true);
-        setTimeout(() => {
-            setIsAnalyzing(false);
-            navigate('/ai-analysis');
-        }, 3000);
-    };
+    const analyzedBalance = totalIncome - totalExpense;
 
-    if (isAnalyzing) {
+    const categoryData = useMemo(() => {
+        const counts: Record<string, number> = {};
+        filteredTransactions.filter(t => t.type === 'expense').forEach(t => {
+            counts[t.category] = (counts[t.category] || 0) + Number(t.amount);
+        });
+        return Object.entries(counts)
+            .map(([name, value]) => ({ name, value }))
+            .sort((a, b) => b.value - a.value)
+            .slice(0, 5);
+    }, [filteredTransactions]);
+
+    const COLORS = ['#0FB67F', '#3B82F6', '#A855F7', '#F59E0B', '#EF4444'];
+
+    // ── Simulation Logic ──
+    const projectedSavings = (totalExpense * (simulationValue / 100));
+    const annualProjected = projectedSavings * 12;
+
+    if (loading) {
         return (
-            <div className="bg-black text-white min-h-screen flex flex-col items-center justify-center p-8 text-center space-y-12">
-                <style>{`
-                    @keyframes spin-slow {
-                        from { transform: rotate(0deg); }
-                        to { transform: rotate(360deg); }
-                    }
-                    @keyframes pulse-ring {
-                        0% { transform: scale(0.8); opacity: 0.5; }
-                        50% { transform: scale(1.2); opacity: 0.3; }
-                        100% { transform: scale(0.8); opacity: 0.5; }
-                    }
-                    .animate-spin-slow {
-                        animation: spin-slow 8s linear infinite;
-                    }
-                    .animate-pulse-ring {
-                        animation: pulse-ring 3s ease-in-out infinite;
-                    }
-                `}</style>
-                <div className="relative">
-                    <div className="absolute inset-0 bg-primary/20 blur-[60px] animate-pulse-ring rounded-full"></div>
-                    <div className="relative w-32 h-32 rounded-full border border-primary/20 flex items-center justify-center overflow-hidden">
-                        <div className="absolute inset-0 border-t-2 border-primary animate-spin-slow rounded-full"></div>
-                        <span className="material-symbols-outlined text-5xl text-primary animate-pulse">auto_awesome</span>
-                    </div>
+            <div className="bg-black text-white min-h-screen flex flex-col items-center justify-center space-y-6">
+                <div className="relative w-20 h-20">
+                    <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-0 border-2 border-primary/10 border-t-primary rounded-full shadow-[0_0_40px_rgba(15,182,127,0.2)]"
+                    />
+                    <div className="absolute inset-4 border border-blue-500/20 rounded-full animate-pulse"></div>
                 </div>
-                <div className="space-y-4">
-                    <h2 className="text-xl font-bold tracking-tighter uppercase">Processando Realidade...</h2>
-                    <p className="text-xs text-zinc-500 font-medium tracking-widest uppercase animate-pulse">
-                        A IA está realizando uma análise detalhada<br />dos seus padrões de consumo
-                    </p>
-                </div>
+                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-500 animate-pulse">Cruzando Dados Financeiros...</span>
             </div>
         );
     }
 
+    const fmt = (v: number) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
     return (
-        <div className="bg-black text-[#A1A1AA] font-sans flex flex-col min-h-screen overflow-x-hidden selection:bg-primary/30">
-            <header className="pt-14 pb-2 px-6 sticky top-0 bg-black/80 backdrop-blur-xl z-50">
-                <div className="flex items-center justify-between mb-8">
-                    <button onClick={() => navigate(-1)} className="w-6 h-6 flex items-center justify-center">
-                        <span className="material-symbols-outlined text-zinc-400">arrow_back_ios_new</span>
-                    </button>
-                    <h1 className="text-[10px] font-display font-semibold tracking-[0.5em] text-text-value uppercase opacity-80">ANÁLISE DE GASTOS</h1>
-                    <div className="w-6"></div>
-                </div>
-            </header>
+        <div className="bg-black text-white font-sans min-h-screen flex flex-col selection:bg-primary/30 relative overflow-hidden">
+            {/* ── Background Aura ── */}
+            <div className="fixed top-[-10%] left-[-10%] w-[70%] h-[50%] bg-primary/5 blur-[120px] rounded-full pointer-events-none z-0"></div>
+            <div className="fixed bottom-[-10%] right-[-10%] w-[60%] h-[40%] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none z-0"></div>
 
-            <main className="flex-1 overflow-y-auto pb-12">
-                <section className="p-6">
-                    <div
-                        onClick={() => navigate('/budgets')}
-                        className="glow-border rounded-[40px] bg-transparent p-10 flex flex-col items-center relative overflow-hidden group cursor-pointer active:scale-[0.98] transition-all"
-                    >
-                        <div className="absolute inset-0 bg-primary/5 blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity"></div>
+            <Header title="Análise de Fluxo" showBack />
 
-                        <h2 className="text-[9px] font-bold tracking-[0.3em] text-zinc-500 uppercase mb-8 relative z-10">ORÇAMENTO TOTAL</h2>
+            <main className="flex-grow px-6 pt-6 pb-40 relative z-10 space-y-12 overflow-y-auto no-scrollbar">
 
-                        <div className="relative w-56 h-56 flex items-center justify-center z-10">
-                            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                                <circle cx="50" cy="50" fill="transparent" r="48" stroke="#1A1A1A" strokeWidth="0.5"></circle>
-                                <circle
-                                    className="glow-line transition-all duration-1000"
-                                    cx="50" cy="50" fill="transparent" r="48"
-                                    stroke="#0FB67F"
-                                    strokeDasharray="301.59"
-                                    strokeDashoffset={301.59 - (301.59 * consumptionPercent / 100)}
-                                    strokeLinecap="round"
-                                    strokeWidth="1.5"
-                                ></circle>
-                            </svg>
-                            <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                                <span className="text-5xl font-display font-extralight text-text-value tracking-tight">
-                                    {consumptionPercent}<span className="text-xl font-light opacity-60">%</span>
-                                </span>
-                                <span className="text-[8px] font-bold text-primary tracking-[0.3em] uppercase mt-2 glow-text">Consumido</span>
-                            </div>
+                {/* ── Period Selector & Analyzed Balance ── */}
+                <section className="space-y-8">
+                    <div className="flex p-1 bg-zinc-900/40 rounded-2xl border border-white/5 backdrop-blur-md max-w-[320px] mx-auto">
+                        {(['semanal', 'mensal', 'anual'] as const).map((p) => (
+                            <button
+                                key={p}
+                                onClick={() => setPeriod(p)}
+                                className={`flex-1 py-2.5 text-[9px] font-black uppercase tracking-widest rounded-xl transition-all duration-500 ${period === p ? 'bg-white text-black shadow-xl' : 'text-zinc-500 hover:text-zinc-300'}`}
+                            >
+                                {p}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="flex flex-col items-center text-center space-y-4">
+                        <span className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.6em]">Saldo Analisado ({period})</span>
+                        <div className="relative">
+                            <h1 className={`text-6xl font-display font-black tracking-tighter premium-text-glow leading-tight ${analyzedBalance >= 0 ? 'text-white' : 'text-red-500'}`}>
+                                <span className="text-2xl font-light text-zinc-600 mr-2">R$</span>
+                                {fmt(analyzedBalance)}
+                            </h1>
+                            {analyzedBalance < 0 && (
+                                <div className="absolute -top-4 -right-8 px-2 py-0.5 bg-red-500/20 border border-red-500/30 rounded-full">
+                                    <span className="text-[7px] font-black text-red-500 uppercase">Déficit</span>
+                                </div>
+                            )}
                         </div>
+                    </div>
 
-                        <div className="mt-10 grid grid-cols-2 gap-12 w-full relative z-10">
-                            <div className="text-center">
-                                <p className="text-[8px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-1">Gasto</p>
-                                <p className="text-xl font-light text-text-value tracking-tight">R$ {Math.round(totalSpent).toLocaleString('pt-BR')}</p>
-                            </div>
-                            <div className="text-center">
-                                <p className="text-[8px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-1">Limite</p>
-                                <p className="text-xl font-light text-zinc-400 tracking-tight">R$ {totalLimit.toLocaleString('pt-BR')}</p>
-                            </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="transparent-card-border rounded-[2.5rem] p-6 bg-zinc-950/20 border-white/5 flex flex-col items-center gap-2">
+                            <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">Entradas</span>
+                            <p className="text-xl font-black text-primary italic tracking-tighter">R$ {fmt(totalIncome)}</p>
+                        </div>
+                        <div className="transparent-card-border rounded-[2.5rem] p-6 bg-zinc-950/20 border-white/5 flex flex-col items-center gap-2">
+                            <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">Saídas</span>
+                            <p className="text-xl font-black text-white italic tracking-tighter">R$ {fmt(totalExpense)}</p>
                         </div>
                     </div>
                 </section>
 
-                <section className="px-6 space-y-4">
-                    <h3 className="text-[9px] font-bold tracking-[0.3em] text-zinc-500 uppercase px-2 mb-4">Detalhamento</h3>
-                    {categories.map((cat, i) => (
-                        <div key={i} className="glow-border rounded-3xl bg-transparent p-6 group hover:border-primary/30 transition-all cursor-pointer" onClick={() => navigate('/budgets')}>
-                            <div className="flex items-center gap-5 mb-5">
-                                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/5 group-hover:bg-primary/10 transition-colors">
-                                    <span className="material-symbols-outlined text-primary font-extralight !text-[24px]">{cat.icon}</span>
+                {/* ── Main Analysis Section ── */}
+                <section className="space-y-8">
+                    <div className="flex items-center justify-between px-2">
+                        <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em]">Raio-X de Consumo</h3>
+                        <span className="text-[9px] font-black text-primary uppercase tracking-widest">Categorias em Foco</span>
+                    </div>
+
+                    <div className="transparent-card-border rounded-[3rem] p-8 bg-zinc-950/30 space-y-10">
+                        {categoryData.length > 0 ? (
+                            <>
+                                <div className="h-[240px] w-full">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart data={categoryData} layout="vertical">
+                                            <XAxis type="number" hide />
+                                            <YAxis
+                                                dataKey="name"
+                                                type="category"
+                                                axisLine={false}
+                                                tickLine={false}
+                                                width={80}
+                                                tick={{ fill: '#52525b', fontSize: 10, fontWeight: 900 }}
+                                            />
+                                            <Tooltip
+                                                cursor={{ fill: 'transparent' }}
+                                                contentStyle={{ backgroundColor: '#000', border: '1px solid #ffffff10', borderRadius: '16px' }}
+                                                itemStyle={{ color: '#0FB67F', fontSize: '10px', fontWeight: 900 }}
+                                            />
+                                            <Bar
+                                                dataKey="value"
+                                                radius={[0, 10, 10, 0]}
+                                                barSize={12}
+                                            >
+                                                {categoryData.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                ))}
+                                            </Bar>
+                                        </BarChart>
+                                    </ResponsiveContainer>
                                 </div>
-                                <div className="flex-1">
-                                    <div className="flex justify-between items-end">
-                                        <h4 className="text-xs font-medium tracking-wide text-zinc-400">{cat.name}</h4>
-                                        <span className="text-[10px] text-zinc-600 font-medium tracking-wider uppercase">RESTAM R$ {Math.round(cat.remaining)}</span>
-                                    </div>
-                                    <div className="mt-1">
-                                        <span className="text-lg font-light text-text-value">R$ {cat.spent.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                                    </div>
+
+                                <div className="space-y-4">
+                                    {categoryData.map((cat, idx) => (
+                                        <div key={idx} className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-2xl">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: COLORS[idx % COLORS.length] }}></div>
+                                                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{cat.name}</span>
+                                            </div>
+                                            <span className="text-sm font-black text-white italic">R$ {fmt(cat.value)}</span>
+                                        </div>
+                                    ))}
                                 </div>
+                            </>
+                        ) : (
+                            <div className="py-12 text-center opacity-40 italic text-zinc-500 text-[10px] uppercase tracking-widest">
+                                Sem movimentações para este período.
                             </div>
-                            <div className="w-full h-[1px] bg-zinc-900 overflow-hidden rounded-full">
-                                <div className="h-full bg-primary glow-line transition-all duration-1000" style={{ width: `${cat.percent}%` }}></div>
-                            </div>
-                        </div>
-                    ))}
+                        )}
+                    </div>
                 </section>
 
-                <section className="p-6">
-                    <div
-                        onClick={handleAIAnalysis}
-                        className="glow-border rounded-3xl bg-transparent p-6 relative overflow-hidden cursor-pointer hover:border-primary/30 active:scale-[0.98] transition-all"
-                    >
-                        <div className="flex items-start gap-5">
-                            <div className="mt-1">
-                                <span className="material-symbols-outlined text-primary font-light !text-[20px] glow-text animate-pulse">auto_awesome</span>
+                {/* ── Savings Simulation Tool ── */}
+                <section className="space-y-8">
+                    <div className="flex items-center gap-3 px-2">
+                        <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                            <span className="material-symbols-outlined text-blue-500 text-lg">model_training</span>
+                        </div>
+                        <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em]">Simulador de Economia</h3>
+                    </div>
+
+                    <div className="transparent-card-border rounded-[3rem] p-10 bg-gradient-to-br from-zinc-950 to-black border-blue-500/10 space-y-12 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 blur-3xl rounded-full"></div>
+
+                        <div className="space-y-6">
+                            <div className="flex justify-between items-end px-2">
+                                <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Meta de Otimização</span>
+                                <span className="text-3xl font-black text-blue-500 italic tracking-tighter">{simulationValue}%</span>
                             </div>
-                            <div>
-                                <h3 className="text-[9px] font-bold tracking-[0.3em] text-primary uppercase mb-3 glow-text">IA INSIGHT</h3>
-                                <p className="text-xs text-zinc-400 leading-relaxed font-light">
-                                    {transactions.length > 5 ? (
-                                        <>
-                                            <span className="text-text-value font-medium">Análise preditiva:</span> O consumo em <span className="text-text-value">{categories[0]?.name || 'Geral'}</span> está acelerado. Projeção de excedente em 8% caso o padrão se mantenha.
-                                        </>
-                                    ) : (
-                                        "Aguardando registros reais suficientes para processar insights preditivos."
-                                    )}
-                                </p>
+                            <input
+                                type="range"
+                                min="1"
+                                max="50"
+                                value={simulationValue}
+                                onChange={(e) => setSimulationValue(Number(e.target.value))}
+                                className="w-full h-1 bg-zinc-900 rounded-full appearance-none cursor-pointer accent-blue-500"
+                            />
+                            <div className="flex justify-between text-[8px] font-black text-zinc-700 uppercase tracking-[0.2em] px-1">
+                                <span>Poupador</span>
+                                <span>Estrategista</span>
+                                <span>Hardcore</span>
                             </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-6">
+                            <div className="p-8 bg-black/40 border border-white/5 rounded-[2.5rem] flex flex-col items-center text-center space-y-4">
+                                <span className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.3em]">Capital Resgatado (Mensal)</span>
+                                <h4 className="text-4xl font-black text-white italic tracking-tighter">
+                                    <span className="text-lg font-light text-zinc-600 mr-2">R$</span>
+                                    {fmt(projectedSavings)}
+                                </h4>
+                                <div className="h-[1px] w-12 bg-blue-500/20"></div>
+                                <span className="text-[7px] font-black text-blue-500/60 uppercase tracking-[0.4em]">Impacto Anual: R$ {fmt(annualProjected)}</span>
+                            </div>
+                        </div>
+
+                        <div className="p-5 bg-blue-500/5 border border-blue-500/10 rounded-2xl flex items-start gap-4">
+                            <span className="material-symbols-outlined text-blue-500 text-xl mt-0.5">lightbulb</span>
+                            <p className="text-[9px] text-zinc-400 font-bold uppercase tracking-widest leading-relaxed italic">
+                                Ao economizar <span className="text-white">{simulationValue}%</span>, você gera um aporte equivalente a <span className="text-blue-500 font-black">R$ {fmt(annualProjected)}</span> extras por ano para reinvestir.
+                            </p>
                         </div>
                     </div>
                 </section>
+
+
             </main>
+
+            {/* ── Standardized Luxury FAB ── */}
+            <div className="fixed bottom-24 right-6 z-[150] levitate-btn">
+                <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => navigate('/new-transaction')}
+                    className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-[0_20px_40px_rgba(15,182,127,0.4)] active:scale-90 transition-all group"
+                >
+                    <span className="material-symbols-outlined text-black font-black text-3xl group-hover:scale-110 transition-transform">add</span>
+                </motion.button>
+            </div>
+
+            <style>{`
+                @keyframes levitate {
+                    0% { transform: translateY(0px); }
+                    50% { transform: translateY(-10px); }
+                    100% { transform: translateY(0px); }
+                }
+                .levitate-btn {
+                    animation: levitate 3s ease-in-out infinite;
+                }
+            `}</style>
         </div>
     );
 }

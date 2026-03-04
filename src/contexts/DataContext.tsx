@@ -19,6 +19,7 @@ interface DataContextType {
     levelName: string;
     levelNames: string[];
     clearAllData: () => Promise<void>;
+    userName: string;
 }
 
 export const LEVEL_NAMES = [
@@ -39,6 +40,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
     const [budgets, setBudgets] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [userName, setUserName] = useState('');
 
     const [xp, setXp] = useState(() => Number(localStorage.getItem('poup_xp') || 0));
     const [level, setLevel] = useState(() => Number(localStorage.getItem('poup_level') || 1));
@@ -73,7 +75,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 supabase.from('assets').delete().eq('user_id', user.id),
                 supabase.from('goals').delete().eq('user_id', user.id),
                 supabase.from('budgets').delete().eq('user_id', user.id),
-                supabase.from('categories').delete().eq('user_id', user.id)
+                supabase.from('categories').delete().eq('user_id', user.id),
+                supabase.from('profiles').delete().eq('id', user.id)
             ]);
 
             setTransactions([]);
@@ -82,6 +85,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setBudgets([]);
             setCategories([]);
             setSubCategories([]);
+            setUserName('');
             setXp(0);
             setLevel(1);
             localStorage.setItem('poup_xp', '0');
@@ -105,13 +109,15 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 { data: assetsData },
                 { data: goalsData },
                 { data: categoriesData },
-                { data: subCategoriesData }
+                { data: subCategoriesData },
+                { data: profileData }
             ] = await Promise.all([
                 supabase.from('transactions').select('*').order('date', { ascending: false }),
                 supabase.from('assets').select('*').order('created_at', { ascending: false }),
                 supabase.from('goals').select('*').order('created_at', { ascending: false }),
                 supabase.from('categories').select('*').order('name', { ascending: true }),
-                supabase.from('subcategories').select('*').order('name', { ascending: true })
+                supabase.from('subcategories').select('*').order('name', { ascending: true }),
+                supabase.from('profiles').select('full_name').eq('id', user.id).single()
             ]);
 
             setTransactions(transData || []);
@@ -119,6 +125,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setGoals(goalsData || []);
             setCategories(categoriesData || []);
             setSubCategories(subCategoriesData || []);
+            if (profileData) setUserName(profileData.full_name || '');
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {
@@ -144,7 +151,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
             supabase.channel('public:assets').on('postgres_changes', { event: '*', schema: 'public', table: 'assets', filter: `user_id=eq.${user.id}` }, () => fetchData()),
             supabase.channel('public:goals').on('postgres_changes', { event: '*', schema: 'public', table: 'goals', filter: `user_id=eq.${user.id}` }, () => fetchData()),
             supabase.channel('public:categories').on('postgres_changes', { event: '*', schema: 'public', table: 'categories', filter: `user_id=eq.${user.id}` }, () => fetchData()),
-            supabase.channel('public:subcategories').on('postgres_changes', { event: '*', schema: 'public', table: 'subcategories' }, () => fetchData())
+            supabase.channel('public:subcategories').on('postgres_changes', { event: '*', schema: 'public', table: 'subcategories' }, () => fetchData()),
+            supabase.channel('public:profiles').on('postgres_changes', { event: '*', schema: 'public', table: 'profiles', filter: `id=eq.${user.id}` }, () => fetchData())
         ].map(c => c.subscribe());
 
         return () => {
@@ -155,7 +163,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return (
         <DataContext.Provider value={{
             transactions, assets, goals, categories, subCategories, budgets, loading,
-            refreshData: fetchData, xp, level, currentMaxXP, addXP, levelName, levelNames: LEVEL_NAMES, clearAllData
+            refreshData: fetchData, xp, level, currentMaxXP, addXP, levelName, levelNames: LEVEL_NAMES, clearAllData, userName
         }}>
             {children}
         </DataContext.Provider>

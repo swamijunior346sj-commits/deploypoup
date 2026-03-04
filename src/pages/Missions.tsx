@@ -2,166 +2,302 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import { useData } from '../contexts/DataContext';
+import { motion, AnimatePresence } from 'motion/react';
 
 export default function Missions() {
   const navigate = useNavigate();
   const { xp, level, levelName, currentMaxXP, addXP } = useData();
-  const [completedMissions, setCompletedMissions] = useState<number[]>([]);
+  const [completedMissions, setCompletedMissions] = useState<number[]>(() => {
+    const saved = localStorage.getItem('poup_completed_missions');
+    return saved ? JSON.parse(saved) : [];
+  });
 
-  // Unique missions for 60 days
-  const allMissions = useMemo(() => {
-    const categories = [
-      { name: "Economia", icon: "savings", color: "text-primary" },
-      { name: "Investimento", icon: "trending_up", color: "text-blue-400" },
-      { name: "Educação", icon: "menu_book", color: "text-purple-400" },
-      { name: "Gestão", icon: "receipt_long", color: "text-amber-400" }
-    ];
-
-    const missionNames1 = [
-      "Poupador Flash", "Zero Boletos", "Café em Casa", "Mestre do Cofrinho", "Dívida Zero",
-      "Caçador de Ofertas", "Controle Total", "Semana do Real", "Check-up Saldo", "Economia Áurea",
-      "Pico de Poupança", "Alvo de Gastos", "Muralha de Emergência", "Escudo Financeiro", "Fuga dos Juros",
-      "Rota do Ouro", "Mente Blindada", "Disciplina de Ferro", "Salto de Capital", "Ninho de Ovos",
-      "Garra de Poupador", "Despertar Financeiro", "Festa sem Gastos", "Troco Solidário", "Bússola de Preços",
-      "Farol do Orçamento", "Ancora de Ativos", "Voo do Poupador", "Cume do Patrimônio", "Legado POUP"
-    ];
-
-    const missionNames2 = [
-      "Primeiro Ativo", "Mestre Dividendos", "Radar de Oportunidade", "Aporte Sagrado", "Visão de Longo Prazo",
-      "Diversificação Pro", "Leitura de Gráfico", "Mentoria Express", "Estrategista Alpha", "Fundo Imobiliário",
-      "Dólar na Carteira", "Ação de Valor", "Índice de Sucesso", "Rebalanceamento", "Criptonita Positiva",
-      "Carteira Blindada", "Lucro Real", "Juros Compostos", "Independência Já", "Renda Passiva",
-      "Patrimônio Líquido", "Analista Sênior", "Gestor de Risco", "Horizonte de Lucro", "Ativo Inteligente",
-      "Mercado Global", "Safra de Dividendos", "Tesouro Direto", "Onda de Investimento", "ImpérioPOUP"
-    ];
-
-    return Array.from({ length: 30 }, (_, dayIdx) => {
-      const day = dayIdx + 1;
-      return [
-        {
-          id: day * 2 - 1,
-          day,
-          title: missionNames1[dayIdx] || `Missão 1 - Dia ${day}`,
-          desc: "Foco em controle e disciplina financeira.",
-          reward: 5,
-          cat: categories[day % categories.length]
-        },
-        {
-          id: day * 2,
-          day,
-          title: missionNames2[dayIdx] || `Missão 2 - Dia ${day}`,
-          desc: "Foco em expansão de patrimônio e conhecimento.",
-          reward: 10,
-          cat: categories[(day + 1) % categories.length]
-        }
-      ];
-    }).flat();
-  }, []);
-
-  const todayMissions = allMissions.slice(0, 2);
-  const futureMissions = allMissions.slice(2);
-
-  const handleComplete = (id: number, xpAmount: number) => {
-    if (completedMissions.includes(id)) return;
-    setCompletedMissions(prev => [...prev, id]);
-    addXP(xpAmount);
+  // ── Quest Categories ──
+  const categories = {
+    ECONOMIA: { name: "Auditória", icon: "savings", color: "text-primary", bg: "bg-primary/5" },
+    INVESTIMENTO: { name: "Expansão", icon: "rocket_launch", color: "text-blue-500", bg: "bg-blue-500/5" },
+    EDUCACAO: { name: "Cognição", icon: "psychology", color: "text-purple-500", bg: "bg-purple-500/5" },
+    GESTAO: { name: "Operacional", icon: "rebase_edit", color: "text-amber-500", bg: "bg-amber-500/5" }
   };
 
-  return (
-    <div className="bg-black font-display text-white min-h-screen pb-32 overflow-x-hidden selection:bg-primary/30">
-      <style>{`
-            .mission-card-glow {
-                box-shadow: 0 0 20px rgba(15, 182, 127, 0.05);
-            }
-            .mission-card-glow:hover {
-                box-shadow: 0 0 30px rgba(15, 182, 127, 0.15);
-            }
-        `}</style>
-      <Header showBack title="Missões Diárias" onBack={() => navigate('/dashboard')} />
+  // ── Mission Database ──
+  const allMissions = useMemo(() => {
+    const questData = [
+      { id: 1, title: "Protocolo de Entrada", desc: "Registre sua primeira receita do dia para validar as transações.", reward: 50, type: 'ECONOMIA', req: "Registrar Receita" },
+      { id: 2, title: "Aporte Estratégico", desc: "Direcione capital para qualquer ativo em custódia.", reward: 150, type: 'INVESTIMENTO', req: "Novo Investimento" },
+      { id: 3, title: "Cognição de Mercado", desc: "Analise um relatório detalhado de ativos.", reward: 30, type: 'EDUCACAO', req: "Ver Detalhes de Ativo" },
+      { id: 4, title: "Sincronização Fiscal", desc: "Categorize 3 transações pendentes no extrato.", reward: 80, type: 'GESTAO', req: "Editar Transações" },
+      { id: 5, title: "Muralha de Proteção", desc: "Crie ou ajuste um orçamento de segurança.", reward: 100, type: 'ECONOMIA', req: "Novo Orçamento" },
+      { id: 6, title: "Visão Alpha", desc: "Utilize a análise de IA para ler seus gastos.", reward: 200, type: 'GESTAO', req: "Neural Insight" },
+      { id: 7, title: "Alvo Formalizado", desc: "Defina uma nova meta de médio prazo.", reward: 120, type: 'ECONOMIA', req: "Nova Meta" },
+      { id: 8, title: "Feedback Holístico", desc: "Atualize seus dados de perfil de investidor.", reward: 40, type: 'EDUCACAO', req: "Editar Perfil" },
+    ];
+    return questData;
+  }, []);
 
-      <main className="px-6 pt-6">
-        {/* Level Info Header */}
-        <div className="mb-10 flex items-center justify-between">
-          <div>
-            <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-1">Status de Evolução</p>
-            <div className="flex items-baseline gap-2">
-              <h2 className="text-3xl font-black text-white">{levelName}</h2>
-              <span className="text-primary text-sm font-bold">Lvl {level}</span>
+  const handleComplete = (id: number, reward: number) => {
+    if (completedMissions.includes(id)) return;
+    const newCompleted = [...completedMissions, id];
+    setCompletedMissions(newCompleted);
+    localStorage.setItem('poup_completed_missions', JSON.stringify(newCompleted));
+    addXP(reward);
+  };
+
+  const [showLevelModal, setShowLevelModal] = useState(false);
+
+  const xpPercentage = (xp / currentMaxXP) * 100;
+
+  return (
+    <div className="bg-black text-white font-sans min-h-screen flex flex-col selection:bg-primary/30 relative overflow-hidden">
+      <style>{`
+                @keyframes levitate {
+                    0% { transform: translateY(0px); }
+                    50% { transform: translateY(-10px); }
+                    100% { transform: translateY(0px); }
+                }
+                .levitate-btn {
+                    animation: levitate 3s ease-in-out infinite;
+                }
+            `}</style>
+
+      {/* ── Background Aura ── */}
+      <div className="fixed top-[-10%] left-[-10%] w-[70%] h-[50%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none z-0"></div>
+      <div className="fixed bottom-[-10%] right-[-10%] w-[60%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none z-0"></div>
+
+      <Header showBack title="Central de Missões" />
+
+      <main className="flex-grow px-6 pt-8 pb-32 relative z-10 space-y-12 overflow-y-auto no-scrollbar">
+
+        {/* ── Progress Hero Card (One-Click) ── */}
+        <section
+          onClick={() => setShowLevelModal(true)}
+          className="transparent-card-border rounded-[3.5rem] p-10 bg-zinc-950/20 relative overflow-hidden group cursor-pointer active:scale-[0.98] transition-all shadow-2xl"
+        >
+          <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 blur-3xl opacity-40 rounded-full"></div>
+
+          <div className="flex items-center justify-between mb-8">
+            <div className="space-y-1">
+              <span className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.5em]">Patente Atual</span>
+              <div className="flex items-center gap-2">
+                <h2 className="text-3xl font-display font-black tracking-tighter italic premium-text-glow">{levelName}</h2>
+                <span className="material-symbols-outlined text-primary text-sm animate-pulse">keyboard_arrow_down</span>
+              </div>
+            </div>
+            <div className="w-16 h-16 rounded-[1.8rem] bg-black border border-white/10 flex items-center justify-center shadow-2xl">
+              <span className="text-2xl font-black text-primary italic">L{level}</span>
             </div>
           </div>
-          <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex flex-col items-center justify-center">
-            <span className="text-[10px] font-black text-zinc-600 leading-none">XP</span>
-            <span className="text-lg font-black text-white">{xp}</span>
-          </div>
-        </div>
 
-        {/* Today's Focus */}
-        <section className="mb-12">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xs font-black uppercase tracking-widest text-zinc-400">Missões de Hoje</h3>
-            <span className="text-[10px] font-black text-primary px-2 py-1 bg-primary/10 rounded border border-primary/20 uppercase tracking-tighter">Reseta em 12h</span>
-          </div>
           <div className="space-y-4">
-            {todayMissions.map(m => {
-              const isDone = completedMissions.includes(m.id);
+            <div className="flex justify-between items-end px-1">
+              <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Sincronização de XP</span>
+              <span className="text-[10px] font-bold text-white tracking-widest">{xp} / {currentMaxXP}</span>
+            </div>
+            <div className="h-2 w-full bg-zinc-900/50 rounded-full overflow-hidden border border-white/5 relative">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${xpPercentage}%` }}
+                className="h-full bg-gradient-to-r from-primary to-blue-500 shadow-[0_0_15px_rgba(15,182,127,0.4)] relative overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.1)_50%,transparent_75%)] bg-[length:50px_50px] animate-[pulse_2s_infinite]"></div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Active Quests ── */}
+        <section className="space-y-8">
+          <div className="flex items-center justify-between px-2">
+            <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em]">Quests Disponíveis</h3>
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#0FB67F]"></span>
+              <span className="text-[9px] font-black text-primary uppercase tracking-widest">Reset em 08:42:15</span>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            {allMissions.map((mission, idx) => {
+              const isDone = completedMissions.includes(mission.id);
+              const isLocked = !isDone && idx > completedMissions.length + 1; // Logic for locking future missions
+              const cat = categories[mission.type as keyof typeof categories];
+
               return (
-                <div
-                  key={m.id}
-                  onClick={() => handleComplete(m.id, m.reward)}
-                  className={`relative overflow-hidden p-6 rounded-[2rem] border transition-all cursor-pointer mission-card-glow ${isDone ? 'bg-zinc-900/40 border-primary/20 opacity-60' : 'bg-zinc-900 border-white/10 active:scale-[0.98]'
-                    }`}
+                <motion.div
+                  key={mission.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  whileTap={!isLocked && !isDone ? { scale: 0.98 } : {}}
+                  className={`transparent-card-border rounded-[2.5rem] p-8 transition-all duration-500 relative overflow-hidden group 
+                                        ${isDone ? 'bg-zinc-900/10 border-primary/10 opacity-60' :
+                      isLocked ? 'bg-zinc-950/40 border-white/5 grayscale saturate-50 opacity-40' :
+                        'bg-zinc-950/20 border-white/5 hover:border-primary/30 hover:bg-zinc-900/10'}`}
                 >
-                  <div className="flex items-center gap-6 relative z-10">
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center bg-black border border-white/5 ${m.cat.color}`}>
-                      <span className="material-symbols-outlined text-3xl">{isDone ? 'check' : m.cat.icon}</span>
+                  {/* Locked Overlay */}
+                  {isLocked && (
+                    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
+                      <span className="material-symbols-outlined text-3xl text-zinc-700 mb-2">lock</span>
+                      <span className="text-[8px] font-black text-zinc-700 uppercase tracking-[0.3em]">Protocolo Bloqueado</span>
                     </div>
-                    <div className="flex-1">
-                      <span className="text-[9px] font-black uppercase tracking-widest text-zinc-600 mb-1 block">{m.cat.name} • Dia {m.day}</span>
-                      <h4 className={`text-lg font-black ${isDone ? 'text-zinc-500 line-through' : 'text-white'}`}>{m.title}</h4>
-                      <p className="text-xs text-zinc-500 mt-1">{m.desc}</p>
+                  )}
+
+                  <div className="flex items-start gap-6 relative z-10">
+                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center bg-black border border-white/5 shadow-2xl group-hover:border-primary/30 transition-all ${cat.color}`}>
+                      <span className="material-symbols-outlined text-3xl font-light">
+                        {isDone ? 'verified' : isLocked ? 'lock' : cat.icon}
+                      </span>
                     </div>
-                    <div className="text-right">
-                      <span className="block text-[8px] text-zinc-700 font-black uppercase mb-1">Recompensa</span>
-                      <span className={`text-xl font-black ${isDone ? 'text-zinc-700' : 'text-primary'}`}>+{m.reward} XP</span>
+
+                    <div className="flex-1 space-y-2">
+                      <div className="flex items-center gap-3">
+                        <span className={`text-[8px] font-black uppercase tracking-widest ${cat.color} bg-black/40 px-3 py-1 rounded-full border border-white/5`}>
+                          {cat.name}
+                        </span>
+                        {isDone && (
+                          <span className="text-[8px] font-black uppercase tracking-widest text-primary italic">Concluído</span>
+                        )}
+                      </div>
+                      <h4 className={`text-xl font-display font-black italic tracking-tighter ${isDone ? 'text-zinc-500 line-through' : 'text-white'}`}>
+                        {mission.title}
+                      </h4>
+                      <p className="text-[10px] text-zinc-500 font-medium leading-relaxed uppercase tracking-wider">
+                        {mission.desc}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col items-end justify-between self-stretch">
+                      <div className="text-right">
+                        <span className="block text-[8px] text-zinc-600 font-black uppercase tracking-widest mb-1">Impacto</span>
+                        <span className={`text-lg font-black italic ${isDone ? 'text-zinc-700' : 'text-primary'}`}>
+                          +{mission.reward}XP
+                        </span>
+                      </div>
+
+                      {!isDone && !isLocked && (
+                        <button
+                          onClick={() => handleComplete(mission.id, mission.reward)}
+                          className="px-6 py-2 bg-white text-black text-[9px] font-black uppercase tracking-[0.2em] rounded-full active:scale-90 transition-all shadow-xl hover:bg-primary"
+                        >
+                          Claim
+                        </button>
+                      )}
                     </div>
                   </div>
-                  {!isDone && <div className="absolute -right-4 -top-4 w-20 h-20 bg-primary/5 blur-2xl rounded-full"></div>}
-                </div>
+
+                  {/* Action Requirement Hint */}
+                  {!isDone && !isLocked && (
+                    <div className="mt-6 pt-4 border-t border-white/5 flex items-center gap-3">
+                      <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">Requisito Operacional:</span>
+                      <span className="text-[8px] font-black text-white uppercase tracking-widest italic">{mission.req}</span>
+                    </div>
+                  )}
+                </motion.div>
               );
             })}
           </div>
         </section>
 
-        {/* Upcoming Challenges */}
-        <section>
-          <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-2">
-            <h3 className="text-xs font-black uppercase tracking-widest text-zinc-400">Próximos Desafios</h3>
-            <span className="text-[10px] text-zinc-600 font-bold">{completedMissions.length}/60 CONCLUÍDOS</span>
-          </div>
-          <div className="grid grid-cols-1 gap-3">
-            {futureMissions.map(m => {
-              const isDone = completedMissions.includes(m.id);
-              return (
-                <div
-                  key={m.id}
-                  onClick={() => handleComplete(m.id, m.reward)}
-                  className={`p-4 rounded-2xl flex items-center gap-4 transition-all border ${isDone ? 'bg-zinc-900/40 border-primary/20 opacity-60' : 'bg-zinc-900 border-white/5 cursor-pointer hover:border-white/10 active:scale-[0.99]'
-                    }`}
-                >
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-black border border-white/5 ${isDone ? 'text-primary' : 'text-zinc-600'}`}>
-                    <span className="material-symbols-outlined text-xl">{isDone ? 'check' : m.cat.icon}</span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className={`text-sm font-bold truncate ${isDone ? 'text-zinc-500 line-through' : 'text-white'}`}>{m.title}</h4>
-                    <span className="text-[8px] text-zinc-600 uppercase tracking-widest">Dia {m.day} • {m.cat.name}</span>
-                  </div>
-                  <span className={`text-[10px] font-black ${isDone ? 'text-zinc-800' : 'text-zinc-500'}`}>+{m.reward} XP</span>
-                </div>
-              );
-            })}
+        {/* ── Legendary Unlock Alert ── */}
+        <section className="pb-12">
+          <div className="transparent-card-border rounded-[2.5rem] p-8 bg-gradient-to-br from-zinc-950 to-black border-yellow-500/10 flex items-center justify-between group overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-500/5 blur-3xl rounded-full"></div>
+            <div className="flex items-center gap-6 relative z-10">
+              <div className="w-14 h-14 rounded-2xl bg-black border border-yellow-500/20 flex items-center justify-center shadow-2xl">
+                <span className="material-symbols-outlined text-yellow-500 text-3xl animate-pulse">military_tech</span>
+              </div>
+              <div>
+                <h4 className="text-[10px] font-black text-yellow-500 uppercase tracking-[0.4em] mb-1">Quest de Prestígio</h4>
+                <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest italic">Complete todas as missões para desbloquear recompensa épica.</p>
+              </div>
+            </div>
           </div>
         </section>
       </main>
+
+      {/* ── Level Modal ── */}
+      <AnimatePresence>
+        {showLevelModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[500] flex items-center justify-center p-6"
+          >
+            <div className="absolute inset-0 bg-black/90 backdrop-blur-2xl" onClick={() => setShowLevelModal(false)}></div>
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative w-full max-w-sm transparent-card-border bg-zinc-950 rounded-[3rem] p-8 border-white/10 shadow-[0_0_80px_rgba(0,0,0,0.8)] overflow-hidden"
+            >
+              <div className="text-center mb-8">
+                <span className="text-[10px] font-black text-primary uppercase tracking-[0.5em] mb-2 block">Espectro de Evolução</span>
+                <h3 className="text-2xl font-display font-black text-white italic tracking-tighter uppercase">Hierarquia POUP</h3>
+              </div>
+
+              <div className="space-y-3 max-h-[40vh] overflow-y-auto no-scrollbar py-2">
+                {useData().levelNames.map((name, i) => {
+                  const current = level === i + 1;
+                  const isDone = level > i + 1;
+                  return (
+                    <div
+                      key={name}
+                      className={`p-4 rounded-2xl flex items-center justify-between border transition-all duration-500 ${current ? 'bg-primary/10 border-primary shadow-[0_0_20px_rgba(15,182,127,0.1)]' :
+                        isDone ? 'bg-zinc-900/40 border-primary/20 opacity-60' :
+                          'bg-black/40 border-white/5 opacity-30'
+                        }`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black ${current ? 'bg-primary text-black' :
+                          isDone ? 'bg-primary/20 text-primary' :
+                            'bg-zinc-800 text-zinc-600'
+                          }`}>
+                          {i + 1}
+                        </div>
+                        <div>
+                          <h4 className={`text-[11px] font-black uppercase tracking-tight ${current ? 'text-white' : 'text-zinc-500'}`}>{name}</h4>
+                          <span className="text-[7px] font-black text-zinc-600 uppercase">Patente Nível {i + 1}</span>
+                        </div>
+                      </div>
+                      {isDone && <span className="material-symbols-outlined text-primary text-lg">verified</span>}
+                      {current && <span className="material-symbols-outlined text-primary text-lg animate-pulse">stars</span>}
+                    </div>
+                  );
+                })}
+              </div>
+
+              <button
+                onClick={() => setShowLevelModal(false)}
+                className="w-full h-16 mt-8 rounded-2xl bg-white text-black font-black uppercase tracking-[0.3em] text-[10px] active:scale-95 transition-all shadow-xl hover:bg-primary"
+              >
+                Sincronizar
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Standardized Luxury FAB ── */}
+      <div className="fixed bottom-24 right-6 z-[150] levitate-btn">
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          onClick={() => navigate('/dashboard')}
+          className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-[0_20px_40px_rgba(15,182,127,0.4)] active:scale-90 transition-all group"
+        >
+          <span className="material-symbols-outlined font-black text-3xl group-hover:scale-110 transition-transform">dashboard</span>
+        </motion.button>
+      </div>
+
+      <style>{`
+        @keyframes levitate {
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+          100% { transform: translateY(0px); }
+        }
+        .levitate-btn {
+          animation: levitate 3s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 }

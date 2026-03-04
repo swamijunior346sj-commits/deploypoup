@@ -1,110 +1,38 @@
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
-
-export const networkingData = [
-    {
-        id: 'net-1',
-        title: 'Mastermind Elite POUP',
-        author: 'Caio & Equipe',
-        price: 'R$ 497,00',
-        coverUrl: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&q=80&w=400',
-        rating: 5.0,
-        reviews: 42,
-        description: 'Grupo exclusivo de investidores de alto nível para troca de estratégias e parcerias.',
-        tag: 'Exclusivo',
-        duration: '12 meses'
-    },
-    {
-        id: 'net-2',
-        title: 'Network em São Paulo',
-        author: 'E-POUP Events',
-        price: 'R$ 150,00',
-        coverUrl: 'https://images.unsplash.com/photo-1540317580384-e5d43616b9aa?auto=format&fit=crop&q=80&w=400',
-        rating: 4.9,
-        reviews: 800,
-        description: 'Encontro presencial trimestral para expandir sua rede de contatos e negócios.',
-        duration: '1 dia'
-    },
-    {
-        id: 'net-3',
-        title: 'Grupo VIP Telegram',
-        author: 'POUP Intel',
-        price: 'R$ 49,90/mês',
-        coverUrl: 'https://images.unsplash.com/photo-1611746872915-64382b5c76da?auto=format&fit=crop&q=80&w=400',
-        rating: 4.7,
-        reviews: 1500,
-        description: 'Alertas e discussões em tempo real sobre o mercado financeiro e oportunidades.',
-        tag: 'Assinatura',
-        duration: 'Mensal'
-    }
-];
+import { allProducts } from './Shop';
 
 export default function Networking() {
     const navigate = useNavigate();
+    const products = allProducts.filter(p => p.type === 'Networking');
 
     return (
-        <div className="bg-black font-display text-white min-h-screen pb-20 overflow-x-hidden selection:bg-primary/30">
-            <Header showBack title="Networking Hub" onBack={() => navigate('/shop')} />
-
-            <main className="px-6 pt-6">
-                <div className="flex justify-between items-center mb-10 border-b border-white/5 pb-4">
-                    <div>
-                        <h2 className="text-2xl font-black text-white leading-none mb-1">Conexões</h2>
-                        <span className="text-zinc-500 text-[10px] font-black uppercase tracking-[0.2em]">O Capital das Pessoas</span>
-                    </div>
-                    <span className="material-symbols-outlined text-primary text-2xl">handshake</span>
+        <div className="bg-black text-white min-h-screen flex flex-col selection:bg-primary/30 relative overflow-hidden">
+            <div className="fixed top-[-10%] right-[-10%] w-[60%] h-[40%] bg-cyan-500/5 blur-[150px] rounded-full pointer-events-none z-0 rotate-12"></div>
+            <Header title="Conexões Globais" showBack />
+            <main className="flex-grow px-6 pt-8 pb-32 space-y-10 relative z-10 overflow-y-auto no-scrollbar">
+                <div className="space-y-2">
+                    <span className="text-[10px] font-black text-cyan-500 uppercase tracking-[0.5em]">High Net Worth</span>
+                    <h3 className="text-2xl font-black italic text-white uppercase tracking-tight">O Poder do Ecossistema</h3>
                 </div>
-
-                <div className="grid grid-cols-1 gap-8">
-                    {networkingData.map((item) => (
+                <div className="grid grid-cols-1 gap-6">
+                    {products.map((product) => (
                         <div
-                            key={item.id}
-                            onClick={() => navigate(`/ebook/${item.id}`)}
-                            className="bg-zinc-900 rounded-[2.5rem] border border-white/5 overflow-hidden active:scale-[0.98] transition-all cursor-pointer shadow-2xl group flex flex-col sm:flex-row h-full"
+                            key={product.id}
+                            onClick={() => navigate(`/product-details/${product.id}`)}
+                            className="transparent-card-border rounded-[3.5rem] p-10 bg-zinc-950 border-cyan-500/10 shadow-[0_0_40px_rgba(6,182,212,0.05)] relative overflow-hidden group cursor-pointer"
                         >
-                            <div className="relative w-full sm:w-[150px] aspect-square sm:aspect-auto overflow-hidden">
-                                <img src={item.coverUrl} className="w-full h-full object-cover opacity-50 gray-scale group-hover:scale-110 transition-transform duration-700" alt={item.title} />
-                                <div className="absolute inset-0 flex items-center justify-center p-4">
-                                    <span className="material-symbols-outlined text-primary text-6xl opacity-20">handshake</span>
+                            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent"></div>
+                            <div className="relative z-10 flex flex-col items-center text-center">
+                                <div className="w-20 h-20 rounded-2xl bg-black border border-cyan-500/20 flex items-center justify-center text-cyan-500 mb-6 group-hover:scale-110 transition-transform">
+                                    <span className="material-symbols-outlined text-4xl">hub</span>
                                 </div>
-                                {item.tag && (
-                                    <div className="absolute top-4 left-4 px-2 py-1 bg-primary text-black text-[8px] font-black uppercase tracking-widest rounded shadow-xl">
-                                        {item.tag}
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="p-6 flex-1 flex flex-col justify-between">
-                                <div>
-                                    <div className="flex justify-between items-start mb-2">
-                                        <h3 className="text-lg font-black text-white leading-tight uppercase tracking-tight">{item.title}</h3>
-                                        <div className="flex items-center gap-1.5 px-3 py-1 bg-black rounded-lg border border-white/5">
-                                            <span className="text-[10px] text-white font-black">{item.rating}</span>
-                                            <span className="material-symbols-outlined text-primary text-xs filled">star</span>
-                                        </div>
-                                    </div>
-                                    <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-4">Liderado por {item.author}</p>
-
-                                    <div className="flex items-center gap-3 mb-6">
-                                        <div className="flex items-center gap-1.5 px-3 py-1 bg-white/5 border border-white/5 rounded-full">
-                                            <span className="material-symbols-outlined text-[12px] text-zinc-400">schedule</span>
-                                            <span className="text-[8px] text-zinc-400 font-black uppercase tracking-widest">{item.duration}</span>
-                                        </div>
-                                        <div className="flex items-center gap-1.5 px-3 py-1 bg-white/5 border border-white/5 rounded-full">
-                                            <span className="material-symbols-outlined text-[12px] text-zinc-400">group</span>
-                                            <span className="text-[8px] text-zinc-400 font-black uppercase tracking-widest">{item.reviews} Membros</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="flex justify-between items-center bg-black/50 p-4 rounded-3xl border border-white/5">
-                                    <div>
-                                        <p className="text-[8px] text-zinc-600 font-black uppercase tracking-tighter mb-0.5">Acesso Premium</p>
-                                        <p className="text-lg font-black text-primary">{item.price}</p>
-                                    </div>
-                                    <button className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-black shadow-lg shadow-primary/20">
-                                        <span className="material-symbols-outlined font-black">arrow_forward</span>
-                                    </button>
+                                <h4 className="text-xl font-black text-white italic uppercase tracking-tight mb-2 leading-tight">{product.title}</h4>
+                                <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest leading-relaxed mb-8">{product.description}</p>
+                                <div className="flex flex-col items-center gap-4 w-full">
+                                    <span className="text-2xl font-black italic text-white">{product.price}</span>
+                                    <button className="w-full py-5 bg-cyan-500 text-black font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl shadow-[0_10px_20px_rgba(6,182,212,0.3)]">SOLICITAR ACESSO</button>
                                 </div>
                             </div>
                         </div>

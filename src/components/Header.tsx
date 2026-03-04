@@ -8,6 +8,8 @@ interface HeaderProps {
     onBack?: () => void;
     rightElement?: ReactNode;
     sticky?: boolean;
+    onAction?: () => void;
+    actionIcon?: string;
 }
 
 export default function Header({
@@ -16,6 +18,8 @@ export default function Header({
     showBack = false,
     onBack,
     rightElement,
+    onAction,
+    actionIcon,
 }: HeaderProps) {
     const navigate = useNavigate();
 
@@ -28,7 +32,7 @@ export default function Header({
     };
 
     return (
-        <header className="px-6 pt-4 pb-4 flex items-center justify-between">
+        <header className="px-6 pt-4 pb-4 flex items-center justify-between sticky top-0 bg-black/80 backdrop-blur-md z-[100]">
             <div className="flex items-center space-x-4">
                 {showBack && (
                     <button
@@ -43,12 +47,20 @@ export default function Header({
                     {subtitle && <p className="text-[10px] tracking-[0.3em] text-zinc-500 uppercase font-bold">{subtitle}</p>}
                 </div>
             </div>
-            {rightElement && (
+            {rightElement ? (
                 <div className="flex items-center">
                     {rightElement}
                 </div>
+            ) : (onAction && actionIcon) ? (
+                <button
+                    onClick={onAction}
+                    className="p-2 -mr-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95"
+                >
+                    <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">{actionIcon}</span>
+                </button>
+            ) : (
+                showBack && <div className="w-10"></div>
             )}
-            {!rightElement && showBack && <div className="w-10"></div>}
         </header>
     );
 }

@@ -4,10 +4,10 @@ import { motion, AnimatePresence } from 'motion/react';
 
 const navTabs = [
   { path: '/dashboard', label: 'Início', icon: 'grid_view' },
-  { path: '/transactions', label: 'Fluxo', icon: 'swap_vert' },
+  { path: '/transactions', label: 'Transações', icon: 'swap_vert' },
   { path: '/investments', label: 'Carteira', icon: 'account_balance_wallet' },
-  { path: '/goals', label: 'Estratégia', icon: 'ads_click' },
-  { path: '/shop', label: 'Elite', icon: 'workspace_premium' },
+  { path: '/missions', label: 'Missões', icon: 'ads_click' },
+  { path: '/shop', label: 'Shop', icon: 'workspace_premium' },
 ];
 
 export default function Layout() {
@@ -19,7 +19,7 @@ export default function Layout() {
     if (path.includes('/dashboard')) return 0;
     if (path.includes('/transaction')) return 1;
     if (path.includes('/investment') || path.includes('/asset-details')) return 2;
-    if (path.includes('/goal')) return 3;
+    if (path.includes('/mission')) return 3;
     if (path.includes('/shop')) return 4;
     return -1;
   };

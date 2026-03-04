@@ -11,14 +11,13 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import Accounts from './pages/Accounts';
-import Analysis from './pages/Analysis';
 import Profile from './pages/Profile';
+import FinancialAnalysis from './pages/FinancialAnalysis';
 import AddAccount from './pages/AddAccount';
 import AddCard from './pages/AddCard';
 import Planning from './pages/Planning';
 import CompoundInterest from './pages/CompoundInterest';
 import Investments from './pages/Investments';
-import AIAssistant from './pages/AIAssistant';
 import Security from './pages/Security';
 import NewTransaction from './pages/NewTransaction';
 import TransactionHistory from './pages/TransactionHistory';
@@ -36,7 +35,6 @@ import AssetDetails from './pages/AssetDetails';
 import Budgets from './pages/Budgets';
 import NewBudget from './pages/NewBudget';
 import BudgetDetails from './pages/BudgetDetails';
-import SpendingAnalysis from './pages/SpendingAnalysis';
 import FinancialPerformance from './pages/FinancialPerformance';
 import EditTransaction from './pages/EditTransaction';
 import Shop from './pages/Shop';
@@ -57,7 +55,13 @@ import NewSubCategory from './pages/NewSubCategory';
 import EditCategory from './pages/EditCategory';
 import EditSubCategory from './pages/EditSubCategory';
 import FinancialTips from './pages/FinancialTips';
-import AIAnalysis from './pages/AIAnalysis';
+import Checkout from './pages/Checkout';
+import Payment from './pages/Payment';
+import Upsell from './pages/Upsell';
+import Downsell from './pages/Downsell';
+import ProductDetails from './pages/ProductDetails';
+import PhysicalBooks from './pages/PhysicalBooks';
+import AllProducts from './pages/AllProducts';
 
 export default function App() {
   return (
@@ -73,20 +77,18 @@ export default function App() {
             <Route element={<Layout />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/accounts" element={<Accounts />} />
-              <Route path="/analysis" element={<Analysis />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/add-account" element={<AddAccount />} />
               <Route path="/add-card" element={<AddCard />} />
               <Route path="/planning" element={<Planning />} />
               <Route path="/compound-interest" element={<CompoundInterest />} />
               <Route path="/investments" element={<Investments />} />
-              <Route path="/ai-assistant" element={<AIAssistant />} />
               <Route path="/security" element={<Security />} />
               <Route path="/new-transaction" element={<NewTransaction />} />
               <Route path="/transactions" element={<TransactionHistory />} />
               <Route path="/transaction-details" element={<TransactionDetails />} />
               <Route path="/edit-transaction" element={<EditTransaction />} />
-              <Route path="/goals" element={<Goals />} />
+              <Route path="/missions" element={<Missions />} />
               <Route path="/goal-details/:id" element={<GoalDetails />} />
               <Route path="/new-goal" element={<NewGoal />} />
               <Route path="/add-goal-value" element={<AddGoalValue />} />
@@ -99,25 +101,30 @@ export default function App() {
               <Route path="/new-budget" element={<NewBudget />} />
               <Route path="/budget-details" element={<BudgetDetails />} />
               <Route path="/edit-budget" element={<EditBudget />} />
-              <Route path="/spending-analysis" element={<SpendingAnalysis />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/tools" element={<Tools />} />
               <Route path="/networking" element={<Networking />} />
               <Route path="/shop" element={<Shop />} />
+              <Route path="/product-details/:id" element={<ProductDetails />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/payment" element={<Payment />} />
+              <Route path="/upsell" element={<Upsell />} />
+              <Route path="/downsell" element={<Downsell />} />
+              <Route path="/physical-books" element={<PhysicalBooks />} />
+              <Route path="/all-products" element={<AllProducts />} />
               <Route path="/ebooks" element={<Ebooks />} />
-              <Route path="/ebook/:id" element={<EbookDetails />} />
+              <Route path="/ebook/:id" element={<ProductDetails />} />
               <Route path="/courses" element={<Courses />} />
-              <Route path="/course/:id" element={<CourseDetails />} />
+              <Route path="/course/:id" element={<ProductDetails />} />
               <Route path="/mentorships" element={<Mentorships />} />
-              <Route path="/mentorship/:id" element={<MentorshipDetails />} />
-              <Route path="/missions" element={<Missions />} />
+              <Route path="/mentorship/:id" element={<ProductDetails />} />
               <Route path="/categories" element={<ManageCategories />} />
               <Route path="/new-category" element={<NewCategory />} />
               <Route path="/new-subcategory" element={<NewSubCategory />} />
               <Route path="/edit-category" element={<EditCategory />} />
               <Route path="/edit-subcategory/:id" element={<EditSubCategory />} />
               <Route path="/financial-tips" element={<FinancialTips />} />
-              <Route path="/ai-analysis" element={<AIAnalysis />} />
+              <Route path="/financial-analysis" element={<FinancialAnalysis />} />
             </Route>
           </Routes>
         </Router>

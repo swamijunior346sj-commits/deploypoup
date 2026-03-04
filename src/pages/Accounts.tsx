@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
 import Header from '../components/Header';
-import Card from '../components/Card';
 import { useData } from '../contexts/DataContext';
 import { supabase } from '../lib/supabase';
 import ActionPopup from '../components/ActionPopup';
@@ -21,6 +21,11 @@ export default function Accounts() {
   const cards = useMemo(() =>
     assets.filter(a => a.type?.toLowerCase().includes('cartão') || a.type?.toLowerCase().includes('card')),
     [assets]
+  );
+
+  const totalLiquidity = useMemo(() =>
+    accounts.reduce((acc, a) => acc + (a.current_value || 0), 0),
+    [accounts]
   );
 
   const handleDelete = async () => {
@@ -46,148 +51,192 @@ export default function Accounts() {
 
   if (loading) {
     return (
-      <div className="bg-black text-primary min-h-screen flex items-center justify-center font-display">
-        <div className="animate-pulse tracking-[0.3em] uppercase font-bold text-xs font-sans">Sincronizando Ativos...</div>
+      <div className="bg-black text-white min-h-screen flex items-center justify-center">
+        <motion.div
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+          className="flex flex-col items-center gap-4"
+        >
+          <div className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-[10px] font-black tracking-[0.4em] uppercase text-primary">Sincronizando Ativos...</span>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="bg-black min-h-screen text-white space-y-6 pb-40">
-      <style>{`
-        @keyframes levitate {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-          100% { transform: translateY(0px); }
-        }
-        .levitate-btn {
-          animation: levitate 3s ease-in-out infinite;
-        }
-      `}</style>
-      <Header
-        showBack
-        title="Contas e Cartões"
-      />
+    <div className="bg-black min-h-screen text-white flex flex-col selection:bg-primary/30 relative overflow-hidden">
+      {/* ── Background Aura ── */}
+      <div className="fixed top-[-10%] right-[-10%] w-[60%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none z-0 rotate-12"></div>
+      <div className="fixed bottom-[-10%] left-[-10%] w-[50%] h-[30%] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none z-0 -rotate-12"></div>
 
-      <div className="px-6 space-y-10">
-        <section className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Minhas Contas</h3>
-            <span className="text-[10px] text-primary font-bold">{accounts.length} ATIVAS</span>
+      <Header showBack title="Contas e Cartões" />
+
+      <main className="flex-grow px-6 pt-6 pb-40 space-y-12 relative z-10 overflow-y-auto no-scrollbar">
+
+        {/* ── Liquidity Hero ── */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="transparent-card-border rounded-[3rem] p-10 bg-zinc-950/20 border-white/5 relative overflow-hidden group"
+        >
+          <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <div className="relative z-10 space-y-6">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.5em]">Patrimônio Líquido</span>
+              <div className="size-10 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center shadow-2xl">
+                <span className="material-symbols-outlined text-primary text-xl">account_balance_wallet</span>
+              </div>
+            </div>
+            <h2 className="text-4xl font-black text-white italic tracking-tighter premium-text-glow">
+              <span className="text-xl font-light text-zinc-500 mr-2">R$</span>
+              {totalLiquidity.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            </h2>
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#0FB67F]"></div>
+              <span className="text-[8px] font-black text-zinc-500 uppercase tracking-widest leading-none">Status: Ecossistema Fluido</span>
+            </div>
           </div>
-          <div className="flex space-x-4 overflow-x-auto no-scrollbar -mx-6 px-6 py-2">
+        </motion.section>
+
+        {/* ── Accounts Section ── */}
+        <section className="space-y-6">
+          <div className="flex justify-between items-center px-2">
+            <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em]">Fontes de Liquidez</h3>
+            <span className="text-[8px] font-black text-primary uppercase tracking-widest border border-primary/20 px-2 py-0.5 rounded-full">{accounts.length} ATIVOS</span>
+          </div>
+
+          <div className="flex gap-6 overflow-x-auto no-scrollbar -mx-6 px-6 py-4">
             {accounts.length > 0 ? (
-              accounts.map((asset) => (
-                <div key={asset.id} className="relative group min-w-[180px]">
-                  <Card
-                    onClick={() => navigate(`/asset-details/${asset.id}`)}
-                    className="rounded-[2rem] p-5 flex flex-col space-y-6 cursor-pointer hover:border-primary/50 transition-all bg-zinc-900/40 border-white/5"
-                  >
+              accounts.map((asset, idx) => (
+                <motion.div
+                  key={asset.id}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  onClick={() => navigate(`/asset-details/${asset.id}`)}
+                  className="min-w-[220px] transparent-card-border rounded-[2.5rem] p-8 bg-zinc-950/40 border-white/5 relative group cursor-pointer hover:bg-zinc-900/40 transition-all active:scale-95"
+                >
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-primary/5 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="space-y-8 relative z-10">
                     <div className="flex justify-between items-start">
-                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                        <span className="material-symbols-outlined text-primary text-2xl">account_balance</span>
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-all ${idx % 2 === 0 ? 'bg-primary/5 border-primary/20 text-primary' : 'bg-blue-500/5 border-blue-500/20 text-blue-500'}`}>
+                        <span className="material-symbols-outlined text-2xl">account_balance</span>
                       </div>
                       <button
                         onClick={(e) => openDeleteConfirm(e, asset.id)}
-                        className="opacity-0 group-hover:opacity-100 p-1 text-red-500/50 hover:text-red-500 transition-all font-bold"
+                        className="opacity-0 group-hover:opacity-100 p-2 text-zinc-600 hover:text-red-500 transition-all"
                       >
-                        EXCLUIR
+                        <span className="material-symbols-outlined text-lg">delete</span>
                       </button>
                     </div>
                     <div>
-                      <p className="text-[9px] text-zinc-500 font-black uppercase tracking-widest truncate mb-1">{asset.name}</p>
-                      <p className="text-lg font-black font-display text-white">
-                        R$ {Number(asset.current_value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-2 line-clamp-1">{asset.name}</p>
+                      <p className="text-xl font-black text-white italic tracking-tighter">
+                        <span className="text-sm font-light text-zinc-600 mr-1">R$</span>
+                        {Number(asset.current_value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </p>
                     </div>
-                  </Card>
-                </div>
+                  </div>
+                </motion.div>
               ))
             ) : (
-              <div className="w-full py-12 text-center border border-dashed border-white/10 rounded-[2rem] bg-zinc-900/20">
-                <span className="material-symbols-outlined text-zinc-800 text-4xl mb-2">account_balance_wallet</span>
-                <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-black">Nenhuma conta vinculada</p>
-                <button onClick={() => navigate('/add-account')} className="mt-4 text-[10px] text-primary font-black uppercase tracking-[0.2em] px-4 py-2 border border-primary/20 rounded-full">Vincular Agora</button>
+              <div
+                onClick={() => navigate('/add-account')}
+                className="w-full h-40 border border-dashed border-white/5 rounded-[2.5rem] flex flex-col items-center justify-center gap-3 bg-zinc-950/20 cursor-pointer hover:border-primary/40 transition-colors group"
+              >
+                <span className="material-symbols-outlined text-zinc-800 text-4xl group-hover:text-primary transition-colors">add_card</span>
+                <span className="text-[10px] font-black text-zinc-700 uppercase tracking-[0.2em]">Conectar nova fonte</span>
               </div>
             )}
           </div>
         </section>
 
-        <section className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Cartões de Crédito</h3>
-            <button onClick={() => navigate('/add-card')} className="text-[10px] font-bold text-primary uppercase tracking-widest flex items-center gap-1">
+        {/* ── Credit Cards Section ── */}
+        <section className="space-y-6">
+          <div className="flex justify-between items-center px-2">
+            <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em]">Linhas de Crédito</h3>
+            <button
+              onClick={() => navigate('/add-card')}
+              className="flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest hover:brightness-125 transition-all"
+            >
               <span className="material-symbols-outlined text-sm">add_circle</span>
               Novo Cartão
             </button>
           </div>
 
-          <div className="grid grid-cols-1 gap-4">
+          <div className="space-y-4">
             {cards.length > 0 ? (
-              cards.map(card => (
-                <div key={card.id} className="relative group">
-                  <div
-                    onClick={() => navigate(`/asset-details/${card.id}`)}
-                    className="bg-gradient-to-r from-zinc-900 to-black border border-white/5 rounded-3xl p-6 flex items-center justify-between cursor-pointer hover:border-primary/30 transition-all"
-                  >
-                    <div className="flex items-center gap-5">
-                      <div className="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center">
-                        <span className="material-symbols-outlined text-zinc-500 text-2xl">credit_card</span>
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-bold text-white">{card.name}</h4>
-                        <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-tighter">Limite: R$ {Number(card.current_value || 0).toLocaleString('pt-BR')}</p>
+              cards.map((card, idx) => (
+                <motion.div
+                  key={card.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 + idx * 0.1 }}
+                  onClick={() => navigate(`/asset-details/${card.id}`)}
+                  className="transparent-card-border rounded-[2.5rem] p-6 bg-gradient-to-r from-zinc-950 to-zinc-900 border-white/5 flex items-center justify-between group cursor-pointer hover:border-primary/20 transition-all active:scale-[0.98]"
+                >
+                  <div className="flex items-center gap-5">
+                    <div className="w-16 h-12 rounded-xl bg-gradient-to-br from-zinc-800 to-black border border-white/5 flex items-center justify-center relative overflow-hidden">
+                      <div className="absolute top-2 left-2 w-4 h-3 bg-zinc-700/50 rounded-sm"></div> {/* Simulated Chip */}
+                      <span className="material-symbols-outlined text-zinc-500 opacity-20 text-3xl absolute -right-2 -bottom-2">credit_card</span>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-black text-white italic tracking-tight">{card.name}</h4>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">Limite Alocado:</span>
+                        <span className="text-[9px] font-bold text-primary">R$ {Number(card.current_value || 0).toLocaleString('pt-BR')}</span>
                       </div>
                     </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="h-8 w-[1px] bg-white/5"></div>
                     <button
                       onClick={(e) => openDeleteConfirm(e, card.id)}
-                      className="material-symbols-outlined text-zinc-800 hover:text-red-500 transition-colors"
+                      className="w-10 h-10 rounded-xl bg-zinc-950 border border-white/5 flex items-center justify-center text-zinc-700 hover:text-red-500 transition-colors"
                     >
-                      delete
+                      <span className="material-symbols-outlined text-lg">delete</span>
                     </button>
                   </div>
-                </div>
+                </motion.div>
               ))
             ) : (
-              <div className="py-12 text-center border border-dashed border-white/10 rounded-[2rem] bg-zinc-900/20">
-                <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-bold">Nenhum cartão registrado</p>
+              <div className="py-12 flex flex-col items-center justify-center text-center transparent-card-border rounded-[2.5rem] bg-zinc-950/20 border-white/5">
+                <span className="material-symbols-outlined text-zinc-800 text-4xl mb-3">credit_card_off</span>
+                <p className="text-[10px] text-zinc-700 font-black uppercase tracking-widest">Nenhum cartão no inventário</p>
               </div>
             )}
           </div>
         </section>
+      </main>
 
-        <section className="space-y-4">
-          <h3 className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Controle de Gastos</h3>
-          <Card className="rounded-[2.5rem] p-8 border-white/5 bg-zinc-900/20 space-y-6">
-            <div className="flex items-center justify-between mb-2">
-              <div>
-                <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Saldo Disponível Total</p>
-                <p className="text-2xl font-black text-white">R$ {accounts.reduce((acc, a) => acc + (a.current_value || 0), 0).toLocaleString('pt-BR')}</p>
-              </div>
-              <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="material-symbols-outlined text-primary text-2xl">account_balance_wallet</span>
-              </div>
-            </div>
-            <div className="h-[1px] w-full bg-white/5"></div>
-            <p className="text-[9px] text-zinc-600 leading-relaxed italic">Este valor representa a soma de todas as suas contas correntes e carteiras ativas.</p>
-          </Card>
-        </section>
-      </div>
-
+      {/* ── Standardized FAB ── */}
       <div className="fixed bottom-24 right-6 z-[150] levitate-btn">
-        <button
+        <motion.button
+          whileTap={{ scale: 0.9 }}
           onClick={() => navigate('/add-account')}
-          className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-[0_20px_40px_rgba(15,182,127,0.4)] active:scale-90 transition-all group"
+          className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-[0_20px_40px_rgba(15,182,127,0.4)] relative group"
         >
           <span className="material-symbols-outlined text-black font-black text-3xl group-hover:scale-110 transition-transform">add</span>
-        </button>
+        </motion.button>
       </div>
+
+      <style>{`
+                @keyframes levitate {
+                    0% { transform: translateY(0px); }
+                    50% { transform: translateY(-10px); }
+                    100% { transform: translateY(0px); }
+                }
+                .levitate-btn {
+                    animation: levitate 3s ease-in-out infinite;
+                }
+            `}</style>
 
       <ActionPopup
         isOpen={showDeleteConfirm}
-        title="Excluir Ativo?"
-        description="Você deseja remover esta conta ou cartão permanentemente do seu patrimônio?"
-        confirmText="Excluir agora"
+        title="REMOVER ATIVO?"
+        description="Esta operação removerá permanentemente o ativo do seu ecossistema financeiro."
+        confirmText="REMOVER AGORA"
         type="delete"
         onConfirm={handleDelete}
         onCancel={() => setShowDeleteConfirm(false)}
@@ -195,8 +244,8 @@ export default function Accounts() {
 
       <ActionPopup
         isOpen={showDeleteSuccess}
-        title="Removido!"
-        description="O ativo foi excluído com sucesso da sua lista."
+        title="DESCONECTADO"
+        description="O ativo foi removido com sucesso da sua base tática."
         confirmText="OK"
         type="success"
         onConfirm={() => setShowDeleteSuccess(false)}

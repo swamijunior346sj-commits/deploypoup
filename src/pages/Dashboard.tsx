@@ -8,7 +8,7 @@ import React, { useState, useMemo } from 'react';
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { transactions, assets, goals, loading, xp, level, levelName, currentMaxXP } = useData();
+  const { transactions, assets, goals, loading, xp, level, levelName, currentMaxXP, userName } = useData();
 
   const activeTransactions = transactions.filter(t => t.status !== 'anulada');
 
@@ -136,26 +136,14 @@ export default function Dashboard() {
             <span className="material-symbols-outlined text-zinc-400 group-hover:text-white transition-colors">person</span>
           </motion.button>
           <div className="flex flex-col">
-            <span className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em]">Olá, de elite</span>
-            <span className="text-sm font-bold text-white tracking-tight">{user?.email?.split('@')[0] || 'Investidor'}</span>
+            <span className="text-sm font-bold text-white tracking-tight">{userName || user?.email?.split('@')[0] || 'Investidor'}</span>
           </div>
         </div>
 
-        <div className="flex flex-col items-center">
-          <span className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.4em] mb-1">Ecossistema Elite</span>
-          <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_#0FB67F]"></div>
-            <span className="text-[11px] font-black text-white uppercase tracking-[0.2em]">{levelName}</span>
-          </div>
+        <div className="flex items-center gap-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_#0FB67F]"></div>
+          <span className="text-[11px] font-black text-white uppercase tracking-[0.2em]">{levelName}</span>
         </div>
-
-        <motion.button
-          whileTap={{ scale: 0.9 }}
-          onClick={() => navigate('/notifications')}
-          className="w-11 h-11 rounded-2xl bg-zinc-900/50 border border-white/5 flex items-center justify-center group"
-        >
-          <span className="material-symbols-outlined text-zinc-400 group-hover:text-primary transition-colors">notifications</span>
-        </motion.button>
       </header>
 
       <main className="flex-grow px-6 pt-8 pb-32 relative z-10 space-y-12">
@@ -226,42 +214,124 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* ── AI Analysis Section (Transparent with Simulation Background) ── */}
-        <section className="relative h-44 flex items-center justify-center overflow-hidden rounded-[2.5rem] group cursor-pointer" onClick={() => navigate('/ai-analysis')}>
-          {/* AI Simulation Animation Background */}
-          <div className="absolute inset-0 z-0">
-            <div className="absolute inset-0 bg-black/40 z-10"></div>
-            <motion.div
-              animate={{
-                scale: [1, 1.2, 1],
-                rotate: [0, 90, 180, 270, 360],
-                opacity: [0.1, 0.2, 0.1]
-              }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-conic from-purple-500/30 via-primary/30 to-blue-500/30 blur-[80px]"
-            />
-            <div className="absolute inset-0 grid grid-cols-6 grid-rows-3 opacity-20">
-              {[...Array(18)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  animate={{ opacity: [0, 0.5, 0] }}
-                  transition={{ duration: Math.random() * 3 + 2, repeat: Infinity, delay: Math.random() * 2 }}
-                  className="border border-white/5"
-                />
-              ))}
-            </div>
-          </div>
+        {/* ── Neural Intelligence Hub (Entry to New Analysis) ── */}
+        <section
+          whileTap={{ scale: 0.98 }}
+          onClick={() => navigate('/financial-analysis')}
+          className="relative h-28 rounded-[2rem] bg-zinc-950 border border-white/5 overflow-hidden group cursor-pointer"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-blue-500/5 to-transparent"></div>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -mr-16 -mt-16 group-hover:bg-primary/20 transition-all"></div>
 
-          <div className="relative z-20 flex flex-col items-center text-center space-y-4 px-8">
-            <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.05)]">
-              <span className="material-symbols-outlined text-3xl text-white group-hover:scale-110 transition-transform">insights</span>
+          <div className="relative h-full px-8 flex items-center justify-between">
+            <div className="flex items-center gap-5">
+              <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shadow-[0_10px_20px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform">
+                <span className="material-symbols-outlined text-white text-2xl">analytics</span>
+              </div>
+              <div className="flex flex-col">
+                <h4 className="text-sm font-black text-white italic uppercase tracking-tight">Intelligence Hub</h4>
+                <span className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.3em]">Auditoria & Projeções</span>
+              </div>
             </div>
-            <div className="space-y-1">
-              <h3 className="text-sm font-black text-white uppercase tracking-[0.3em]">Análise de Gastos de IA</h3>
-              <p className="text-[9px] text-zinc-400 font-bold uppercase tracking-widest opacity-60">Sincronização em tempo real com o ecossistema</p>
-            </div>
+            <motion.div
+              animate={{ x: [0, 5, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center"
+            >
+              <span className="material-symbols-outlined text-primary text-xl">arrow_forward_ios</span>
+            </motion.div>
           </div>
         </section>
+
+        {/* ── Goal in Focus (Elite Progress Ring) ── */}
+        {goals.length > 0 && (
+          <section className="space-y-8">
+            <div className="flex items-center justify-between px-2">
+              <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em]">Meta em Foco</h3>
+              <button onClick={() => navigate('/missions')} className="text-[9px] font-black text-primary uppercase tracking-widest leading-none">Minhas Missões</button>
+            </div>
+
+            {(() => {
+              const goal = goals[0];
+              const percentage = Math.min(100, Math.round((goal.current_amount / (goal.target_amount || 1)) * 100));
+              const radius = 100;
+              const circumference = 2 * Math.PI * radius;
+              const dashoffset = circumference - (circumference * percentage) / 100;
+
+              return (
+                <div
+                  onClick={() => navigate(`/goal-details/${goal.id}`)}
+                  className="transparent-card-border rounded-[3.5rem] bg-zinc-950/40 border border-white/5 p-10 flex flex-col items-center text-center relative overflow-hidden group cursor-pointer"
+                >
+                  {/* Background Aura for Goal */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl rounded-full -mr-16 -mt-16 opacity-50"></div>
+
+                  <div className="relative flex items-center justify-center mb-10">
+                    <svg className="w-56 h-56 -rotate-90">
+                      <circle
+                        className="text-zinc-900"
+                        cx="112" cy="112" fill="transparent" r={radius - 12}
+                        stroke="currentColor" strokeWidth="2"
+                      />
+                      <motion.circle
+                        initial={{ strokeDashoffset: circumference }}
+                        animate={{ strokeDashoffset: dashoffset }}
+                        transition={{ duration: 2, ease: "circOut" }}
+                        className="text-primary"
+                        cx="112" cy="112" fill="transparent" r={radius - 12}
+                        stroke="currentColor"
+                        strokeDasharray={circumference}
+                        strokeLinecap="round" strokeWidth="4"
+                        style={{ filter: 'drop-shadow(0 0 15px rgba(15, 182, 127, 0.4))' }}
+                      />
+                    </svg>
+
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.3em] mb-1">Impacto</span>
+                      <h2 className="text-4xl font-black text-white italic tracking-tighter premium-text-glow">
+                        {percentage}%
+                      </h2>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 mb-8">
+                    <h4 className="text-xl font-black text-white italic uppercase tracking-tight">{goal.name}</h4>
+                    <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest opacity-60 italic">Protocolo de Acúmulo Ativo</p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 w-full">
+                    <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 text-left">
+                      <span className="text-[7px] font-black text-zinc-600 uppercase tracking-widest block mb-1">Acumulado</span>
+                      <p className="text-sm font-black text-white italic">R$ {Number(goal.current_amount).toLocaleString('pt-BR')}</p>
+                    </div>
+                    <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 text-left border-primary/20">
+                      <span className="text-[7px] font-black text-zinc-600 uppercase tracking-widest block mb-1">Projetado</span>
+                      <p className="text-sm font-black text-primary italic">R$ {Number(goal.target_amount).toLocaleString('pt-BR')}</p>
+                    </div>
+                  </div>
+
+                  {/* Visual Stats Row from GoalDetails */}
+                  <div className="grid grid-cols-2 gap-3 w-full mt-4">
+                    <div className="bg-zinc-950 border border-white/5 rounded-2xl p-4 flex items-center gap-3">
+                      <span className="material-symbols-outlined text-primary text-xl">local_fire_department</span>
+                      <div className="text-left">
+                        <p className="text-xs font-black text-white italic leading-none">14 Dias</p>
+                        <p className="text-[7px] text-zinc-600 font-bold uppercase tracking-widest">FIRE Streak</p>
+                      </div>
+                    </div>
+                    <div className="bg-zinc-950 border border-white/5 rounded-2xl p-4 flex items-center gap-3">
+                      <span className="material-symbols-outlined text-blue-500 text-xl">auto_awesome</span>
+                      <div className="text-left">
+                        <p className="text-xs font-black text-white italic leading-none">+250 XP</p>
+                        <p className="text-[7px] text-zinc-600 font-bold uppercase tracking-widest">Ganho Est.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </section>
+        )}
 
         {/* ── Lucro Líquido Chart (Luxury Line/Area) ── */}
         <section className="space-y-6">
@@ -363,7 +433,6 @@ export default function Dashboard() {
               <span className="text-[8px] font-black text-red-500 uppercase tracking-widest">Últimos 7 dias</span>
             </div>
             <div className="transparent-card-border rounded-[2.5rem] p-6 bg-zinc-950/40 backdrop-blur-md border border-white/10 group cursor-pointer" onClick={() => navigate('/transaction-history')}>
-              <div className="absolute inset-0 bg-red-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity rounded-[2.5rem]"></div>
               <ResponsiveContainer width="100%" height={120}>
                 <AreaChart data={evolutionData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                   <defs>
@@ -391,7 +460,6 @@ export default function Dashboard() {
               <span className="text-[8px] font-black text-primary uppercase tracking-widest">Últimos 7 dias</span>
             </div>
             <div className="transparent-card-border rounded-[2.5rem] p-6 bg-zinc-950/40 backdrop-blur-md border border-white/10 group cursor-pointer" onClick={() => navigate('/transaction-history')}>
-              <div className="absolute inset-0 bg-primary/[0.02] opacity-0 group-hover:opacity-100 transition-opacity rounded-[2.5rem]"></div>
               <ResponsiveContainer width="100%" height={120}>
                 <BarChart data={evolutionData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                   <XAxis dataKey="date" tick={{ fontSize: 8, fill: '#52525b', fontWeight: 900 }} axisLine={false} tickLine={false} />
@@ -514,7 +582,7 @@ export default function Dashboard() {
               <span className="material-symbols-outlined text-primary text-2xl">lightbulb</span>
             </div>
             <div className="flex flex-col">
-              <h4 className="text-sm font-bold text-white tracking-tight">Diretrizes POUP</h4>
+              <h4 className="text-sm font-bold text-white tracking-tight">Insights financeiros</h4>
               <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Maestria do Ecossistema</span>
             </div>
           </div>
@@ -532,8 +600,8 @@ export default function Dashboard() {
         {/* ── GoalsSection (Luxury Update) ── */}
         <section className="space-y-6 pb-20">
           <div className="flex items-center justify-between px-2">
-            <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em]">Estratégias Ativas</h3>
-            <button onClick={() => navigate('/goals')} className="text-[9px] font-black text-primary uppercase tracking-widest">Expandir</button>
+            <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em]">Minhas Metas</h3>
+
           </div>
           <div className="space-y-4">
             {goals.length > 0 ? (

@@ -174,8 +174,8 @@ export default function ManageCategories() {
                 </div>
             </main>
 
-            {/* ── Cockpit FAB Menu ── */}
-            <div className={`fixed bottom-32 right-6 z-[300] flex flex-col items-end gap-4 transition-all duration-500 ${showCockpit ? 'translate-y-[-10px]' : ''}`}>
+            {/* ── Cockpit FAB Menu (Standardized) ── */}
+            <div className={`fixed bottom-24 right-6 z-[300] flex flex-col items-end gap-4 transition-all duration-500 ${!showCockpit ? 'levitate-btn' : ''}`}>
                 <AnimatePresence>
                     {showCockpit && (
                         <motion.div
@@ -211,13 +211,27 @@ export default function ManageCategories() {
                 <motion.button
                     whileTap={{ scale: 0.9 }}
                     onClick={() => setShowCockpit(!showCockpit)}
-                    className={`w-16 h-16 rounded-[2rem] flex items-center justify-center shadow-[0_20px_50px_rgba(15,182,127,0.3)] transition-all duration-500 ${showCockpit ? 'bg-zinc-800 rotate-45' : 'bg-primary'}`}
+                    className={`w-16 h-16 rounded-full flex items-center justify-center shadow-[0_20px_40px_rgba(15,182,127,0.4)] transition-all duration-500 ${showCockpit ? 'bg-zinc-800' : 'bg-primary'}`}
                 >
-                    <span className={`material-symbols-outlined text-3xl font-black transition-colors ${showCockpit ? 'text-primary' : 'text-black'}`}>
+                    <motion.span
+                        animate={{ rotate: showCockpit ? 45 : 0 }}
+                        className={`material-symbols-outlined text-3xl font-black transition-colors ${showCockpit ? 'text-primary' : 'text-black'}`}
+                    >
                         add
-                    </span>
+                    </motion.span>
                 </motion.button>
             </div>
+
+            <style>{`
+                @keyframes levitate {
+                    0% { transform: translateY(0px); }
+                    50% { transform: translateY(-10px); }
+                    100% { transform: translateY(0px); }
+                }
+                .levitate-btn {
+                    animation: levitate 3s ease-in-out infinite;
+                }
+            `}</style>
 
             <AnimatePresence>
                 {showCockpit && (
