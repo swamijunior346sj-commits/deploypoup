@@ -729,4 +729,31 @@
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
     box-shadow: none !important;
   }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .premium-blur {
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(13, 14, 16, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  @keyframes pulse-neon {
+
+    0%,
+    100% {
+      filter: drop-shadow(0 0 2px #0FB67F) opacity(1);
+    }
+
+    50% {
+      filter: drop-shadow(0 0 10px #0FB67F) opacity(0.8);
+    }
+  }
+
+  .animate-pulse-neon {
+    animation: pulse-neon 2s infinite ease-in-out;
+  }
 }
