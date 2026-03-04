@@ -64,6 +64,14 @@ export default function Goals() {
                 .neon-text-glow {
                     text-shadow: 0 0 10px rgba(15, 182, 127, 0.5);
                 }
+                @keyframes levitate {
+                    0% { transform: translateY(0px); }
+                    50% { transform: translateY(-10px); }
+                    100% { transform: translateY(0px); }
+                }
+                .levitate-btn {
+                    animation: levitate 3s ease-in-out infinite;
+                }
             `}</style>
 
             <Header title="Metas & Conquistas" />

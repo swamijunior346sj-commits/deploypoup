@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect, useMemo } from 'react';
 import Header from '../components/Header';
+import ActionPopup from '../components/ActionPopup';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { useData } from '../contexts/DataContext';
@@ -10,7 +11,6 @@ export default function NewTransaction() {
     const { user } = useAuth();
     const { assets, categories, subCategories, addXP, refreshData } = useData();
     const [loading, setLoading] = useState(false);
-    const [showSuccess, setShowSuccess] = useState(false);
 
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
@@ -21,6 +21,7 @@ export default function NewTransaction() {
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [fromAccount, setFromAccount] = useState('');
     const [toAccount, setToAccount] = useState('');
+    const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
     useEffect(() => {
         if (categories.length > 0 && !categoryId) {
@@ -34,22 +35,34 @@ export default function NewTransaction() {
 
     useEffect(() => {
         if (filteredSubCategories.length > 0) {
-            setSubCategoryName(filteredSubCategories[0].name);
+            const currentSub = filteredSubCategories.find(s => s.name === subCategoryName);
+            if (!currentSub) {
+                setSubCategoryName(filteredSubCategories[0].name);
+            }
         } else {
             setSubCategoryName('');
         }
-    }, [filteredSubCategories]);
+    }, [filteredSubCategories, categoryId]);
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!user || !amount || !description) {
-            alert('Por favor, preencha valor e descrição.');
+        console.log('Attempting to save transaction...');
+
+        if (!user) {
+            console.error('No user found');
+            return;
+        }
+        if (!amount || !description) {
+            console.error('Missing amount or description');
             return;
         }
 
-        const parsedAmount = parseFloat(amount.replace(/\./g, '').replace(',', '.'));
+        const cleanAmount = amount.replace(/[R$\s]/g, '');
+        const normalizedAmount = cleanAmount.includes(',') ? cleanAmount.replace(/\./g, '').replace(',', '.') : cleanAmount;
+        const parsedAmount = parseFloat(normalizedAmount);
+
         if (isNaN(parsedAmount)) {
-            alert('Valor inválido');
+            console.error('Invalid amount:', amount);
             return;
         }
 
@@ -60,207 +73,225 @@ export default function NewTransaction() {
             const transactionData = {
                 user_id: user.id,
                 amount: parsedAmount,
-                description,
+                description: description.trim(),
                 category: type === 'transfer' ? 'Transferência' : (selectedCategory?.name || 'Geral'),
                 subcategory: type === 'transfer' ? '' : subCategoryName,
-                notes,
-                type,
-                date,
+                notes: notes.trim(),
+                type: type,
+                date: date,
                 from_account_id: type === 'transfer' ? fromAccount : null,
                 to_account_id: type === 'transfer' ? toAccount : null,
             };
 
-            const { error } = await supabase.from('transactions').insert([transactionData]);
+            console.log('Inserting data into Supabase:', transactionData);
 
-            if (error) throw error;
+            const { data, error } = await supabase
+                .from('transactions')
+                .insert([transactionData])
+                .select();
 
-            addXP(2);
+            if (error) {
+                console.error('Supabase error:', error);
+                throw error;
+            }
+
+            console.log('Transaction saved successfully:', data);
+
+            addXP(1);
             await refreshData();
-            setShowSuccess(true);
+            setShowSuccessPopup(true);
 
+            // Redirecionar após 2 segundos
             setTimeout(() => {
-                setShowSuccess(false);
                 navigate('/transactions');
             }, 2000);
+
         } catch (error: any) {
-            console.error('Error saving transaction:', error);
-            alert(`Erro ao salvar transação: ${error.message || 'Erro desconhecido'}`);
+            console.error('Exception during save:', error);
+            alert(`Erro ao salvar: ${error.message || 'Erro desconhecido'}`);
         } finally {
             setLoading(false);
         }
     };
 
-    if (showSuccess) {
-        return (
-            <div className="bg-background-dark min-h-screen flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
-                <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mb-6">
-                    <span className="material-symbols-outlined text-4xl text-primary font-bold animate-bounce">check</span>
-                </div>
-                <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">Transação Salva!</h2>
-                <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">Seu financeiro acaba de ser atualizado</p>
-                <div className="mt-8 flex items-center gap-2 text-primary font-bold">
-                    <span className="text-[10px] uppercase tracking-tighter">+2 XP</span>
-                </div>
-            </div>
-        );
-    }
-
     return (
-        <div className="bg-background-dark text-white font-sans flex flex-col min-h-screen">
+        <div className="bg-background-dark text-white font-sans flex flex-col min-h-screen selection:bg-primary/30">
             <Header title="NOVA TRANSAÇÃO" showBack />
 
-            <main className="flex-grow px-8 pb-32 mt-2">
+            <ActionPopup
+                isOpen={showSuccessPopup}
+                title="Transação criada com sucesso!"
+                description="Seu fluxo financeiro foi atualizado. +1 XP CONQUISTADO!"
+                confirmText="Ver Histórico"
+                type="success"
+                onConfirm={() => navigate('/transactions')}
+                onCancel={() => setShowSuccessPopup(false)}
+            />
+
+            <main className="flex-grow px-6 pt-4 pb-32 overflow-y-auto no-scrollbar">
                 <form className="space-y-8" onSubmit={handleSave}>
-                    <div className="relative py-4 text-center">
-                        <label className="text-[10px] font-bold text-zinc-500 tracking-[0.15em] uppercase block mb-1">Valor</label>
-                        <div className="flex items-center justify-center gap-3">
-                            <span className="text-primary font-bold text-2xl">R$</span>
+
+                    {/* Amount Input Section */}
+                    <div className="flex flex-col items-center py-6 space-y-2">
+                        <span className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em]">Valor do Lançamento</span>
+                        <div className="flex items-center justify-center w-full">
+                            <span className="text-primary font-bold text-2xl mr-2">R$</span>
                             <input
-                                className="w-1/2 bg-transparent border-none py-2 text-4xl font-bold placeholder:text-zinc-800 text-white focus:ring-0 text-center"
+                                className="bg-transparent border-none text-[56px] font-display font-bold text-white focus:ring-0 p-0 text-center w-full placeholder:text-zinc-900"
                                 placeholder="0,00"
                                 type="text"
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
+                                autoFocus
                                 required
                             />
                         </div>
-                        <div className="h-[2px] w-1/3 mx-auto bg-primary/20 mt-1"></div>
                     </div>
 
-                    <div className="flex gap-2 p-1 bg-white/[0.03] rounded-2xl border border-white/5">
+                    {/* Transaction Picker */}
+                    <div className="p-1.5 bg-zinc-950 border border-white/5 rounded-[2rem] flex gap-1 shadow-2xl">
                         <button
                             type="button"
                             onClick={() => setType('expense')}
-                            className={`flex-1 py-3 text-[9px] font-bold uppercase tracking-widest rounded-xl transition-all ${type === 'expense' ? 'bg-red-500/20 text-red-500 border border-red-500/30' : 'text-zinc-500'}`}
+                            className={`flex-1 py-4 text-[10px] font-black uppercase tracking-[0.2em] rounded-3xl transition-all duration-300 ${type === 'expense' ? 'bg-red-500/20 text-red-500 border border-red-500/10' : 'text-zinc-600 hover:text-zinc-400'}`}
                         >
-                            Despesa
+                            Saída
                         </button>
                         <button
                             type="button"
                             onClick={() => setType('income')}
-                            className={`flex-1 py-3 text-[9px] font-bold uppercase tracking-widest rounded-xl transition-all ${type === 'income' ? 'bg-primary/20 text-primary border border-primary/30' : 'text-zinc-500'}`}
+                            className={`flex-1 py-4 text-[10px] font-black uppercase tracking-[0.2em] rounded-3xl transition-all duration-300 ${type === 'income' ? 'bg-primary/20 text-primary border border-primary/10' : 'text-zinc-600 hover:text-zinc-400'}`}
                         >
-                            Receita
+                            Entrada
                         </button>
                         <button
                             type="button"
                             onClick={() => setType('transfer')}
-                            className={`flex-1 py-3 text-[9px] font-bold uppercase tracking-widest rounded-xl transition-all ${type === 'transfer' ? 'bg-blue-500/20 text-blue-500 border border-blue-500/30' : 'text-zinc-500'}`}
+                            className={`flex-1 py-4 text-[10px] font-black uppercase tracking-[0.2em] rounded-3xl transition-all duration-300 ${type === 'transfer' ? 'bg-blue-500/20 text-blue-500 border border-blue-500/10' : 'text-zinc-600 hover:text-zinc-400'}`}
                         >
                             Transf.
                         </button>
                     </div>
 
-                    <div className="relative">
-                        <label className="text-[10px] font-bold text-zinc-500 tracking-[0.15em] uppercase block mb-1">Descrição</label>
-                        <div className="flex items-center gap-3">
-                            <span className="material-symbols-outlined text-zinc-500 text-xl">edit_note</span>
+                    {/* Form Fields Card */}
+                    <div className="neon-border rounded-[32px] bg-white/[0.02] p-8 space-y-10">
+
+                        {/* Description */}
+                        <div className="space-y-3">
+                            <label className="text-[10px] font-black text-zinc-500 tracking-[0.2em] uppercase block">O que você fez?</label>
                             <input
-                                className="w-full py-3 text-sm placeholder:text-zinc-700 text-white focus:ring-0 bg-transparent border-none border-b border-zinc-900 rounded-none focus:border-primary transition-colors"
-                                placeholder="Ex: Almoço de Domingo"
+                                className="w-full bg-transparent border-none border-b border-white/5 pb-3 text-[16px] text-white focus:ring-0 focus:border-primary transition-colors placeholder:text-zinc-800"
+                                placeholder="Ex: Jantar restaurante..."
                                 type="text"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 required
                             />
                         </div>
-                    </div>
 
-                    {type === 'transfer' ? (
-                        <div className="grid grid-cols-1 gap-6">
-                            <div className="relative">
-                                <label className="text-[10px] font-bold text-zinc-500 tracking-[0.15em] uppercase block mb-1">Conta de Origem</label>
-                                <div className="flex items-center gap-3">
-                                    <span className="material-symbols-outlined text-zinc-500">upload</span>
-                                    <select
-                                        className="w-full py-3 text-sm text-white focus:ring-0 appearance-none bg-transparent border-none border-b border-zinc-900 rounded-none focus:border-primary"
-                                        value={fromAccount}
-                                        onChange={(e) => setFromAccount(e.target.value)}
-                                        required
-                                    >
-                                        <option value="" className="bg-black">Selecione a conta</option>
-                                        {assets.map(a => <option key={a.id} className="bg-black" value={a.id}>{a.name}</option>)}
-                                    </select>
+                        {type === 'transfer' ? (
+                            <div className="grid grid-cols-1 gap-10">
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black text-zinc-500 tracking-[0.2em] uppercase block">Conta Origem</label>
+                                    <div className="relative">
+                                        <select
+                                            className="w-full bg-transparent border-none border-b border-white/5 pb-3 text-[15px] text-white focus:ring-0 appearance-none"
+                                            value={fromAccount}
+                                            onChange={(e) => setFromAccount(e.target.value)}
+                                            required
+                                        >
+                                            <option value="" className="bg-black">Selecione...</option>
+                                            {assets.map(a => <option key={a.id} className="bg-black" value={a.id}>{a.name}</option>)}
+                                        </select>
+                                        <span className="material-symbols-outlined absolute right-0 top-0 text-zinc-700 pointer-events-none">expand_more</span>
+                                    </div>
+                                </div>
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black text-zinc-500 tracking-[0.2em] uppercase block">Conta Destino</label>
+                                    <div className="relative">
+                                        <select
+                                            className="w-full bg-transparent border-none border-b border-white/5 pb-3 text-[15px] text-white focus:ring-0 appearance-none"
+                                            value={toAccount}
+                                            onChange={(e) => setToAccount(e.target.value)}
+                                            required
+                                        >
+                                            <option value="" className="bg-black">Selecione...</option>
+                                            {assets.map(a => <option key={a.id} className="bg-black" value={a.id}>{a.name}</option>)}
+                                        </select>
+                                        <span className="material-symbols-outlined absolute right-0 top-0 text-zinc-700 pointer-events-none">expand_more</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="relative">
-                                <label className="text-[10px] font-bold text-zinc-500 tracking-[0.15em] uppercase block mb-1">Conta de Destino</label>
-                                <div className="flex items-center gap-3">
-                                    <span className="material-symbols-outlined text-zinc-500">download</span>
-                                    <select
-                                        className="w-full py-3 text-sm text-white focus:ring-0 appearance-none bg-transparent border-none border-b border-zinc-900 rounded-none focus:border-primary"
-                                        value={toAccount}
-                                        onChange={(e) => setToAccount(e.target.value)}
-                                        required
-                                    >
-                                        <option value="" className="bg-black">Selecione a conta</option>
-                                        {assets.map(a => <option key={a.id} className="bg-black" value={a.id}>{a.name}</option>)}
-                                    </select>
+                        ) : (
+                            <div className="grid grid-cols-2 gap-8">
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black text-zinc-500 tracking-[0.2em] uppercase block">Categoria</label>
+                                    <div className="relative">
+                                        <select
+                                            className="w-full bg-transparent border-none border-b border-white/5 pb-3 text-[15px] text-white focus:ring-0 appearance-none"
+                                            value={categoryId}
+                                            onChange={(e) => setCategoryId(e.target.value)}
+                                        >
+                                            {categories.map(cat => (
+                                                <option key={cat.id} className="bg-black" value={cat.id}>{cat.name}</option>
+                                            ))}
+                                        </select>
+                                        <span className="material-symbols-outlined absolute right-0 top-0 text-zinc-700 pointer-events-none">expand_more</span>
+                                    </div>
+                                </div>
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black text-zinc-500 tracking-[0.2em] uppercase block">Subcategoria</label>
+                                    <div className="relative">
+                                        <select
+                                            className="w-full bg-transparent border-none border-b border-white/5 pb-3 text-[15px] text-white focus:ring-0 appearance-none"
+                                            value={subCategoryName}
+                                            onChange={(e) => setSubCategoryName(e.target.value)}
+                                        >
+                                            <option value="" className="bg-black">Geral</option>
+                                            {filteredSubCategories.map(sub => (
+                                                <option key={sub.id} className="bg-black" value={sub.name}>{sub.name}</option>
+                                            ))}
+                                        </select>
+                                        <span className="material-symbols-outlined absolute right-0 top-0 text-zinc-700 pointer-events-none">expand_more</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="relative">
-                                <label className="text-[10px] font-bold text-zinc-500 tracking-[0.15em] uppercase block mb-1">Categoria</label>
-                                <select
-                                    className="w-full py-3 text-sm text-white focus:ring-0 appearance-none bg-transparent border-none border-b border-zinc-900 rounded-none focus:border-primary"
-                                    value={categoryId}
-                                    onChange={(e) => setCategoryId(e.target.value)}
-                                >
-                                    {categories.map(cat => (
-                                        <option key={cat.id} className="bg-black" value={cat.id}>{cat.name}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="relative">
-                                <label className="text-[10px] font-bold text-zinc-500 tracking-[0.15em] uppercase block mb-1">Subcategoria</label>
-                                <select
-                                    className="w-full py-3 text-sm text-white focus:ring-0 appearance-none bg-transparent border-none border-b border-zinc-900 rounded-none focus:border-primary"
-                                    value={subCategoryName}
-                                    onChange={(e) => setSubCategoryName(e.target.value)}
-                                >
-                                    <option value="" className="bg-black">Geral</option>
-                                    {filteredSubCategories.map(sub => (
-                                        <option key={sub.id} className="bg-black" value={sub.name}>{sub.name}</option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                    )}
+                        )}
 
-                    <div className="relative">
-                        <label className="text-[10px] font-bold text-zinc-500 tracking-[0.15em] uppercase block mb-1">Notas (Opcional)</label>
-                        <textarea
-                            className="w-full py-3 text-sm placeholder:text-zinc-700 text-white focus:ring-0 bg-transparent border-none border-b border-zinc-900 rounded-none focus:border-primary min-h-[60px]"
-                            placeholder="Notas adicionais..."
-                            value={notes}
-                            onChange={(e) => setNotes(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="relative">
-                        <label className="text-[10px] font-bold text-zinc-500 tracking-[0.15em] uppercase block mb-1">Data</label>
-                        <div className="flex items-center gap-3">
-                            <span className="material-symbols-outlined text-zinc-500 text-xl">calendar_today</span>
+                        {/* Date Picker */}
+                        <div className="space-y-3">
+                            <label className="text-[10px] font-black text-zinc-500 tracking-[0.2em] uppercase block">Quando ocorreu?</label>
                             <input
-                                className="w-full py-3 text-sm text-white focus:ring-0 appearance-none bg-transparent border-none border-b border-zinc-900 rounded-none [color-scheme:dark]"
                                 type="date"
+                                className="w-full bg-transparent border-none border-b border-white/5 pb-3 text-[15px] text-white focus:ring-0 [color-scheme:dark]"
                                 value={date}
                                 onChange={(e) => setDate(e.target.value)}
                             />
                         </div>
+
+                        {/* Notes */}
+                        <div className="space-y-3">
+                            <label className="text-[10px] font-black text-zinc-500 tracking-[0.2em] uppercase block">Notas Adicionais</label>
+                            <textarea
+                                className="w-full bg-transparent border-none border-b border-white/5 pb-3 text-[14px] text-white focus:ring-0 resize-none min-h-[40px] placeholder:text-zinc-800"
+                                placeholder="..."
+                                value={notes}
+                                onChange={(e) => setNotes(e.target.value)}
+                            />
+                        </div>
                     </div>
 
-                    <div className="pt-8">
+                    {/* Submit Section */}
+                    <div className="pt-4">
                         <button
-                            className="w-full bg-primary py-5 rounded-2xl font-bold text-black text-xs tracking-[0.3em] uppercase active:scale-[0.98] shadow-[0_0_20px_#0fb67f30] transition-all disabled:opacity-50"
                             type="submit"
                             disabled={loading}
+                            className={`w-full h-16 rounded-[2rem] bg-transparent border-2 border-primary text-primary font-black tracking-[0.4em] text-[11px] uppercase transition-all duration-300 active:scale-95 active:bg-primary/5 shadow-[0_0_30px_rgba(15,182,127,0.1)] ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:border-primary/80'}`}
                         >
-                            {loading ? 'PROCESSANDO...' : 'SALVAR TRANSAÇÃO'}
+                            {loading ? 'Processando...' : 'Efetivar Transação'}
                         </button>
                     </div>
+
                 </form>
             </main>
         </div>

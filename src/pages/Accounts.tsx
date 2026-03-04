@@ -174,12 +174,14 @@ export default function Accounts() {
         </section>
       </div>
 
-      <button
-        onClick={() => navigate('/add-account')}
-        className="fixed right-6 bottom-32 w-16 h-16 bg-primary text-black rounded-full shadow-[0_10px_30px_rgba(15,182,127,0.3)] flex items-center justify-center z-[150] levitate-btn transition-transform active:scale-95"
-      >
-        <span className="material-symbols-outlined text-3xl font-black">add</span>
-      </button>
+      <div className="fixed bottom-32 right-6 z-[150] levitate-btn">
+        <button
+          onClick={() => navigate('/add-account')}
+          className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-[0_20px_40px_rgba(15,182,127,0.4)] active:scale-90 transition-all group"
+        >
+          <span className="material-symbols-outlined text-black font-black text-3xl group-hover:scale-110 transition-transform">add</span>
+        </button>
+      </div>
 
       <ActionPopup
         isOpen={showDeleteConfirm}

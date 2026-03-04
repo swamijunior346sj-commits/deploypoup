@@ -37,6 +37,16 @@ export default function TransactionHistory() {
 
     return (
         <div className="bg-background-dark text-text-main font-sans flex flex-col min-h-screen selection:bg-primary/30 relative overflow-hidden">
+            <style>{`
+                @keyframes levitate {
+                    0% { transform: translateY(0px); }
+                    50% { transform: translateY(-10px); }
+                    100% { transform: translateY(0px); }
+                }
+                .levitate-btn {
+                    animation: levitate 3s ease-in-out infinite;
+                }
+            `}</style>
             {/* Analyzing Overlay */}
             {isAnalyzing && (
                 <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex flex-col items-center justify-center animate-fade-in">
@@ -144,7 +154,7 @@ export default function TransactionHistory() {
                                 filteredTransactions.map((transaction) => (
                                     <div
                                         key={transaction.id}
-                                        onClick={() => setSelectedTransaction(transaction)}
+                                        onClick={() => navigate('/transaction-details', { state: { transaction } })}
                                         className="bg-transparent border border-white/5 rounded-2xl p-4 flex items-center justify-between active:scale-[0.98] transition-all cursor-pointer group hover:border-primary/20"
                                     >
                                         <div className="flex items-center space-x-4">
@@ -181,61 +191,15 @@ export default function TransactionHistory() {
                 </div>
             </main>
 
-            <button
-                onClick={() => navigate('/new-transaction')}
-                className="fixed right-6 bottom-32 w-14 h-14 bg-primary text-black rounded-full shadow-[0_0_25px_rgba(15,182,127,0.4)] flex items-center justify-center z-[70] active:scale-90 transition-all cursor-pointer"
-            >
-                <span className="material-symbols-outlined font-black text-2xl">add</span>
-            </button>
+            <div className="fixed bottom-32 right-6 z-[150] levitate-btn">
+                <button
+                    onClick={() => navigate('/new-transaction')}
+                    className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-[0_20px_40px_rgba(15,182,127,0.4)] active:scale-90 transition-all group"
+                >
+                    <span className="material-symbols-outlined text-black font-black text-3xl group-hover:scale-110 transition-transform">add</span>
+                </button>
+            </div>
 
-            {/* Transaction Details Popup */}
-            {selectedTransaction && (
-                <div onClick={() => setSelectedTransaction(null)} className="fixed inset-0 z-[110] bg-black/95 backdrop-blur-xl flex flex-col justify-end animate-fade-in">
-                    <div onClick={e => e.stopPropagation()} className="w-full bg-background-dark border-t border-white/10 rounded-t-[40px] p-8 max-h-[90dvh] overflow-y-auto hide-scrollbar">
-                        <div className="w-12 h-1 bg-white/10 rounded-full mx-auto mb-10"></div>
-
-                        <div className="flex flex-col items-center mb-10">
-                            <div className="w-20 h-20 rounded-3xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-6">
-                                <span className="material-symbols-outlined text-primary text-4xl neon-glow-icon">
-                                    {selectedTransaction.type === 'income' ? 'payments' : 'shopping_bag'}
-                                </span>
-                            </div>
-                            <h2 className="text-4xl font-display font-light tracking-tighter text-text-value mb-2">
-                                <span className="text-lg mr-1 opacity-50">R$</span>
-                                {Number(selectedTransaction.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                            </h2>
-                            <p className="text-zinc-500 font-bold tracking-widest uppercase text-[10px] bg-white/5 px-4 py-1.5 rounded-full">{selectedTransaction.description}</p>
-                        </div>
-
-                        <div className="space-y-4 mb-10">
-                            <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-5 flex justify-between items-center">
-                                <span className="text-[10px] text-zinc-600 font-black uppercase tracking-widest">Categoria</span>
-                                <span className="text-sm font-bold text-text-value">{selectedTransaction.category}</span>
-                            </div>
-                            <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-5 flex justify-between items-center">
-                                <span className="text-[10px] text-zinc-600 font-black uppercase tracking-widest">Data</span>
-                                <span className="text-sm font-bold text-text-value">{new Date(selectedTransaction.date).toLocaleString('pt-BR')}</span>
-                            </div>
-                            <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-5 flex justify-between items-center">
-                                <span className="text-[10px] text-zinc-600 font-black uppercase tracking-widest">ID Único</span>
-                                <span className="text-[10px] font-mono text-zinc-700">{selectedTransaction.id.slice(0, 18)}...</span>
-                            </div>
-                        </div>
-
-                        <div className="flex space-x-4">
-                            <button
-                                onClick={() => navigate('/edit-transaction', { state: { transaction: selectedTransaction } })}
-                                className="flex-1 h-16 rounded-2xl bg-white/5 border border-white/10 text-white font-bold tracking-[0.2em] text-[10px] uppercase active:scale-[0.98] transition-all"
-                            >
-                                EDITAR
-                            </button>
-                            <button className="flex-1 h-16 rounded-2xl bg-primary text-black font-black tracking-[0.2em] text-[10px] uppercase active:scale-[0.98] shadow-[0_0_20px_rgba(15,182,127,0.3)]">
-                                COMPARTILHAR
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }

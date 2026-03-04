@@ -32,12 +32,11 @@ export interface Asset {
 export interface Goal {
     id: string;
     user_id: string;
-    title: string;
+    name: string;
     target_amount: number;
     current_amount: number;
     deadline?: string;
-    icon?: string;
-    category?: string;
+    color?: string;
     created_at: string;
 }
 

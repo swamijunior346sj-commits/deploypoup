@@ -185,13 +185,25 @@ export default function GoalDetails() {
                 </div>
             </div>
 
-            {/* Floating Action Button */}
-            <button
-                onClick={() => navigate('/add-goal-value', { state: { goal } })}
-                className="fixed bottom-8 right-8 w-16 h-16 rounded-full bg-primary text-black flex items-center justify-center shadow-[0_0_30px_rgba(15,182,127,0.4)] active:scale-95 transition-transform z-[110]"
-            >
-                <span className="material-symbols-outlined text-3xl font-bold">add</span>
-            </button>
+            <style>{`
+                @keyframes levitate {
+                    0% { transform: translateY(0px); }
+                    50% { transform: translateY(-10px); }
+                    100% { transform: translateY(0px); }
+                }
+                .levitate-btn {
+                    animation: levitate 3s ease-in-out infinite;
+                }
+            `}</style>
+
+            <div className="fixed bottom-32 right-6 z-[150] levitate-btn">
+                <button
+                    onClick={() => navigate('/add-goal-value', { state: { goal } })}
+                    className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-[0_20px_40px_rgba(15,182,127,0.4)] active:scale-90 transition-all group"
+                >
+                    <span className="material-symbols-outlined text-black font-black text-3xl group-hover:scale-110 transition-transform">add</span>
+                </button>
+            </div>
 
             {/* Subtle Bottom Shadow Mask */}
             <div className="fixed bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black to-transparent pointer-events-none z-[100]"></div>

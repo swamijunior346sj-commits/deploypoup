@@ -117,10 +117,22 @@ export default function Budgets() {
                     })}
                 </div>
 
-                {/* Floating Action Component */}
-                <div className="fixed bottom-24 right-6 z-20">
-                    <button onClick={() => navigate('/new-budget')} className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-black shadow-2xl shadow-primary/20 hover:scale-105 transition-transform active:scale-95">
-                        <span className="material-symbols-outlined font-bold text-2xl">add</span>
+                <style>{`
+                    @keyframes levitate {
+                        0% { transform: translateY(0px); }
+                        50% { transform: translateY(-10px); }
+                        100% { transform: translateY(0px); }
+                    }
+                    .levitate-btn {
+                        animation: levitate 3s ease-in-out infinite;
+                    }
+                `}</style>
+                <div className="fixed bottom-32 right-6 z-[150] levitate-btn">
+                    <button
+                        onClick={() => navigate('/new-budget')}
+                        className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-[0_20px_40px_rgba(15,182,127,0.4)] active:scale-90 transition-all group"
+                    >
+                        <span className="material-symbols-outlined text-black font-black text-3xl group-hover:scale-110 transition-transform">add</span>
                     </button>
                 </div>
 
