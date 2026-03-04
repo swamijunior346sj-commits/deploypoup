@@ -29,6 +29,12 @@ export default function Arsenal() {
     const [activeProducts, setActiveProducts] = useState<PurchasedProduct[]>([]);
     const [pendingOrders, setPendingOrders] = useState<PendingOrder[]>([]);
     const [tab, setTab] = useState<'ativos' | 'pendentes'>('ativos');
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const filteredProducts = activeProducts.filter(p =>
+        p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.type.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     useEffect(() => {
         if (!user) {
@@ -105,6 +111,20 @@ export default function Arsenal() {
                     <p className="text-[9px] text-zinc-500 font-black uppercase tracking-[0.3em]">Seus recursos tecnológicos e estratégicos</p>
                 </div>
 
+                {/* ── Search Bar ── */}
+                <div className="relative group">
+                    <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
+                        <span className="material-symbols-outlined text-zinc-600 group-focus-within:text-primary transition-colors text-xl">search</span>
+                    </div>
+                    <input
+                        type="search"
+                        placeholder="BUSCAR NO ARSENAL..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full h-16 bg-zinc-950/60 border border-white/5 rounded-2xl pl-16 pr-6 text-[10px] font-black uppercase tracking-widest text-white placeholder:text-zinc-700 focus:outline-none focus:border-primary/30 focus:ring-1 focus:ring-primary/20 transition-all"
+                    />
+                </div>
+
                 {/* ── Tabs ── */}
                 <div className="flex gap-4 p-1.5 bg-zinc-950/60 border border-white/5 rounded-2xl">
                     <button
@@ -142,9 +162,9 @@ export default function Arsenal() {
                         >
                             {tab === 'ativos' ? (
                                 <>
-                                    {activeProducts.length > 0 ? (
+                                    {filteredProducts.length > 0 ? (
                                         <div className="grid grid-cols-1 gap-6">
-                                            {activeProducts.map((p) => (
+                                            {filteredProducts.map((p) => (
                                                 <motion.div
                                                     key={p.id}
                                                     whileHover={{ scale: 1.02 }}
@@ -230,7 +250,7 @@ export default function Arsenal() {
                                                     <div className="flex flex-col items-end gap-3">
                                                         <span className="text-primary font-black text-lg italic leading-none">R$ {Number(o.total_amount).toLocaleString('pt-BR')}</span>
                                                         <button
-                                                            onClick={() => navigate('/payment')}
+                                                            onClick={() => navigate('/payment', { state: { orderId: o.id } })}
                                                             className="px-4 py-2 bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 text-[8px] font-black uppercase rounded-xl hover:bg-yellow-500 hover:text-black transition-all"
                                                         >
                                                             Finalizar Pix

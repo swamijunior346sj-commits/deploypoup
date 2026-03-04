@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import Header from '../components/Header';
 import { supabase } from '../lib/supabase';
@@ -14,13 +14,16 @@ interface MPPaymentData {
 
 export default function Payment() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
     const [paid, setPaid] = useState(false);
     const [loading, setLoading] = useState(true);
     const [paymentData, setPaymentData] = useState<MPPaymentData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [copied, setCopied] = useState(false);
-    const [orderId, setOrderId] = useState<string | null>(null);
+    const [orderId, setOrderId] = useState<string | null>(location.state?.orderId || null);
+    const [orderTotal, setOrderTotal] = useState<number>(0);
+    const [orderItems, setOrderItems] = useState<any[]>([]);
     const { addNotification } = useNotifications();
 
     const saved = localStorage.getItem('poup_cart');
@@ -28,24 +31,54 @@ export default function Payment() {
     const discountPercent = discountPercentStr ? parseInt(discountPercentStr) : 0;
     const cartItems = saved ? JSON.parse(saved) : [];
     const baseTotal = cartItems.reduce((acc: number, item: any) => acc + item.price * item.quantity, 0);
-    const total = baseTotal * (1 - discountPercent / 100);
+    const cartTotal = baseTotal * (1 - discountPercent / 100);
 
-    // Initial QR Code Generation & Order Creation
+    // Initial QR Code Generation & Order Setup
     useEffect(() => {
-        const generatePayment = async () => {
+        const setupPayment = async () => {
             try {
                 setLoading(true);
-
-                // Get current user session
                 const { data: { user } } = await supabase.auth.getUser();
                 if (!user) throw new Error("Usuário não autenticado");
 
-                // 1. Generate PIX via Edge Function
+                let currentTotal = cartTotal;
+                let currentItems = cartItems;
+                let currentOrderId = orderId;
+
+                // 1. If we have an orderId, fetch existing order details
+                if (currentOrderId) {
+                    const { data: existingOrder, error: fetchError } = await supabase
+                        .from('orders')
+                        .select('*')
+                        .eq('id', currentOrderId)
+                        .single();
+
+                    if (fetchError) throw fetchError;
+                    if (existingOrder.status === 'approved') {
+                        setPaid(true);
+                        setLoading(false);
+                        return;
+                    }
+
+                    currentTotal = existingOrder.total_amount;
+                    currentItems = existingOrder.items;
+                }
+
+                if (currentTotal <= 0) {
+                    setError("O montante da transação deve ser superior a zero.");
+                    setLoading(false);
+                    return;
+                }
+
+                setOrderTotal(currentTotal);
+                setOrderItems(currentItems);
+
+                // 2. Generate PIX via Edge Function
                 const { data, error: funcError } = await supabase.functions.invoke('poup-pix-payment', {
                     body: {
-                        amount: total,
+                        amount: currentTotal,
                         email: user.email,
-                        description: `Compra POUP - ${cartItems.length} itens`
+                        description: `Compra POUP - ${currentItems?.length || 0} itens`
                     }
                 });
 
@@ -54,21 +87,29 @@ export default function Payment() {
 
                 setPaymentData(data);
 
-                // 2. Create Order in Database
-                const { data: order, error: orderError } = await supabase
-                    .from('orders')
-                    .insert({
-                        user_id: user.id,
-                        total_amount: total,
-                        status: 'pending',
-                        mp_payment_id: data.id,
-                        items: cartItems
-                    })
-                    .select()
-                    .single();
+                // 3. Create Order if it doesn't exist
+                if (!currentOrderId) {
+                    const { data: order, error: orderError } = await supabase
+                        .from('orders')
+                        .insert({
+                            user_id: user.id,
+                            total_amount: currentTotal,
+                            status: 'pending',
+                            mp_payment_id: data.id,
+                            items: currentItems
+                        })
+                        .select()
+                        .single();
 
-                if (orderError) throw orderError;
-                setOrderId(order.id);
+                    if (orderError) throw orderError;
+                    setOrderId(order.id);
+                } else {
+                    // Update existing order with new payment ID
+                    await supabase
+                        .from('orders')
+                        .update({ mp_payment_id: data.id })
+                        .eq('id', currentOrderId);
+                }
 
             } catch (err: any) {
                 console.error('Erro no processamento:', err);
@@ -78,10 +119,8 @@ export default function Payment() {
             }
         };
 
-        if (total > 0 && !paymentData) {
-            generatePayment();
-        }
-    }, [total]);
+        setupPayment();
+    }, []); // Only run once on mount
 
     // Check payment status (Realtime Connection)
     useEffect(() => {
@@ -251,7 +290,7 @@ export default function Payment() {
                         </div>
                         <div className="flex flex-col relative z-10">
                             <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-1">Montante Devido</span>
-                            <span className="text-3xl font-black italic text-white premium-text-glow leading-none">R$ {total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                            <span className="text-3xl font-black italic text-white premium-text-glow leading-none">R$ {orderTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                         </div>
                         <div className="flex flex-col items-end relative z-10">
                             <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-1">Status Global</span>

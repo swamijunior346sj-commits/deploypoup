@@ -12,32 +12,6 @@ export default function Dashboard() {
   const { transactions, assets, goals, loading, xp, level, levelName, currentMaxXP, userName } = useData();
   const { addNotification } = useNotifications();
 
-  // ── Engagement Notifications Simulation ──
-  useEffect(() => {
-    if (!loading) {
-      const timer = setTimeout(() => {
-        // Randomly pick an engagement notification
-        const engagementType = Math.random() > 0.5 ? 'earning' : 'offer';
-
-        if (engagementType === 'earning') {
-          addNotification({
-            title: 'Market Update: Dividendos',
-            message: 'Novos proventos de R$ 124,50 identificados em sua carteira de FIIs.',
-            type: 'success'
-          });
-        } else {
-          addNotification({
-            title: 'Oferta Relâmpago: Arsenal Black',
-            message: 'Um novo upgrade de inteligência está disponível com 40% OFF no Marketplace.',
-            type: 'info'
-          });
-        }
-      }, 3500); // Wait for the "Syncing" vibe to finish
-
-      return () => clearTimeout(timer);
-    }
-  }, [loading]);
-
   const activeTransactions = transactions.filter(t => t.status !== 'anulada');
 
   const totalAssetsValue = assets.reduce((acc, asset) => acc + Number(asset.current_value || 0), 0);
@@ -242,33 +216,60 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* ── Neural Intelligence Hub ── */}
-        <section
-          whileTap={{ scale: 0.98 }}
-          onClick={() => navigate('/financial-analysis')}
-          className="relative h-28 rounded-[2rem] bg-zinc-950 border border-white/5 overflow-hidden group cursor-pointer"
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-blue-500/5 to-transparent"></div>
-          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -mr-16 -mt-16 group-hover:bg-primary/20 transition-all"></div>
+        {/* ── Neural Intelligence & Arsenal Hubs ── */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <motion.div
+            whileTap={{ scale: 0.98 }}
+            onClick={() => navigate('/financial-analysis')}
+            className="relative h-28 rounded-[2rem] bg-zinc-950 border border-white/5 overflow-hidden group cursor-pointer"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-blue-500/5 to-transparent"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -mr-16 -mt-16 group-hover:bg-primary/20 transition-all"></div>
 
-          <div className="relative h-full px-8 flex items-center justify-between">
-            <div className="flex items-center gap-5">
-              <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shadow-[0_10px_20px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform">
-                <span className="material-symbols-outlined text-white text-2xl">analytics</span>
+            <div className="relative h-full px-8 flex items-center justify-between">
+              <div className="flex items-center gap-5">
+                <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shadow-[0_10px_20px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform">
+                  <span className="material-symbols-outlined text-white text-2xl">analytics</span>
+                </div>
+                <div className="flex flex-col">
+                  <h4 className="text-sm font-black text-white italic uppercase tracking-tight">Intelligence Hub</h4>
+                  <span className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.3em]">Auditoria & Projeções</span>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <h4 className="text-sm font-black text-white italic uppercase tracking-tight">Intelligence Hub</h4>
-                <span className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.3em]">Auditoria & Projeções</span>
+              <motion.div
+                animate={{ x: [0, 5, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center"
+              >
+                <span className="material-symbols-outlined text-primary text-xl">arrow_forward_ios</span>
+              </motion.div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            whileTap={{ scale: 0.98 }}
+            onClick={() => navigate('/arsenal')}
+            className="relative h-28 rounded-[2rem] bg-zinc-950 border border-white/5 overflow-hidden group cursor-pointer"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/5 to-transparent"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-3xl -mr-16 -mt-16 group-hover:bg-primary/30 transition-all"></div>
+
+            <div className="relative h-full px-8 flex items-center justify-between">
+              <div className="flex items-center gap-5">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center shadow-[0_10px_20px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform">
+                  <span className="material-symbols-outlined text-primary text-2xl">token</span>
+                </div>
+                <div className="flex flex-col">
+                  <h4 className="text-sm font-black text-white italic uppercase tracking-tight">Meu Arsenal</h4>
+                  <span className="text-[8px] font-black text-primary/60 uppercase tracking-[0.3em]">Produtos & Acessos</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                <span className="text-[8px] font-black text-zinc-600 uppercase">Acesso Rápido</span>
               </div>
             </div>
-            <motion.div
-              animate={{ x: [0, 5, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center"
-            >
-              <span className="material-symbols-outlined text-primary text-xl">arrow_forward_ios</span>
-            </motion.div>
-          </div>
+          </motion.div>
         </section>
 
         {/* ── Gamified Ecosystem (Missions & Ranking) ── */}

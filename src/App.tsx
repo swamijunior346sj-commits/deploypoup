@@ -68,8 +68,8 @@ import MyOrders from './pages/MyOrders';
 import NotificationCenter from './pages/NotificationCenter';
 import Admin from './pages/Admin';
 import Arsenal from './pages/Arsenal';
-import AIChat from './pages/AIChat';
-import ProtectedRoute from './components/ProtectedRoute'; // Assuming ProtectedRoute is in this path
+import AIAssistant from './pages/AIAssistant';
+import ProtectedRoute from './components/ProtectedRoute';
 
 export default function App() {
   return (
@@ -78,18 +78,22 @@ export default function App() {
         <NotificationProvider>
           <Router>
             <Routes>
+              {/* Public & Core Auth Routes */}
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/consent" element={<Consent />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
-              <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
-              <Route path="/arsenal" element={<ProtectedRoute><Arsenal /></ProtectedRoute>} />
-              <Route path="/ai-chat" element={<ProtectedRoute><AIChat /></ProtectedRoute>} />
               <Route path="/" element={<Login />} />
+
+              {/* Admin Terminal (Standalone) */}
+              <Route path="/admin" element={<ProtectedRoute adminOnly><Admin /></ProtectedRoute>} />
+
+              {/* User Experience (With Bottom Nav Layout) */}
               <Route element={<Layout />}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/accounts" element={<Accounts />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/arsenal" element={<ProtectedRoute><Arsenal /></ProtectedRoute>} />
                 <Route path="/add-account" element={<AddAccount />} />
                 <Route path="/add-card" element={<AddCard />} />
                 <Route path="/planning" element={<Planning />} />
@@ -139,7 +143,6 @@ export default function App() {
                 <Route path="/edit-subcategory/:id" element={<EditSubCategory />} />
                 <Route path="/financial-tips" element={<FinancialTips />} />
                 <Route path="/financial-analysis" element={<FinancialAnalysis />} />
-                <Route path="/admin" element={<Admin />} />
               </Route>
             </Routes>
           </Router>

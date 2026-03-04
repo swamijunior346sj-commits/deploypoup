@@ -68,6 +68,13 @@ export default function Shop() {
                     </div>
                     <div className="flex items-center gap-3">
                         <button
+                            onClick={() => navigate('/my-orders')}
+                            className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center relative group/orders"
+                            title="Histórico de Pedidos"
+                        >
+                            <span className="material-symbols-outlined text-xl text-zinc-400 group-hover/orders:text-primary transition-colors">receipt_long</span>
+                        </button>
+                        <button
                             onClick={() => navigate('/notifications')}
                             className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center relative"
                         >

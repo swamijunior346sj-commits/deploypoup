@@ -64,6 +64,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const signOut = async () => {
         await supabase.auth.signOut();
+        localStorage.removeItem('poup_xp');
+        localStorage.removeItem('poup_level');
+        localStorage.removeItem('poup_completed_missions');
     };
 
     return (
