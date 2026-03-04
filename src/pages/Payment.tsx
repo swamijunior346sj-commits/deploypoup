@@ -19,20 +19,27 @@ export default function Payment() {
     const [paymentData, setPaymentData] = useState<MPPaymentData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [copied, setCopied] = useState(false);
+    const [orderId, setOrderId] = useState<string | null>(null);
 
     const saved = localStorage.getItem('poup_cart');
     const cartItems = saved ? JSON.parse(saved) : [];
     const total = cartItems.reduce((acc: number, item: any) => acc + item.price * item.quantity, 0);
 
-    // Initial QR Code Generation
+    // Initial QR Code Generation & Order Creation
     useEffect(() => {
         const generatePayment = async () => {
             try {
                 setLoading(true);
+
+                // Get current user session
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) throw new Error("Usuário não autenticado");
+
+                // 1. Generate PIX via Edge Function
                 const { data, error: funcError } = await supabase.functions.invoke('poup-pix-payment', {
                     body: {
                         amount: total,
-                        email: 'poup_user@example.com', // In production, get from auth context
+                        email: user.email,
                         description: `Compra POUP - ${cartItems.length} itens`
                     }
                 });
@@ -41,9 +48,26 @@ export default function Payment() {
                 if (data.error) throw new Error(data.error);
 
                 setPaymentData(data);
+
+                // 2. Create Order in Database
+                const { data: order, error: orderError } = await supabase
+                    .from('orders')
+                    .insert({
+                        user_id: user.id,
+                        total_amount: total,
+                        status: 'pending',
+                        mp_payment_id: data.id,
+                        items: cartItems
+                    })
+                    .select()
+                    .single();
+
+                if (orderError) throw orderError;
+                setOrderId(order.id);
+
             } catch (err: any) {
-                console.error('Erro ao gerar PIX:', err);
-                setError('Falha ao conectar com o terminal de pagamento.');
+                console.error('Erro no processamento:', err);
+                setError(err.message || 'Falha ao conectar com o terminal de pagamento.');
             } finally {
                 setLoading(false);
             }
@@ -57,21 +81,29 @@ export default function Payment() {
     // Check payment status (Polling)
     useEffect(() => {
         let interval: any;
-        if (paymentData && !paid) {
+        if (orderId && !paid) {
             interval = setInterval(async () => {
                 try {
-                    // This would ideally hit another edge function that check Mercado Pago status
-                    // For now, we simulate success for demo purposes or keep it in 'pending'
-                    // Example real check: 
-                    // const { data } = await supabase.functions.invoke('check-payment', { body: { id: paymentData.id } });
-                    // if (data.status === 'approved') setPaid(true);
+                    const { data: order, error: pollError } = await supabase
+                        .from('orders')
+                        .select('status')
+                        .eq('id', orderId)
+                        .single();
+
+                    if (!pollError && order.status === 'approved') {
+                        setPaid(true);
+                        setTimeout(() => {
+                            localStorage.removeItem('poup_cart');
+                            navigate('/dashboard');
+                        }, 3000);
+                    }
                 } catch (err) {
                     console.error('Polling error:', err);
                 }
             }, 5000);
         }
         return () => clearInterval(interval);
-    }, [paymentData, paid]);
+    }, [orderId, paid]);
 
     useEffect(() => {
         if (timeLeft <= 0) return;
@@ -93,14 +125,22 @@ export default function Payment() {
         }
     };
 
-    const handleSimulateSuccess = () => {
-        // Since we don't have a real webhook setup for the local dev, 
-        // we keep the manual confirm button but it will redirect correctly
-        setPaid(true);
-        setTimeout(() => {
-            localStorage.removeItem('poup_cart');
-            navigate('/dashboard');
-        }, 3000);
+    const handleConfirmManual = async () => {
+        // Enforce manual update for demo or in case of delay
+        if (orderId) {
+            const { error: updateError } = await supabase
+                .from('orders')
+                .update({ status: 'approved' })
+                .eq('id', orderId);
+
+            if (!updateError) {
+                setPaid(true);
+                setTimeout(() => {
+                    localStorage.removeItem('poup_cart');
+                    navigate('/dashboard');
+                }, 3000);
+            }
+        }
     };
 
     return (
@@ -213,7 +253,7 @@ export default function Payment() {
 
             <div className="fixed bottom-0 left-0 right-0 p-8 bg-black/80 backdrop-blur-2xl border-t border-white/10 z-[160] shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
                 <button
-                    onClick={handleSimulateSuccess}
+                    onClick={handleConfirmManual}
                     disabled={loading || !!error}
                     className="w-full py-5 bg-primary text-black font-black uppercase tracking-[0.2em] text-sm rounded-3xl shadow-[0_15px_30px_rgba(15,182,127,0.3)] active:scale-95 transition-all flex items-center justify-center gap-3 border-luxury disabled:opacity-50"
                 >
