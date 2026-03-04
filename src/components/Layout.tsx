@@ -28,6 +28,17 @@ export default function Layout() {
   const direction = currentIndex >= lastIndex ? 1 : -1;
 
   const isLogin = location.pathname === '/' || location.pathname === '/signup' || location.pathname === '/onboarding';
+  const isShopFlow = location.pathname === '/cart' ||
+    location.pathname === '/checkout' ||
+    location.pathname === '/payment' ||
+    location.pathname === '/upsell' ||
+    location.pathname === '/downsell' ||
+    location.pathname.includes('/product-details') ||
+    location.pathname.includes('/ebook/') ||
+    location.pathname.includes('/course/') ||
+    location.pathname.includes('/mentorship/');
+
+  const hideNav = isLogin || isShopFlow;
 
   const variants = {
     enter: (direction: number) => ({
@@ -66,7 +77,7 @@ export default function Layout() {
       `}</style>
 
       {/* ── Main Content Area with Motion Carousel ── */}
-      <main className="flex-grow flex flex-col relative pb-[100px]">
+      <main className={`flex-grow flex flex-col relative ${hideNav ? 'pb-0' : 'pb-[100px]'}`}>
         <AnimatePresence mode="wait" initial={false} custom={direction}>
           <motion.div
             key={location.pathname}
@@ -87,47 +98,49 @@ export default function Layout() {
       </main>
 
       {/* ── PREMIUM BOTTOM NAVIGATION ── */}
-      <nav className="fixed bottom-0 left-0 right-0 z-[200] pb-8 pt-2 glass-nav px-6 shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
-        <div className="mx-auto max-w-lg flex items-center justify-between relative h-14">
-          {navTabs.map((tab, idx) => {
-            const active = currentIndex === idx;
-            return (
-              <button
-                key={tab.path}
-                onClick={() => handleNav(tab.path, idx)}
-                className={`relative flex flex-col items-center justify-center flex-1 transition-all duration-300 isolate pt-1 h-full
+      {!hideNav && (
+        <nav className="fixed bottom-0 left-0 right-0 z-[200] pb-8 pt-2 glass-nav px-6 shadow-[0_-20px_50px_rgba(0,0,0,0.8)]">
+          <div className="mx-auto max-w-lg flex items-center justify-between relative h-14">
+            {navTabs.map((tab, idx) => {
+              const active = currentIndex === idx;
+              return (
+                <button
+                  key={tab.path}
+                  onClick={() => handleNav(tab.path, idx)}
+                  className={`relative flex flex-col items-center justify-center flex-1 transition-all duration-300 isolate pt-1 h-full
                   ${active ? 'text-primary' : 'text-zinc-600 hover:text-zinc-400'}`}
-              >
-                {/* Active Indicator Backdrop */}
-                {active && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute inset-y-1 inset-x-1 bg-white/[0.03] rounded-2xl -z-10 border border-white/[0.05] nav-active-glow"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
+                >
+                  {/* Active Indicator Backdrop */}
+                  {active && (
+                    <motion.div
+                      layoutId="activeTab"
+                      className="absolute inset-y-1 inset-x-1 bg-white/[0.03] rounded-2xl -z-10 border border-white/[0.05] nav-active-glow"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
 
-                <span className={`material-symbols-outlined transition-all duration-300 ${active ? 'text-[24px] mb-0' : 'text-[22px] mb-1'}`}>
-                  {tab.icon}
-                </span>
+                  <span className={`material-symbols-outlined transition-all duration-300 ${active ? 'text-[24px] mb-0' : 'text-[22px] mb-1'}`}>
+                    {tab.icon}
+                  </span>
 
-                <span className={`text-[8px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${active ? 'opacity-100 scale-100' : 'opacity-0 scale-75 h-0 overflow-hidden'}`}>
-                  {tab.label}
-                </span>
+                  <span className={`text-[8px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${active ? 'opacity-100 scale-100' : 'opacity-0 scale-75 h-0 overflow-hidden'}`}>
+                    {tab.label}
+                  </span>
 
-                {/* Animated Dot */}
-                {active && (
-                  <motion.div
-                    layoutId="activeDot"
-                    className="absolute -bottom-1 w-1 h-1 bg-primary rounded-full shadow-[0_0_8px_#0FB67F]"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </nav>
+                  {/* Animated Dot */}
+                  {active && (
+                    <motion.div
+                      layoutId="activeDot"
+                      className="absolute -bottom-1 w-1 h-1 bg-primary rounded-full shadow-[0_0_8px_#0FB67F]"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </nav>
+      )}
     </div>
   );
 }
