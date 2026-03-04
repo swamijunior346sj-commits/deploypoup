@@ -5,6 +5,7 @@ import ActionPopup from '../components/ActionPopup';
 import { useData } from '../contexts/DataContext';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
+import { motion } from 'motion/react';
 
 export default function NewGoal() {
     const navigate = useNavigate();
@@ -26,17 +27,13 @@ export default function NewGoal() {
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!user || !title || !targetAmount) {
-            console.error('User or required fields missing');
-            return;
-        }
+        if (!user || !title || !targetAmount) return;
 
-        const cleanAmount = targetAmount.replace(/[R$\s]/g, '');
-        const normalizedAmount = cleanAmount.includes(',') ? cleanAmount.replace(/\./g, '').replace(',', '.') : cleanAmount;
-        const parsedAmount = parseFloat(normalizedAmount);
+        const cleanAmount = targetAmount.replace(/[R$\s]/g, '').replace(/\./g, '').replace(',', '.');
+        const parsedAmount = parseFloat(cleanAmount);
 
         if (isNaN(parsedAmount) || parsedAmount <= 0) {
-            console.error('Invalid amount provided:', targetAmount);
+            alert('Valor inválido');
             return;
         }
 
@@ -48,90 +45,84 @@ export default function NewGoal() {
                 target_amount: parsedAmount,
                 current_amount: 0,
                 deadline: deadline || null,
-                color: '#0FB67F' // Using default color for now
+                color: '#0FB67F'
             };
 
-            console.log('Inserting goal into Supabase:', goalData);
+            const { error } = await supabase.from('goals').insert([goalData]);
 
-            const { data, error } = await supabase
-                .from('goals')
-                .insert([goalData])
-                .select();
+            if (error) throw error;
 
-            if (error) {
-                console.error('Supabase error inserting goal:', error);
-                throw error;
-            }
-
-            console.log('Goal saved successfully:', data);
-
-            addXP(10); // Meta created gives more XP
+            addXP(25);
             await refreshData();
             setShowSuccess(true);
-
-            // Redirecionar após 2 segundos
-            setTimeout(() => {
-                navigate('/goals');
-            }, 2000);
+            setTimeout(() => navigate('/goals'), 2000);
 
         } catch (error: any) {
-            console.error('Exception during goal save:', error);
-            alert(`Erro ao criar meta: ${error.message || 'Erro desconhecido'}`);
+            console.error('Goal creation failed:', error);
+            alert(`Erro ao criar meta: ${error.message}`);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="bg-background-dark text-white font-sans flex flex-col min-h-screen selection:bg-primary/30 antialiased overflow-x-hidden">
-            <Header title="NOVA META" showBack />
+        <div className="bg-black text-white font-sans flex flex-col min-h-screen selection:bg-primary/30 relative overflow-hidden">
+            {/* ── Background Aura ── */}
+            <div className="fixed top-[-10%] right-[-10%] w-[60%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none z-0 rotate-12"></div>
+
+            <Header title="Estratégia" showBack />
 
             <ActionPopup
                 isOpen={showSuccess}
-                title="Meta criada com sucesso!"
-                description="Sua nova jornada financeira começou. Mantenha o foco!"
+                title="OBJETIVO TRAÇADO!"
+                description="Sua nova jornada financeira começou. Mantenha o foco absoluto!"
                 confirmText="Ver Minhas Metas"
                 type="success"
                 onConfirm={() => navigate('/goals')}
                 onCancel={() => setShowSuccess(false)}
             />
 
-            <main className="flex-grow px-6 pt-4 pb-32 overflow-y-auto no-scrollbar">
-                <form className="space-y-8 mt-4" onSubmit={handleSave}>
+            <main className="flex-grow px-6 pt-4 pb-32 overflow-y-auto no-scrollbar relative z-10">
+                <form className="space-y-10 mt-6" onSubmit={handleSave}>
 
-                    {/* Goal Icon & Title Display */}
-                    <div className="flex flex-col items-center py-6 space-y-4">
-                        <div className="w-20 h-20 rounded-[2.5rem] bg-zinc-950 border border-white/5 flex items-center justify-center shadow-2xl relative group">
-                            <div className="absolute inset-0 bg-primary/10 rounded-[2.5rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                            <span className="material-symbols-outlined text-4xl text-primary font-bold relative z-10">{selectedIcon}</span>
-                            <div className="absolute -bottom-1 -right-1 bg-primary w-6 h-6 rounded-full flex items-center justify-center border-2 border-black">
-                                <span className="material-symbols-outlined text-black text-[12px] font-bold">edit</span>
-                            </div>
-                        </div>
-                        <div className="text-center w-full px-4">
+                    {/* Goal Header Section */}
+                    <div className="flex flex-col items-center space-y-6 pt-4">
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            className="w-24 h-24 rounded-[2.5rem] bg-zinc-950/40 border border-primary/20 flex items-center justify-center shadow-2xl relative group"
+                        >
+                            <span className="material-symbols-outlined text-5xl text-primary font-light relative z-10">{selectedIcon}</span>
+                            <div className="absolute -inset-1 bg-primary/5 rounded-[2.8rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        </motion.div>
+
+                        <div className="text-center w-full px-4 space-y-2">
                             <input
-                                className="bg-transparent border-none text-[28px] font-display font-bold text-white focus:ring-0 p-0 text-center w-full placeholder:text-zinc-900"
-                                placeholder="Qual seu objetivo?"
+                                className="bg-transparent border-none text-[32px] font-display font-black text-white focus:ring-0 p-0 text-center w-full placeholder:text-zinc-900 border-b border-white/[0.03]"
+                                placeholder="Qual seu sonho?"
                                 type="text"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                                 autoFocus
                                 required
                             />
-                            <div className="mt-1 h-[1px] w-1/2 mx-auto bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
+                            <p className="text-[10px] text-zinc-600 font-black uppercase tracking-[0.5em]">NOME DO PROJETO</p>
                         </div>
                     </div>
 
-                    {/* Form Fields Card */}
-                    <div className="neon-border rounded-[32px] bg-white/[0.02] p-8 space-y-10">
-
+                    {/* Numeric Input Card */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="transparent-card-border rounded-[3rem] bg-zinc-950/20 p-10 space-y-12"
+                    >
                         {/* Target Amount */}
-                        <div className="space-y-3">
-                            <label className="text-[10px] font-black text-zinc-500 tracking-[0.2em] uppercase block px-1">Valor Total Alvo</label>
-                            <div className="relative flex items-center bg-zinc-950 border border-white/5 rounded-2xl px-5 py-4 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
-                                <span className="text-primary font-bold text-lg mr-3">R$</span>
+                        <div className="space-y-5">
+                            <label className="text-[10px] font-black text-zinc-600 tracking-[0.4em] uppercase block px-1">Patrimônio Alvo</label>
+                            <div className="relative flex items-center justify-center gap-4">
+                                <span className="text-zinc-700 font-light text-3xl">R$</span>
                                 <input
-                                    className="w-full bg-transparent border-none p-0 text-xl font-display font-bold text-white focus:ring-0 placeholder:text-zinc-800"
+                                    className="bg-transparent border-none p-0 text-5xl font-display font-black text-white focus:ring-0 placeholder:text-zinc-900 w-full text-center tracking-tighter"
                                     placeholder="0,00"
                                     type="text"
                                     value={targetAmount}
@@ -139,13 +130,14 @@ export default function NewGoal() {
                                     required
                                 />
                             </div>
+                            <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-white/[0.05] to-transparent"></div>
                         </div>
 
                         {/* Deadline Date */}
-                        <div className="space-y-3">
-                            <label className="text-[10px] font-black text-zinc-500 tracking-[0.2em] uppercase block px-1">Data Limite (Opcional)</label>
-                            <div className="relative flex items-center bg-zinc-950 border border-white/5 rounded-2xl px-5 py-4 focus-within:ring-2 focus-within:ring-primary/20 transition-all cursor-pointer">
-                                <span className="material-symbols-outlined text-zinc-500 mr-3 text-xl">calendar_today</span>
+                        <div className="space-y-4">
+                            <label className="text-[10px] font-black text-zinc-600 tracking-[0.4em] uppercase block px-1 text-center">Data Limite da Missão</label>
+                            <div className="relative flex items-center bg-black/40 border border-white/5 rounded-2xl px-6 py-5 active:border-primary/40 transition-all cursor-pointer">
+                                <span className="material-symbols-outlined text-zinc-600 mr-4 text-2xl">event</span>
                                 <input
                                     type="date"
                                     className="w-full bg-transparent border-none p-0 text-sm font-bold text-white focus:ring-0 [color-scheme:dark] cursor-pointer"
@@ -155,40 +147,37 @@ export default function NewGoal() {
                             </div>
                         </div>
 
-                        {/* Icon Selection */}
-                        <div className="space-y-4">
-                            <label className="text-[10px] font-black text-zinc-500 tracking-[0.2em] uppercase block px-1">Ícone da Meta</label>
-                            <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar -mx-2 px-2">
+                        {/* Icon Selection Scroll */}
+                        <div className="space-y-5">
+                            <label className="text-[10px] font-black text-zinc-600 tracking-[0.4em] uppercase block px-1 text-center">Ícone Estratégico</label>
+                            <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 scroll-smooth">
                                 {icons.map((icon) => (
                                     <button
                                         key={icon}
                                         type="button"
                                         onClick={() => setSelectedIcon(icon)}
-                                        className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 active:scale-90 ${selectedIcon === icon
-                                            ? 'bg-primary/20 text-primary border border-primary/20 shadow-[0_0_15px_rgba(15,182,127,0.2)]'
-                                            : 'bg-zinc-950 border border-white/5 text-zinc-600 hover:text-zinc-400'}`}
+                                        className={`flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 active:scale-90 ${selectedIcon === icon
+                                            ? 'bg-primary/10 text-primary border border-primary/20 shadow-[0_0_20px_rgba(15,182,127,0.1)] scale-110'
+                                            : 'bg-black/40 border border-white/5 text-zinc-700 hover:text-zinc-500 hover:border-white/10'}`}
                                     >
-                                        <span className="material-symbols-outlined text-xl">{icon}</span>
+                                        <span className="material-symbols-outlined text-2xl">{icon}</span>
                                     </button>
                                 ))}
                             </div>
                         </div>
+                    </motion.div>
 
-                        {/* Slogan */}
-                        <div className="pt-2 text-center">
-                            <p className="text-[9px] text-zinc-600 font-bold uppercase tracking-[0.2em] leading-relaxed italic">Visualize seu sucesso diariamente.</p>
-                        </div>
-                    </div>
-
-                    {/* Submit Section */}
-                    <div className="pt-4">
+                    {/* Premium Submit Button */}
+                    <div className="pt-8">
                         <button
                             type="submit"
                             disabled={loading}
-                            className={`w-full h-16 rounded-[2rem] bg-transparent border-2 border-primary text-primary font-black tracking-[0.4em] text-[11px] uppercase transition-all duration-300 active:scale-95 active:bg-primary/5 shadow-[0_0_30px_rgba(15,182,127,0.1)] ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:border-primary/80'}`}
+                            className={`w-full h-20 rounded-[2.5rem] bg-transparent border-2 border-primary/30 text-primary font-black tracking-[0.5em] text-[11px] uppercase transition-all duration-500 active:scale-95 active:bg-primary/10 shadow-[0_0_50px_rgba(15,182,127,0.1)] group relative overflow-hidden ${loading ? 'opacity-50' : 'hover:border-primary/80'}`}
                         >
-                            {loading ? 'Processando...' : 'Iniciar Jornada'}
+                            <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            {loading ? 'Delineando...' : 'Formalizar Meta'}
                         </button>
+                        <p className="text-[9px] text-zinc-700 font-bold uppercase tracking-[0.2em] text-center mt-6 italic opacity-60">"O primeiro passo para o sucesso é a visualização."</p>
                     </div>
 
                 </form>

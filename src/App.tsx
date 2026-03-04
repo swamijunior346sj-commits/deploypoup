@@ -52,6 +52,11 @@ import Tools from './pages/Tools';
 import Networking from './pages/Networking';
 import Missions from './pages/Missions';
 import ManageCategories from './pages/ManageCategories';
+import NewCategory from './pages/NewCategory';
+import NewSubCategory from './pages/NewSubCategory';
+import EditCategory from './pages/EditCategory';
+import EditSubCategory from './pages/EditSubCategory';
+import FinancialTips from './pages/FinancialTips';
 import AIAnalysis from './pages/AIAnalysis';
 
 export default function App() {
@@ -107,6 +112,11 @@ export default function App() {
               <Route path="/mentorship/:id" element={<MentorshipDetails />} />
               <Route path="/missions" element={<Missions />} />
               <Route path="/categories" element={<ManageCategories />} />
+              <Route path="/new-category" element={<NewCategory />} />
+              <Route path="/new-subcategory" element={<NewSubCategory />} />
+              <Route path="/edit-category" element={<EditCategory />} />
+              <Route path="/edit-subcategory/:id" element={<EditSubCategory />} />
+              <Route path="/financial-tips" element={<FinancialTips />} />
               <Route path="/ai-analysis" element={<AIAnalysis />} />
             </Route>
           </Routes>

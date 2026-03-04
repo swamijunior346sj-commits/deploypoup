@@ -11,15 +11,18 @@ export default function NewCategory() {
     const { user } = useAuth();
     const { refreshData } = useData();
     const [name, setName] = useState('');
+    const [type, setType] = useState<'income' | 'expense'>('expense');
     const [selectedIcon, setSelectedIcon] = useState('category');
     const [selectedColor, setSelectedColor] = useState('#0fb67f');
     const [loading, setLoading] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
 
     const icons = [
-        'category', 'shopping_cart', 'directions_car', 'restaurant',
-        'payments', 'fitness_center', 'medical_services', 'flight',
-        'home', 'celebration', 'school', 'savings'
+        'category', 'payments', 'stars', 'trending_up',
+        'account_balance', 'shopping_bag', 'work', 'home',
+        'receipt_long', 'redeem', 'support', 'credit_card',
+        'shopping_cart', 'directions_bus', 'local_gas_station', 'medical_services',
+        'school', 'celebration', 'security', 'checkroom'
     ];
 
     const colors = [
@@ -35,6 +38,7 @@ export default function NewCategory() {
                 {
                     user_id: user.id,
                     name,
+                    type,
                     icon: selectedIcon,
                     color: selectedColor,
                     planned_budget: 0
@@ -62,6 +66,24 @@ export default function NewCategory() {
                 </div>
 
                 <div className="transparent-card-border rounded-[2.5rem] p-8 space-y-10 mb-10">
+                    <div className="space-y-4">
+                        <label className="block text-[10px] font-black tracking-[0.2em] text-zinc-500 uppercase px-1">Natureza da Categoria</label>
+                        <div className="grid grid-cols-2 gap-2 p-1 bg-white/5 rounded-2xl border border-white/5">
+                            <button
+                                onClick={() => setType('expense')}
+                                className={`py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${type === 'expense' ? 'bg-zinc-800 text-white shadow-xl' : 'text-zinc-600 hover:text-zinc-400'}`}
+                            >
+                                Despesa
+                            </button>
+                            <button
+                                onClick={() => setType('income')}
+                                className={`py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${type === 'income' ? 'bg-primary text-black shadow-xl' : 'text-zinc-600 hover:text-zinc-400'}`}
+                            >
+                                Receita
+                            </button>
+                        </div>
+                    </div>
+
                     <div className="space-y-4">
                         <label className="block text-[10px] font-black tracking-[0.2em] text-zinc-500 uppercase px-1">Nome da Categoria</label>
                         <input

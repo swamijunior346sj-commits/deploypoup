@@ -47,6 +47,7 @@ export interface Category {
     name: string;
     icon: string;
     color: string;
+    type?: 'income' | 'expense';
     planned_budget: number;
     is_default?: boolean;
     created_at?: string;

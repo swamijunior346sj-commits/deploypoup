@@ -19,8 +19,11 @@ export default function NewSubCategory() {
     const [showSuccess, setShowSuccess] = useState(false);
 
     const icons = [
-        'description', 'receipt_long', 'water_drop', 'bolt',
-        'wifi', 'cleaning_services', 'weekend', 'key'
+        'category', 'payments', 'stars', 'trending_up',
+        'account_balance', 'shopping_bag', 'work', 'home',
+        'receipt_long', 'redeem', 'support', 'credit_card',
+        'shopping_cart', 'directions_bus', 'local_gas_station', 'medical_services',
+        'school', 'celebration', 'security', 'checkroom'
     ];
 
     const handleSave = async () => {

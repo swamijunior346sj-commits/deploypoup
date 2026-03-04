@@ -247,7 +247,7 @@ export default function TransactionHistory() {
             <main className="flex-grow px-6 space-y-6 pb-40 pt-2 mt-2 overflow-y-auto no-scrollbar">
 
                 {/* ── Animated Daily Spending Card ── */}
-                <div className="pulse-card rounded-[28px] p-6 relative overflow-hidden border border-white/[0.04]">
+                <div className="transparent-card-border rounded-[2.5rem] p-8 relative overflow-hidden pulse-card">
                     <div className="absolute bottom-0 left-0 right-0 h-[1px] shimmer-line"></div>
                     <div className="flex items-center justify-between relative z-10">
                         <div className="space-y-1">
@@ -317,7 +317,7 @@ export default function TransactionHistory() {
                 {chartData.length > 1 && (
                     <div className="space-y-3">
                         <h3 className="text-[9px] font-black tracking-[0.3em] text-zinc-600 uppercase px-1">Evolução de Gastos</h3>
-                        <div className="rounded-2xl border border-white/[0.04] p-4">
+                        <div className="transparent-card-border rounded-[2rem] p-6">
                             <ResponsiveContainer width="100%" height={130}>
                                 <AreaChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
                                     <defs>
@@ -330,7 +330,8 @@ export default function TransactionHistory() {
                                     <XAxis dataKey="date" tick={{ fontSize: 8, fill: '#52525b' }} axisLine={false} tickLine={false} />
                                     <YAxis tick={{ fontSize: 8, fill: '#52525b' }} axisLine={false} tickLine={false} />
                                     <Tooltip
-                                        contentStyle={{ background: '#09090b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, fontSize: 11 }}
+                                        cursor={{ fill: 'transparent' }}
+                                        contentStyle={{ background: '#000000', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, fontSize: 11, padding: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}
                                         labelStyle={{ color: '#a1a1aa', fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}
                                         formatter={(value: number) => [`R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 'Gastos']}
                                     />
@@ -345,14 +346,15 @@ export default function TransactionHistory() {
                 {chartData.length > 1 && (
                     <div className="space-y-3">
                         <h3 className="text-[9px] font-black tracking-[0.3em] text-zinc-600 uppercase px-1">Evolução de Receitas</h3>
-                        <div className="rounded-2xl border border-white/[0.04] p-4">
+                        <div className="transparent-card-border rounded-[2rem] p-6">
                             <ResponsiveContainer width="100%" height={100}>
                                 <BarChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" />
                                     <XAxis dataKey="date" tick={{ fontSize: 8, fill: '#52525b' }} axisLine={false} tickLine={false} />
                                     <YAxis tick={{ fontSize: 8, fill: '#52525b' }} axisLine={false} tickLine={false} />
                                     <Tooltip
-                                        contentStyle={{ background: '#09090b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, fontSize: 11 }}
+                                        cursor={{ fill: 'transparent' }}
+                                        contentStyle={{ background: '#000000', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, fontSize: 11, padding: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}
                                         labelStyle={{ color: '#a1a1aa', fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}
                                         formatter={(value: number) => [`R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 'Receitas']}
                                     />
@@ -402,7 +404,7 @@ export default function TransactionHistory() {
                                 <div
                                     key={transaction.id}
                                     onClick={() => navigate('/transaction-details', { state: { transaction } })}
-                                    className="border border-white/[0.04] rounded-2xl p-4 flex items-center justify-between active:scale-[0.98] transition-all cursor-pointer group hover:border-primary/15"
+                                    className="transparent-card-border rounded-[2rem] p-5 flex items-center justify-between active:scale-[0.98] transition-all cursor-pointer group hover:bg-white/[0.02]"
                                 >
                                     <div className="flex items-center space-x-3">
                                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${transaction.type === 'income'
