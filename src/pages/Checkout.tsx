@@ -2,21 +2,55 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import Header from '../components/Header';
+import { supabase } from '../lib/supabase';
 
 export default function Checkout() {
     const navigate = useNavigate();
     const [coupon, setCoupon] = useState('');
+    const [appliedDiscount, setAppliedDiscount] = useState(0);
+    const [isApplying, setIsApplying] = useState(false);
     const [step, setStep] = useState(1); // 1: Resumo, 2: Entrega/Acesso, 3: Pagamento
 
     const saved = localStorage.getItem('poup_cart');
     const cartItems = saved ? JSON.parse(saved) : [];
     const total = cartItems.reduce((acc: number, item: any) => acc + item.price * item.quantity, 0);
 
+    const handleApplyCoupon = async () => {
+        if (!coupon) return;
+        setIsApplying(true);
+        try {
+            const { data, error } = await supabase
+                .from('coupons')
+                .select('*')
+                .eq('code', coupon.toUpperCase())
+                .eq('active', true)
+                .single();
+
+            if (data && !error) {
+                if (data.current_uses < data.max_uses) {
+                    setAppliedDiscount(data.discount_percent);
+                    // Add a notification here if possible, or just local feedback
+                } else {
+                    alert('Este cupom atingiu o limite de usos.');
+                    setAppliedDiscount(0);
+                }
+            } else {
+                alert('Cupom inválido ou expirado.');
+                setAppliedDiscount(0);
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setIsApplying(false);
+        }
+    };
+
     const handleProceed = () => {
         if (step < 3) {
             setStep(step + 1);
         } else {
             // Navigate to Upsell before final payment
+            localStorage.setItem('poup_discount_percent', appliedDiscount.toString());
             navigate('/upsell');
         }
     };
@@ -92,7 +126,13 @@ export default function Checkout() {
                                         onChange={(e) => setCoupon(e.target.value)}
                                         className="flex-1 bg-zinc-950 border border-white/10 rounded-2xl px-6 py-4 text-xs font-black uppercase tracking-widest text-primary placeholder:text-zinc-800 focus:outline-none focus:border-primary/40 transition-all"
                                     />
-                                    <button className="bg-white/5 border border-white/10 px-6 rounded-2xl text-[8px] font-black uppercase tracking-widest text-primary">Aplicar</button>
+                                    <button
+                                        onClick={handleApplyCoupon}
+                                        disabled={isApplying}
+                                        className="bg-primary/10 border border-primary/20 px-6 rounded-2xl text-[8px] font-black uppercase tracking-widest text-primary hover:bg-primary hover:text-black transition-all disabled:opacity-50"
+                                    >
+                                        {isApplying ? '...' : 'Aplicar'}
+                                    </button>
                                 </div>
                             </div>
                         </motion.section>
@@ -180,10 +220,10 @@ export default function Checkout() {
                         <span>Encargos</span>
                         <span className="text-primary">ISENTO</span>
                     </div>
-                    {coupon && (
+                    {appliedDiscount > 0 && (
                         <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-primary">
-                            <span>Cupom APLICADO</span>
-                            <span>- R$ {(total * 0.1).toLocaleString('pt-BR')}</span>
+                            <span>Cupom APLICADO ({appliedDiscount}%)</span>
+                            <span>- R$ {((total * appliedDiscount) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                         </div>
                     )}
                     <div className="h-px bg-white/5"></div>
@@ -191,7 +231,7 @@ export default function Checkout() {
                         <div className="flex flex-col">
                             <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-1">Pagamento Total</span>
                             <span className="text-3xl font-black italic text-white premium-text-glow leading-none">
-                                R$ {(coupon ? total * 0.9 : total).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                R$ {(total * (1 - appliedDiscount / 100)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                             </span>
                         </div>
                         <div className="text-right">

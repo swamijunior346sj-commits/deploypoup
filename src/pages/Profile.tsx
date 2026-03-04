@@ -5,7 +5,7 @@ import { useData } from '../contexts/DataContext';
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const { clearAllData } = useData();
 
   const handleSignOut = async () => {
@@ -78,6 +78,16 @@ export default function Profile() {
             </div>
             <span className="material-symbols-outlined text-zinc-600 text-sm">chevron_right</span>
           </div>
+
+          {(profile?.role === 'admin' || user?.email === 'teste@gmail.com') && (
+            <div onClick={() => navigate('/admin')} className="flex items-center justify-between py-4 border-b border-white/5 group cursor-pointer">
+              <div className="flex items-center space-x-4">
+                <span className="material-symbols-outlined text-primary">terminal</span>
+                <span className="text-sm font-medium text-text-value">Terminal Admin (ERP)</span>
+              </div>
+              <span className="material-symbols-outlined text-zinc-600 text-sm">chevron_right</span>
+            </div>
+          )}
 
           <div className="flex items-center justify-between py-4 border-b border-white/5 group cursor-pointer">
             <div className="flex items-center space-x-4">

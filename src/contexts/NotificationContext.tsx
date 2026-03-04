@@ -61,6 +61,38 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
         setNotifications([]);
     };
 
+    // Real-time Broadcast Listener
+    useEffect(() => {
+        const channel = supabase
+            .channel('global_broadcasts')
+            .on(
+                'postgres_changes',
+                {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'broadcasts',
+                },
+                (payload) => {
+                    const { title, message, type } = payload.new;
+                    addNotification({
+                        title: title || 'Comunicado Global',
+                        message: message || 'Nova atualização do terminal.',
+                        type: type as any || 'info',
+                    });
+
+                    // Native browser notification (if permission granted)
+                    if (window.Notification && Notification.permission === "granted") {
+                        new window.Notification(title, { body: message });
+                    }
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, []);
+
     return (
         <NotificationContext.Provider value={{ notifications, unreadCount, addNotification, markAsRead, clearAll }}>
             {children}
@@ -76,12 +108,12 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
                     >
                         <div className="relative p-5 bg-zinc-950/90 backdrop-blur-3xl border border-white/10 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden group">
                             <div className={`absolute top-0 left-0 w-1 h-full ${currentToast.type === 'success' ? 'bg-primary' :
-                                    currentToast.type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+                                currentToast.type === 'error' ? 'bg-red-500' : 'bg-blue-500'
                                 }`}></div>
 
                             <div className="flex gap-4">
                                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${currentToast.type === 'success' ? 'bg-primary/10 text-primary' :
-                                        currentToast.type === 'error' ? 'bg-red-500/10 text-red-500' : 'bg-blue-500/10 text-blue-500'
+                                    currentToast.type === 'error' ? 'bg-red-500/10 text-red-500' : 'bg-blue-500/10 text-blue-500'
                                     }`}>
                                     <span className="material-symbols-outlined font-black">
                                         {currentToast.type === 'success' ? 'check_circle' :

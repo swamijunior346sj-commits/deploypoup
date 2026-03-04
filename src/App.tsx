@@ -66,6 +66,7 @@ import PhysicalBooks from './pages/PhysicalBooks';
 import AllProducts from './pages/AllProducts';
 import MyOrders from './pages/MyOrders';
 import NotificationCenter from './pages/NotificationCenter';
+import Admin from './pages/Admin';
 
 export default function App() {
   return (
@@ -132,6 +133,7 @@ export default function App() {
                 <Route path="/edit-subcategory/:id" element={<EditSubCategory />} />
                 <Route path="/financial-tips" element={<FinancialTips />} />
                 <Route path="/financial-analysis" element={<FinancialAnalysis />} />
+                <Route path="/admin" element={<Admin />} />
               </Route>
             </Routes>
           </Router>

@@ -24,8 +24,11 @@ export default function Payment() {
     const { addNotification } = useNotifications();
 
     const saved = localStorage.getItem('poup_cart');
+    const discountPercentStr = localStorage.getItem('poup_discount_percent');
+    const discountPercent = discountPercentStr ? parseInt(discountPercentStr) : 0;
     const cartItems = saved ? JSON.parse(saved) : [];
-    const total = cartItems.reduce((acc: number, item: any) => acc + item.price * item.quantity, 0);
+    const baseTotal = cartItems.reduce((acc: number, item: any) => acc + item.price * item.quantity, 0);
+    const total = baseTotal * (1 - discountPercent / 100);
 
     // Initial QR Code Generation & Order Creation
     useEffect(() => {
