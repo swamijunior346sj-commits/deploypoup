@@ -51,11 +51,11 @@ export default function Dashboard() {
   const netWorth = totalAssetsValue + totalIncome - totalExpenses;
 
   const assetCategories = [
-    { name: 'Renda Fixa', color: '#0FB67F' },
-    { name: 'Renda Variável', color: '#3B82F6' },
-    { name: 'FIIs', color: '#A855F7' },
-    { name: 'Cripto', color: '#F59E0B' },
-    { name: 'Outros', color: '#52525b' },
+    { name: 'Renda Fixa', color: '#0FB67F' }, // primary
+    { name: 'Renda Variável', color: '#3B82F6' }, // blue-500
+    { name: 'FIIs', color: '#A855F7' }, // purple-500
+    { name: 'Cripto', color: '#F59E0B' }, // amber-500
+    { name: 'Outros', color: '#4B5563' }, // gray-600
   ];
 
   const allocationData = assetCategories.map(cat => {
@@ -414,8 +414,8 @@ export default function Dashboard() {
               <AreaChart data={netProfitData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                 <defs>
                   <linearGradient id="profitGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0FB67F" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#0FB67F" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="date" tick={{ fontSize: 8, fill: '#52525b', fontWeight: 900 }} axisLine={false} tickLine={false} />
@@ -427,7 +427,7 @@ export default function Dashboard() {
                 <Area
                   type="monotone"
                   dataKey="Lucro"
-                  stroke="#0FB67F"
+                  stroke="#3B82F6"
                   strokeWidth={3}
                   fillOpacity={1}
                   fill="url(#profitGradient)"
@@ -440,8 +440,8 @@ export default function Dashboard() {
                 <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">Média Diária</span>
                 <span className="text-xs font-bold text-white">R$ {(netProfitData.reduce((a, b) => a + b.Lucro, 0) / 14).toFixed(2)}</span>
               </div>
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
-                <span className="material-symbols-outlined text-primary text-sm">trending_up</span>
+              <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                <span className="material-symbols-outlined text-blue-500 text-sm">trending_up</span>
               </div>
             </div>
           </div>
