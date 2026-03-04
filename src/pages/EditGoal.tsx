@@ -194,25 +194,26 @@ export default function EditGoal() {
 
                 {/* Delete Confirmation Overlay */}
                 {showDeleteConfirm && (
-                    <div className="fixed inset-0 bg-black/90 backdrop-blur-xl z-[100] flex items-center justify-center p-6">
-                        <div className="w-full max-w-sm bg-zinc-900/80 border border-white/10 rounded-[40px] p-10 text-center animate-in fade-in zoom-in duration-300">
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+                        <div className="absolute inset-0 backdrop-blur-premium" onClick={() => setShowDeleteConfirm(false)}></div>
+                        <div className="relative w-full max-w-sm transparent-card-border rounded-[40px] p-10 text-center popup-anim">
                             <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-8">
-                                <span className="material-symbols-outlined text-red-500 text-4xl">delete_forever</span>
+                                <span className="material-symbols-outlined text-red-500 text-4xl font-bold">delete_forever</span>
                             </div>
-                            <h3 className="text-2xl font-black text-white mb-3">Excluir Meta?</h3>
-                            <p className="text-slate-400 text-sm mb-10 leading-relaxed">
+                            <h3 className="text-2xl font-black text-white mb-3 tracking-tight uppercase">Excluir Meta?</h3>
+                            <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest mb-10 leading-relaxed italic">
                                 Esta ação não pode ser desfeita. Todo o progresso acumulado será perdido permanentemente.
                             </p>
                             <div className="flex flex-col gap-3">
                                 <button
                                     onClick={handleDelete}
-                                    className="w-full py-5 rounded-2xl font-bold text-sm bg-red-500 text-white hover:bg-red-600 transition-all shadow-[0_10px_20px_rgba(239,68,68,0.2)]"
+                                    className="w-full py-5 rounded-2xl font-bold text-xs tracking-[0.2em] uppercase bg-red-500 text-white hover:bg-red-600 transition-all shadow-[0_10px_20px_rgba(239,68,68,0.2)]"
                                 >
                                     Excluir Agora
                                 </button>
                                 <button
                                     onClick={() => setShowDeleteConfirm(false)}
-                                    className="w-full py-5 rounded-2xl font-bold text-sm text-slate-500 hover:text-white transition-all"
+                                    className="w-full py-5 rounded-2xl font-bold text-xs tracking-[0.2em] uppercase text-zinc-500 hover:text-white transition-all"
                                 >
                                     Manter Meta
                                 </button>
@@ -224,8 +225,9 @@ export default function EditGoal() {
 
             {/* Success Modal */}
             {showSuccess && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[110] flex flex-col items-center justify-center p-8">
-                    <div className="w-full max-w-[320px] glow-border border-primary rounded-[40px] bg-black/80 p-12 flex flex-col items-center text-center animate-in fade-in zoom-in duration-500">
+                <div className="fixed inset-0 z-[110] flex flex-col items-center justify-center p-8">
+                    <div className="absolute inset-0 backdrop-blur-premium" onClick={() => { setShowSuccess(false); navigate('/goals'); }}></div>
+                    <div className="relative w-full max-w-[320px] transparent-card-border rounded-[40px] p-12 flex flex-col items-center text-center popup-anim">
                         <div className="mb-10">
                             <span className="material-symbols-outlined text-primary text-[100px] font-light neon-text-glow leading-none">
                                 check_circle
@@ -239,7 +241,7 @@ export default function EditGoal() {
                                 setShowSuccess(false);
                                 navigate('/goals');
                             }}
-                            className="w-full py-5 rounded-2xl border-2 border-primary bg-transparent text-primary text-xs font-black uppercase tracking-[0.3em] active:bg-primary/20 transition-all"
+                            className="w-full py-5 rounded-2xl border-2 border-primary bg-transparent text-primary text-xs font-black uppercase tracking-[0.3em] active:bg-primary/20 transition-all hover:bg-primary/5"
                         >
                             Concluir
                         </button>

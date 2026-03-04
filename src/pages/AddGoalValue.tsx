@@ -167,8 +167,9 @@ export default function AddGoalValue() {
 
             {/* Success Modal */}
             {showSuccess && (
-                <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[110] flex flex-col items-center justify-center p-8">
-                    <div className="w-full max-w-[320px] glow-border border-primary rounded-[40px] bg-black/60 backdrop-blur-xl p-10 flex flex-col items-center text-center animate-in fade-in zoom-in duration-500">
+                <div className="fixed inset-0 z-[110] flex flex-col items-center justify-center p-8">
+                    <div className="absolute inset-0 backdrop-blur-premium transition-opacity duration-300" onClick={() => { setShowSuccess(false); navigate('/goals'); }}></div>
+                    <div className="relative w-full max-w-[320px] transparent-card-border rounded-[40px] p-10 flex flex-col items-center text-center popup-anim">
                         <div className="mb-8">
                             <span className="material-symbols-outlined text-primary text-[84px] font-light neon-text-glow leading-none">
                                 check_circle
@@ -182,7 +183,7 @@ export default function AddGoalValue() {
                                 setShowSuccess(false);
                                 navigate('/goals');
                             }}
-                            className="w-full py-4 rounded-2xl border border-primary bg-transparent text-primary text-[14px] font-bold uppercase tracking-[0.3em] active:bg-primary/10 transition-all font-display"
+                            className="w-full py-4 rounded-2xl border border-primary bg-transparent text-primary text-[14px] font-bold uppercase tracking-[0.3em] active:bg-primary/10 transition-all font-display hover:bg-primary/5 shadow-lg"
                         >
                             Concluir
                         </button>

@@ -182,9 +182,9 @@ export default function TransactionHistory() {
 
             {/* ── Wallet Summary Popup ── */}
             {showWallet && (
-                <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6 animate-in fade-in duration-300">
-                    <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setShowWallet(false)}></div>
-                    <div className="relative w-full max-w-sm bg-zinc-900 rounded-[2.5rem] border border-white/10 p-8 shadow-2xl animate-in zoom-in-95 duration-300">
+                <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6">
+                    <div className="absolute inset-0 backdrop-blur-premium transition-opacity duration-300" onClick={() => setShowWallet(false)}></div>
+                    <div className="relative w-full max-w-sm transparent-card-border rounded-[2.5rem] p-8 popup-anim">
                         <div className="flex flex-col items-center text-center">
                             <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-5">
                                 <span className="material-symbols-outlined text-primary text-[30px]">account_balance_wallet</span>
@@ -233,7 +233,7 @@ export default function TransactionHistory() {
 
                             <button
                                 onClick={() => setShowWallet(false)}
-                                className="w-full py-4 rounded-2xl bg-primary text-black font-bold text-xs tracking-[0.2em] uppercase active:scale-95 transition-all shadow-[0_10px_20px_rgba(15,182,127,0.2)]"
+                                className="w-full py-4 rounded-2xl bg-transparent border border-white/10 text-primary font-bold text-xs tracking-[0.2em] uppercase active:scale-95 transition-all hover:bg-primary/5 shadow-[0_10px_20px_rgba(15,182,127,0.1)]"
                             >
                                 Fechar
                             </button>
@@ -406,10 +406,10 @@ export default function TransactionHistory() {
                                 >
                                     <div className="flex items-center space-x-3">
                                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${transaction.type === 'income'
-                                                ? 'bg-primary/10 border border-primary/20 text-primary group-hover:bg-primary/15'
-                                                : transaction.type === 'transfer'
-                                                    ? 'bg-blue-500/10 border border-blue-500/20 text-blue-500 group-hover:bg-blue-500/15'
-                                                    : 'bg-red-500/10 border border-red-500/20 text-red-500 group-hover:bg-red-500/15'
+                                            ? 'bg-primary/10 border border-primary/20 text-primary group-hover:bg-primary/15'
+                                            : transaction.type === 'transfer'
+                                                ? 'bg-blue-500/10 border border-blue-500/20 text-blue-500 group-hover:bg-blue-500/15'
+                                                : 'bg-red-500/10 border border-red-500/20 text-red-500 group-hover:bg-red-500/15'
                                             }`}>
                                             <span className="material-symbols-outlined text-[20px]">
                                                 {transaction.type === 'income' ? 'payments' : (transaction.type === 'transfer' ? 'sync_alt' : 'shopping_bag')}

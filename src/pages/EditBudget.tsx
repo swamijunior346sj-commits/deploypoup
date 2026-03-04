@@ -142,15 +142,16 @@ export default function EditBudget() {
 
             {/* Success Modal Simulation */}
             {showSuccess && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[110] flex flex-col items-center justify-center p-8 animate-in fade-in duration-300">
-                    <div className="w-full max-w-[320px] glow-border border-primary rounded-[32px] bg-black/80 p-10 flex flex-col items-center text-center">
+                <div className="fixed inset-0 z-[110] flex flex-col items-center justify-center p-8">
+                    <div className="absolute inset-0 backdrop-blur-premium" onClick={() => setShowSuccess(false)}></div>
+                    <div className="relative w-full max-w-[320px] transparent-card-border rounded-[32px] p-10 flex flex-col items-center text-center popup-anim">
                         <span className="material-symbols-outlined text-primary text-[80px] font-light neon-text-glow mb-6 leading-none">
                             check_circle
                         </span>
                         <h2 className="text-white font-black text-[16px] tracking-[0.2em] uppercase mb-4">
                             Orçamento Atualizado!
                         </h2>
-                        <p className="text-light-gray text-xs leading-relaxed mb-6">
+                        <p className="text-light-gray text-xs font-bold uppercase tracking-widest leading-relaxed mb-6 italic opacity-60">
                             Seus limites foram ajustados com sucesso.
                         </p>
                     </div>

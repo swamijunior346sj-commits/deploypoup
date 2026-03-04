@@ -40,11 +40,11 @@ export default function ActionPopup({
     };
 
     return (
-        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6 animate-in fade-in duration-300">
-            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onCancel}></div>
-            <div className="relative w-full max-w-sm bg-zinc-900 rounded-[2.5rem] border border-white/10 p-8 shadow-2xl animate-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6">
+            <div className="absolute inset-0 backdrop-blur-premium transition-opacity duration-300" onClick={onCancel}></div>
+            <div className="relative w-full max-w-sm transparent-card-border rounded-[2.5rem] p-8 popup-anim">
                 <div className="flex flex-col items-center text-center">
-                    <div className={`w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-6`}>
+                    <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-6">
                         <span className={`material-symbols-outlined text-4xl font-bold ${getIconColor()}`}>{getIcon()}</span>
                     </div>
 
@@ -57,8 +57,8 @@ export default function ActionPopup({
                         <button
                             onClick={onConfirm}
                             className={`w-full py-4 rounded-2xl font-bold text-xs tracking-[0.2em] uppercase transition-all active:scale-95 ${type === 'delete'
-                                    ? 'bg-red-500 text-white shadow-[0_10px_20px_rgba(239,68,68,0.2)]'
-                                    : 'bg-primary text-black shadow-[0_10px_20px_rgba(15,182,127,0.2)]'
+                                ? 'bg-red-500 text-white shadow-[0_10px_20px_rgba(239,68,68,0.2)]'
+                                : 'bg-primary text-black shadow-[0_10px_20px_rgba(15,182,127,0.2)]'
                                 }`}
                         >
                             {confirmText}
@@ -67,7 +67,7 @@ export default function ActionPopup({
                         {type !== 'success' && (
                             <button
                                 onClick={onCancel}
-                                className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-zinc-400 font-bold text-xs tracking-[0.2em] uppercase active:scale-95 transition-all"
+                                className="w-full py-4 rounded-2xl bg-transparent border border-white/10 text-zinc-400 font-bold text-xs tracking-[0.2em] uppercase active:scale-95 transition-all hover:bg-white/5"
                             >
                                 {cancelText}
                             </button>

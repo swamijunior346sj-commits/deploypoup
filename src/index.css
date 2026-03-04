@@ -684,4 +684,33 @@
   .thin-line-goal {
     height: 2px;
   }
+
+  /* Premium Popup Animations */
+  @keyframes popup-enter {
+    from {
+      opacity: 0;
+      transform: scale(0.9) translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  .popup-anim {
+    animation: popup-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .backdrop-blur-premium {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+
+  .transparent-card-border {
+    background: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: none !important;
+  }
 }

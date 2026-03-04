@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { useData } from '../contexts/DataContext';
 import ActionPopup from '../components/ActionPopup';
+import Header from '../components/Header';
 
 export default function NewCategory() {
     const navigate = useNavigate();
@@ -51,89 +52,95 @@ export default function NewCategory() {
     };
 
     return (
-        <div className="bg-black text-white font-sans min-h-screen flex flex-col">
-            <header className="px-6 pt-12 pb-6 flex items-center justify-between sticky top-0 bg-black/80 backdrop-blur-md z-30">
+        <div className="bg-black text-white font-sans min-h-screen flex flex-col selection:bg-primary/30 relative overflow-hidden">
+            <Header title="Criar" showBack />
+
+            <main className="flex-grow px-6 pb-40 pt-4">
+                <div className="flex flex-col mb-10">
+                    <h2 className="text-[24px] font-display font-black tracking-tighter uppercase text-white leading-tight">Nova<br /><span className="text-primary italic">Categoria</span></h2>
+                    <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-[0.4em] mt-3 opacity-60">Expanda os horizontes do seu ecossistema</p>
+                </div>
+
+                <div className="transparent-card-border rounded-[2.5rem] p-8 space-y-10 mb-10">
+                    <div className="space-y-4">
+                        <label className="block text-[10px] font-black tracking-[0.2em] text-zinc-500 uppercase px-1">Nome da Categoria</label>
+                        <input
+                            className="w-full bg-transparent border-none p-0 text-2xl font-display font-bold text-white focus:ring-0 focus:outline-none placeholder-zinc-900"
+                            type="text"
+                            placeholder="Ex: Entretenimento"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                        <div className="h-[1px] w-full bg-gradient-to-r from-primary/30 via-primary/10 to-transparent"></div>
+                    </div>
+
+                    <div className="space-y-6">
+                        <label className="block text-[10px] font-black tracking-[0.2em] text-zinc-500 uppercase px-1">Seletor de Ícone</label>
+                        <div className="grid grid-cols-4 gap-4">
+                            {icons.map((icon) => (
+                                <button
+                                    key={icon}
+                                    onClick={() => setSelectedIcon(icon)}
+                                    className={`aspect-square rounded-2xl flex items-center justify-center border transition-all duration-300 active:scale-90 ${selectedIcon === icon
+                                        ? 'bg-primary/10 border-primary shadow-[0_0_20px_rgba(15,182,127,0.2)] text-primary'
+                                        : 'bg-zinc-900/40 border-white/5 text-zinc-700 hover:text-zinc-500'
+                                        }`}
+                                >
+                                    <span className={`material-symbols-outlined text-2xl ${selectedIcon === icon ? 'filled scale-110' : ''}`}>{icon}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="space-y-6">
+                        <label className="block text-[10px] font-black tracking-[0.2em] text-zinc-500 uppercase px-1">Espectro de Cor</label>
+                        <div className="flex gap-4 overflow-x-auto no-scrollbar py-2 -mx-2 px-2">
+                            {colors.map((color) => (
+                                <button
+                                    key={color}
+                                    onClick={() => setSelectedColor(color)}
+                                    className={`flex-shrink-0 w-10 h-10 rounded-full transition-all duration-300 active:scale-90 relative ${selectedColor === color
+                                        ? 'ring-2 ring-white ring-offset-4 ring-offset-black scale-110'
+                                        : 'opacity-40 hover:opacity-100'
+                                        }`}
+                                    style={{ backgroundColor: color }}
+                                >
+                                    {selectedColor === color && (
+                                        <div className="absolute inset-0 bg-white/20 blur-lg rounded-full animate-pulse"></div>
+                                    )}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
                 <button
-                    onClick={() => navigate(-1)}
-                    className="p-2 -ml-2 hover:bg-zinc-900/50 rounded-full transition-all active:scale-95"
+                    onClick={handleSave}
+                    disabled={!name || loading}
+                    className={`w-full h-16 rounded-[2rem] font-display font-black tracking-[0.4em] uppercase text-[11px] transition-all duration-500 flex items-center justify-center gap-3 active:scale-95 ${name && !loading
+                        ? 'bg-primary text-black shadow-[0_20px_40px_rgba(15,182,127,0.2)]'
+                        : 'bg-zinc-900 text-zinc-700 opacity-50 cursor-not-allowed border border-white/5'
+                        }`}
                 >
-                    <span className="material-symbols-outlined text-[#FCFCFC] text-2xl">arrow_back_ios_new</span>
+                    {loading ? (
+                        <>
+                            <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
+                            <span>Processando...</span>
+                        </>
+                    ) : (
+                        <>
+                            <span className="material-symbols-outlined text-base">rocket_launch</span>
+                            <span>Consolidar Categoria</span>
+                        </>
+                    )}
                 </button>
-                <h1 className="text-xs font-display font-bold tracking-[0.2em] uppercase text-center">NOVA CATEGORIA</h1>
-                <div className="w-10"></div>
-            </header>
-
-            <main className="flex-grow px-6 pb-40">
-                <div className="bg-[#121212] border border-zinc-800/50 rounded-2xl p-6 mb-6">
-                    <label className="block text-[10px] font-bold tracking-[0.15em] text-zinc-500 uppercase mb-4">Nome da Categoria</label>
-                    <input
-                        className="w-full bg-transparent border-none p-0 text-xl font-medium text-white focus:ring-0 focus:outline-none placeholder-zinc-700"
-                        type="text"
-                        placeholder="Ex: Viagens"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                </div>
-
-                <div className="mb-8">
-                    <label className="block text-[10px] font-bold tracking-[0.15em] text-zinc-500 uppercase mb-4 px-2">Ícone</label>
-                    <div className="grid grid-cols-4 gap-4">
-                        {icons.map((icon) => (
-                            <button
-                                key={icon}
-                                onClick={() => setSelectedIcon(icon)}
-                                className={`aspect-square rounded-2xl flex items-center justify-center border transition-all active:scale-90 ${selectedIcon === icon
-                                    ? 'bg-primary/10 border-primary/40 text-primary'
-                                    : 'bg-zinc-900 border-zinc-800 text-zinc-600'
-                                    }`}
-                            >
-                                <span className={`material-symbols-outlined text-2xl ${selectedIcon === icon ? 'filled' : ''}`}>{icon}</span>
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="mb-10">
-                    <label className="block text-[10px] font-bold tracking-[0.15em] text-zinc-500 uppercase mb-4 px-2">Cor da Categoria</label>
-                    <div className="flex gap-4 overflow-x-auto hide-scrollbar py-2">
-                        {colors.map((color) => (
-                            <button
-                                key={color}
-                                onClick={() => setSelectedColor(color)}
-                                className={`flex-shrink-0 w-8 h-8 rounded-full transition-all active:scale-90 ${selectedColor === color
-                                    ? 'ring-2 ring-white ring-offset-2 ring-offset-black scale-110'
-                                    : ''
-                                    }`}
-                                style={{ backgroundColor: color }}
-                            ></button>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="space-y-4">
-                    <button
-                        onClick={handleSave}
-                        disabled={!name || loading}
-                        className={`w-full py-5 rounded-2xl text-black font-display font-bold tracking-[0.1em] uppercase text-sm shadow-lg transition-all ${name && !loading ? 'bg-primary shadow-primary/20 hover:opacity-90 active:scale-[0.98]' : 'bg-zinc-800 text-zinc-600 opacity-50 cursor-not-allowed'
-                            }`}
-                    >
-                        {loading ? 'CRIANDO...' : 'CRIAR CATEGORIA'}
-                    </button>
-                </div>
-
-                <footer className="mt-12 py-4">
-                    <div className="flex items-center justify-center space-x-2 text-zinc-800">
-                        <span className="material-symbols-outlined text-base">auto_awesome</span>
-                        <p className="text-[9px] font-semibold tracking-[0.2em] uppercase"></p>
-                    </div>
-                </footer>
             </main>
 
             <ActionPopup
                 isOpen={showSuccess}
-                title="Pronto!"
-                description="Sua nova categoria foi criada com sucesso."
-                confirmText="OK"
+                title="Consolidado!"
+                description="A nova categoria foi integrada ao seu ecossistema com sucesso."
+                confirmText="Visualizar Estrutura"
                 type="success"
                 onConfirm={() => navigate('/manage-categories')}
                 onCancel={() => navigate('/manage-categories')}

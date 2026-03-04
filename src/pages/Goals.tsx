@@ -177,12 +177,12 @@ export default function Goals() {
 
             {/* Level Comparison Modal */}
             {showLevelModal && (
-                <div className="fixed inset-0 z-[200] flex items-end justify-center px-4 pb-12 animate-in fade-in duration-300">
-                    <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" onClick={() => setShowLevelModal(false)}></div>
-                    <div className="relative w-full max-w-md bg-zinc-900 rounded-[3rem] border border-white/10 overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-500">
+                <div className="fixed inset-0 z-[200] flex items-end justify-center px-4 pb-12">
+                    <div className="absolute inset-0 backdrop-blur-premium" onClick={() => setShowLevelModal(false)}></div>
+                    <div className="relative w-full max-w-md transparent-card-border bg-zinc-900/90 rounded-[3rem] overflow-hidden popup-anim">
                         <div className="p-8 pb-4">
-                            <h3 className="text-2xl font-black text-white mb-1">Escala de Evolução</h3>
-                            <p className="text-[10px] text-zinc-500 uppercase font-black tracking-widest">Cada nível desbloqueia novas taxas e benefícios</p>
+                            <h3 className="text-2xl font-black text-white mb-1 uppercase tracking-tighter">Escala de Evolução</h3>
+                            <p className="text-[10px] text-zinc-500 uppercase font-black tracking-[0.2em] opacity-60">Cada nível desbloqueia novas taxas e benefícios</p>
                         </div>
 
                         <div className="p-4 max-h-[60vh] overflow-y-auto space-y-2 no-scrollbar">
@@ -192,7 +192,7 @@ export default function Goals() {
                                 return (
                                     <div
                                         key={name}
-                                        className={`p-5 rounded-[1.5rem] flex items-center justify-between border transition-all ${current ? 'bg-primary/10 border-primary shadow-lg scale-[1.02]' : isDone ? 'bg-zinc-900 border-primary/20 opacity-60' : 'bg-black/20 border-white/5 opacity-30'
+                                        className={`p-5 rounded-[1.5rem] flex items-center justify-between border transition-all ${current ? 'bg-primary/10 border-primary shadow-lg scale-[1.02]' : isDone ? 'bg-zinc-900/40 border-primary/20 opacity-60' : 'bg-black/20 border-white/5 opacity-30'
                                             }`}
                                     >
                                         <div className="flex items-center gap-4">
@@ -215,7 +215,7 @@ export default function Goals() {
                         <div className="p-8 pt-4">
                             <button
                                 onClick={() => setShowLevelModal(false)}
-                                className="w-full py-5 bg-primary text-black font-black uppercase tracking-[0.2em] text-xs rounded-2xl shadow-lg shadow-primary/20 active:scale-95 transition-all"
+                                className="w-full py-5 bg-transparent border border-primary text-primary font-black uppercase tracking-[0.2em] text-xs rounded-2xl shadow-lg active:scale-95 transition-all hover:bg-primary/5"
                             >
                                 Prosseguir Jornada
                             </button>
@@ -226,13 +226,14 @@ export default function Goals() {
 
             {/* All Badges Modal */}
             {showBadgesModal && (
-                <div onClick={() => setShowBadgesModal(false)} className="fixed inset-0 z-[120] bg-black/95 backdrop-blur-2xl flex flex-col items-center justify-center p-6 animate-in fade-in duration-300">
-                    <div onClick={e => e.stopPropagation()} className="w-full max-w-md bg-zinc-900/50 border border-white/10 rounded-[3rem] p-8 max-h-[85dvh] overflow-y-auto hide-scrollbar relative">
+                <div className="fixed inset-0 z-[120] flex flex-col items-center justify-center p-6">
+                    <div className="absolute inset-0 backdrop-blur-premium" onClick={() => setShowBadgesModal(false)}></div>
+                    <div className="relative w-full max-w-md transparent-card-border bg-zinc-900/80 rounded-[3rem] p-8 max-h-[85dvh] overflow-y-auto no-scrollbar popup-anim">
                         <button
                             onClick={() => setShowBadgesModal(false)}
-                            className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/5 flex items-center justify-center"
+                            className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/5 flex items-center justify-center active:scale-90 transition-all border border-white/10"
                         >
-                            <span className="material-symbols-outlined text-zinc-500">close</span>
+                            <span className="material-symbols-outlined text-zinc-500 text-sm">close</span>
                         </button>
 
                         <div className="text-center mb-10">
@@ -245,11 +246,11 @@ export default function Goals() {
                                 const isUnlocked = idx < 2;
                                 return (
                                     <div key={idx} className="flex flex-col items-center gap-3">
-                                        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center relative ${isUnlocked ? 'bg-primary/10 border border-primary/30' : 'bg-white/5 border border-white/5 opacity-30'}`}>
+                                        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center relative ${isUnlocked ? 'bg-primary/10 border border-primary/30' : 'bg-white/5 border border-white/5 opacity-30 shadow-inner'}`}>
                                             <span className={`material-symbols-outlined text-3xl ${isUnlocked ? 'text-primary' : 'text-zinc-600'}`}>{badge.icon}</span>
-                                            {isUnlocked && <span className="material-symbols-outlined absolute -top-1 -right-1 text-primary text-sm filled">check_circle</span>}
+                                            {isUnlocked && <span className="material-symbols-outlined absolute -top-1 -right-1 text-primary text-sm filled scale-110">check_circle</span>}
                                         </div>
-                                        <span className="text-[8px] font-black text-center uppercase text-zinc-500">{badge.title}</span>
+                                        <span className="text-[8px] font-black text-center uppercase text-zinc-500 tracking-tighter opacity-60 leading-tight">{badge.title}</span>
                                     </div>
                                 );
                             })}

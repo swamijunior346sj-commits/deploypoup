@@ -225,12 +225,15 @@ export default function TransactionDetails() {
             />
 
             {showSuccess && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
-                    <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mb-6">
-                        <span className="material-symbols-outlined text-4xl text-primary font-bold animate-bounce">check</span>
+                <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center p-8 text-center">
+                    <div className="absolute inset-0 backdrop-blur-premium transition-opacity duration-300"></div>
+                    <div className="relative w-full max-w-sm transparent-card-border rounded-[2.5rem] p-10 popup-anim">
+                        <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mb-6 mx-auto">
+                            <span className="material-symbols-outlined text-4xl text-primary font-bold animate-bounce">check</span>
+                        </div>
+                        <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">Transação Removida</h2>
+                        <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest leading-relaxed">Registro excluído com sucesso<br />do seu histórico financeiro</p>
                     </div>
-                    <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">Transação Removida</h2>
-                    <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest leading-relaxed">Registro excluído com sucesso<br />do seu histórico financeiro</p>
                 </div>
             )}
         </div>

@@ -145,8 +145,9 @@ export default function Budgets() {
 
             {/* AI Alert Modal */}
             {alertBudget && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center px-6 bg-black/80 backdrop-blur-[2px]">
-                    <div className="w-full max-w-sm bg-transparent border border-zinc-800 rounded-[32px] p-8 relative overflow-hidden">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center px-6">
+                    <div className="absolute inset-0 backdrop-blur-premium" onClick={() => setAlertBudget(null)}></div>
+                    <div className="relative w-full max-w-sm transparent-card-border rounded-[32px] p-8 popup-anim">
                         <div className="flex justify-center mb-6">
                             <div className="bg-primary/10 p-4 rounded-full animate-pulse">
                                 <span className="material-symbols-outlined text-primary text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
