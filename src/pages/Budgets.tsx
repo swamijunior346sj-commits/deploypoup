@@ -127,7 +127,7 @@ export default function Budgets() {
                         animation: levitate 3s ease-in-out infinite;
                     }
                 `}</style>
-                <div className="fixed bottom-32 right-6 z-[150] levitate-btn">
+                <div className="fixed bottom-24 right-6 z-[150] levitate-btn">
                     <button
                         onClick={() => navigate('/new-budget')}
                         className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-[0_20px_40px_rgba(15,182,127,0.4)] active:scale-90 transition-all group"
